@@ -466,15 +466,17 @@ class MainWindow(QMainWindow):
                     groupBoxAuswertungLayoutG.addWidget(tempLabelBeschreibung, i, 1)
                     i += 1
 
-            datumSendenLayoutH = QHBoxLayout()
+            datumBenutzerLayoutG = QGridLayout()
+            labelDokumentiertAm = QLabel("Dokumentiert am:")
+            labelDokumentiertAm.setFont(self.fontNormal)
             self.untersuchungsdatum = QDate().currentDate()
             self.dateEditUntersuchungsdatum = QDateEdit()
             self.dateEditUntersuchungsdatum.setDate(self.untersuchungsdatum)
             self.dateEditUntersuchungsdatum.setDisplayFormat("dd.MM.yyyy")
             self.dateEditUntersuchungsdatum.setCalendarPopup(True)
             self.dateEditUntersuchungsdatum.userDateChanged.connect(self.dateEditUntersuchungsdatumChanged)
-            labelBenutzer = QLabel("Dokumentiert von:")
-            labelBenutzer.setFont(self.fontGross)
+            labelDokumentiertVon = QLabel("Dokumentiert von:")
+            labelDokumentiertVon.setFont(self.fontNormal)
             self.comboBoxBenutzer = QComboBox()
             self.comboBoxBenutzer.addItems(self.benutzernamenListe)
             self.comboBoxBenutzer.currentIndexChanged.connect(self.comboBoxBenutzerIndexChanged)
@@ -487,8 +489,10 @@ class MainWindow(QMainWindow):
             self.pushButtonSenden.setFixedHeight(60)
             self.pushButtonSenden.setEnabled(self.addOnsFreigeschaltet)
             self.pushButtonSenden.clicked.connect(self.pushButtonSendenClicked)
-            datumSendenLayoutH.addWidget(self.dateEditUntersuchungsdatum,)
-            datumSendenLayoutH.addWidget(self.comboBoxBenutzer)
+            datumBenutzerLayoutG.addWidget(labelDokumentiertAm, 0, 0)
+            datumBenutzerLayoutG.addWidget(labelDokumentiertVon, 0, 1)
+            datumBenutzerLayoutG.addWidget(self.dateEditUntersuchungsdatum, 1, 0)
+            datumBenutzerLayoutG.addWidget(self.comboBoxBenutzer, 1, 1)
                         
             if self.addOnsFreigeschaltet and gdttoolsL.GdtToolsLizenzschluessel.getSoftwareId(self.lizenzschluessel) == gdttoolsL.SoftwareId.SCOREGDTPSEUDO:
                 mainLayoutV.addWidget(self.labelPseudolizenz, alignment=Qt.AlignmentFlag.AlignCenter)
@@ -504,7 +508,7 @@ class MainWindow(QMainWindow):
             mainLayoutV.addSpacing(20)
             if auswertungElement != None:
                 mainLayoutV.addWidget(groupBoxAuswertung)
-            mainLayoutV.addLayout(datumSendenLayoutH)
+            mainLayoutV.addLayout(datumBenutzerLayoutG)
             mainLayoutV.addWidget(self.pushButtonSenden)
             self.widget.setLayout(mainLayoutV)
             self.setCentralWidget(self.widget)
@@ -921,6 +925,12 @@ class MainWindow(QMainWindow):
                 mb = QMessageBox(QMessageBox.Icon.Warning, "Hinweis von ScoreGDT", "GDT-Export nicht möglich.\nBitte überprüfen Sie die Angabe des Exportverzeichnisses.", QMessageBox.StandardButton.Ok)
                 mb.exec()
             else: 
+                self.configIni["Benutzer"]["letzter"] = str(self.aktuelleBenuztzernummer)
+                try:
+                    with open(os.path.join(self.configPath, "config.ini"), "w") as configfile:
+                        self.configIni.write(configfile)
+                except:
+                    logger.logger.warning("Problem beim Speichern von Benutzer/letzter")
                 sys.exit()
         else:
             mb = QMessageBox(QMessageBox.Icon.Warning, "Hinweis von ScoreGDT", "Vor dem Senden der Daten muss ein Score berechnet werden.", QMessageBox.StandardButton.Ok)

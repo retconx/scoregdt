@@ -54,6 +54,7 @@ class ScoreAuswahl(QDialog):
         buttonGroup.setParent(self)
         self.radioButtonsScore = []
         radioButtonNr = 0
+        laengen = []
         for scoreGruppe in scoreGruppen:
             groupBoxScoreGruppe = QGroupBox(scoreGruppe)
             groupBoxScoreGruppe.setFont(self.fontBold)
@@ -75,6 +76,9 @@ class ScoreAuswahl(QDialog):
             dialogLayoutV.addWidget(groupBoxScoreGruppe)
         dialogLayoutV.addWidget(self.buttonBox)
         self.setLayout(dialogLayoutV)
+
+        for rb in self.radioButtonsScore:
+            rb.setFixedWidth(200)
         
         # Ersten Button aktivieren
         self.radioButtonsScore[0].setChecked(True)
