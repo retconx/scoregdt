@@ -276,6 +276,7 @@ class MainWindow(QMainWindow):
                 self.patid = self.pseudoLizenzId
                 logger.logger.info("PatId wegen Pseudolizenz auf " + self.pseudoLizenzId + " gesetzt")
             self.geburtsdatum = str(gd.getInhalt("3103"))[0:2] + "." + str(gd.getInhalt("3103"))[2:4] + "." + str(gd.getInhalt("3103"))[4:8]
+            self.geschlecht = str(gd.getInhalt("3110")) # 1=männlich, 2=weiblich
         except (IOError, gdtzeile.GdtFehlerException) as e:
             logger.logger.warning("Fehler beim Laden der GDT-Datei: " + str(e))
             mb = QMessageBox(QMessageBox.Icon.Information, "Hinweis von ScoreGDT", "Fehler beim Laden der GDT-Datei:\n" + str(e) + "\n\nSoll ScoreGDT dennoch geöffnet werden?", QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No)
@@ -314,7 +315,8 @@ class MainWindow(QMainWindow):
                         partTitel = str(partElement.get("titel"))
                         partZeile = int(str(partElement.get("zeile")))
                         partSpalte = int(str(partElement.get("spalte")))
-                        self.parts.append(class_part.Part(partId, partTyp, partTitel, partZeile, partSpalte, self.scoreRoot))
+                        geschlechtpruefung = partElement.get("geschlechtpruefung") != None and str(partElement.get("geschlechtpruefung")) == "True"
+                        self.parts.append(class_part.Part(partId, partTyp, partTitel, partZeile, partSpalte, geschlechtpruefung, self.scoreRoot))
                         for widgetElement in partElement.findall("widget"):
                             widgetId = str(widgetElement.get("id"))
                             widgetTyp = str(widgetElement.get("typ"))
@@ -353,7 +355,7 @@ class MainWindow(QMainWindow):
                                 if widgetElement.find("faktor") != None:
                                     self.widgets[len(self.widgets) - 1].setFaktor(float(str(widgetElement.find("faktor").text))) # type: ignore
                             elif widgetTyp == class_widgets.WidgetTyp.RADIOBUTTON.value:
-                                checked = str(widgetElement.get("checked")) == "True"
+                                checked = str(widgetElement.get("checked")) == "True" and partElement.get("geschlechtpruefung") == None
                                 wertElement = widgetElement.find("wert")
                                 wert = str(wertElement.text) # type: ignore
                                 self.widgets.append(class_widgets.RadioButton(widgetId, partId, widgetTitel, widgetErklaerung, widgetEinheit, wert, checked, alterspruefung))
@@ -403,14 +405,20 @@ class MainWindow(QMainWindow):
                             partLayout.addWidget(labelErklaerung, partGridZeile, 2)
                         else:
                             partLayout.addWidget(QLabel(), partGridZeile, 2)
-                        # Prüfen, ob Altersfeld
-                        if self.alterspruefung and widget.alterspruefungAktiv():
+                        # Prüfen, ob Alterstextfeld
+                        if widget.getTyp() == class_widgets.WidgetTyp.LINEEDIT and self.alterspruefung and widget.alterspruefungAktiv():
                             widget.getQt().setText(str(getAktuellesAlterInJahren(geburtsdatumAlsDate)))
                             if not widget.zahlengrenzregelnErfuellt():
                                 mb = QMessageBox(QMessageBox.Icon.Information, "Hinweis von ScoreGDT", "Das Alter liegt außerhalb der zulässigen Grenzen.", QMessageBox.StandardButton.Ok)
                                 mb.exec() 
                                 widget.getQt().setFocus()
                                 widget.getQt().selectAll()
+                        # Pruefen, ob Geschlechtpart
+                        if part.geschlechtpruefungAktiv() and widget.getTyp() == class_widgets.WidgetTyp.RADIOBUTTON:
+                            if widget.getTitel().lower() == "männlich" and self.geschlecht == "1":
+                                widget.getQt().setChecked(True)
+                            elif widget.getTitel().lower() == "weiblich" and self.geschlecht == "2":
+                                widget.getQt().setChecked(True)
                         partGridZeile += 1
                 if part.getTyp() == class_part.PartTyp.FRAME:
                     frame = QFrame()
@@ -510,6 +518,11 @@ class MainWindow(QMainWindow):
                 mainLayoutV.addWidget(groupBoxAuswertung)
             mainLayoutV.addLayout(datumBenutzerLayoutG)
             mainLayoutV.addWidget(self.pushButtonSenden)
+            gueltigeLizenztage = gdttoolsL.GdtToolsLizenzschluessel.nochTageGueltig(self.lizenzschluessel)
+            if self.addOnsFreigeschaltet and gueltigeLizenztage  > 0 and gueltigeLizenztage <= 30:
+                labelLizenzLaeuftAus = QLabel("Die genutzte Lizenz ist noch " + str(gueltigeLizenztage) + " Tage gültig.")
+                labelLizenzLaeuftAus.setStyleSheet("color:rgb(200,0,0)")
+                mainLayoutV.addWidget(labelLizenzLaeuftAus, alignment=Qt.AlignmentFlag.AlignCenter)
             self.widget.setLayout(mainLayoutV)
             self.setCentralWidget(self.widget)
 

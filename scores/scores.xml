@@ -224,7 +224,7 @@
                 <faktor>0.0259</faktor>
             </widget>
         </part>
-        <part typ="GroupBox" id="1" titel="Geschlecht" zeile="1" spalte="0">
+        <part typ="GroupBox" id="1" titel="Geschlecht" zeile="1" spalte="0" geschlechtpruefung="True">
             <widget id="104" typ="RadioButton" titel="Weiblich" checked="True">
                 <wert>0</wert>   
             </widget>
@@ -4516,7 +4516,7 @@
                 <faktor>0.0259</faktor>
             </widget>
         </part>
-        <part typ="GroupBox" id="1" titel="Geschlecht" zeile="1" spalte="0">
+        <part typ="GroupBox" id="1" titel="Geschlecht" zeile="1" spalte="0" geschlechtpruefung="True">
             <widget id="104" typ="RadioButton" titel="Weiblich" checked="True">
                 <wert>0</wert>   
             </widget>
