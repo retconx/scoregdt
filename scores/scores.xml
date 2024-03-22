@@ -15,7 +15,7 @@
                 <wert>1</wert>
                 <erklaerung>Blutdruck systolisch &#x3c; 90 oder diastolisch &#x3c; 60 mmHg</erklaerung>
             </widget>
-            <widget id="103" typ="CheckBox" titel="65">
+            <widget id="103" typ="CheckBox" titel="65" alterspruefung="True" altersregel ="GROESSERALS65">
                 <wert>1</wert>
                 <erklaerung>Alter &#x2265; 65 Jahre</erklaerung>
             </widget>

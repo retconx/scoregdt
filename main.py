@@ -129,8 +129,7 @@ class MainWindow(QMainWindow):
         self.configIni.read(os.path.join(self.configPath, "config.ini"))
         self.version = self.configIni["Allgemein"]["version"]
         self.eulagelesen = self.configIni["Allgemein"]["eulagelesen"]
-        self.alterspruefung = self.configIni["Allgemein"]["alterspruefung"] == "True"
-        self.zahlengrenzenmuss = self.configIni["Allgemein"]["zahlengrenzenmuss"] == "True"
+        self.bereichsgrenzenerzwingen = self.configIni["Allgemein"]["bereichsgrenzenerzwingen"] == "True"
         self.gdtImportVerzeichnis = self.configIni["GDT"]["gdtimportverzeichnis"]
         self.gdtExportVerzeichnis = self.configIni["GDT"]["gdtexportverzeichnis"]
         self.kuerzelscoregdt = self.configIni["GDT"]["kuerzelscoregdt"]
@@ -351,9 +350,10 @@ class MainWindow(QMainWindow):
                                 logger.logger.info("Combobox angelegt (Part-ID: " + partId + ", Widget-ID: " + widgetId + ") angelegt")
                             elif widgetTyp == class_widgets.WidgetTyp.CHECKBOX.value:
                                 checked = str(widgetElement.get("checked")) == "True"
+                                altersregel = str(widgetElement.get("altersregel"))
                                 wertElement = widgetElement.find("wert")
                                 wert = str(wertElement.text) # type: ignore
-                                self.widgets.append(class_widgets.CheckBox(widgetId, partId, widgetTitel, widgetErklaerung, widgetEinheit, wert, checked, alterspruefung))
+                                self.widgets.append(class_widgets.CheckBox(widgetId, partId, widgetTitel, widgetErklaerung, widgetEinheit, wert, checked, alterspruefung, altersregel))
                                 logger.logger.info("Checkbox angelegt (Part-ID: " + partId + ", Widget-ID: " + widgetId + ") angelegt")
                             elif widgetTyp == class_widgets.WidgetTyp.LINEEDIT.value:
                                 regexPattern = str(widgetElement.find("regex").text) # type: ignore
@@ -369,9 +369,10 @@ class MainWindow(QMainWindow):
                                     self.widgets[len(self.widgets) - 1].setFaktor(float(str(widgetElement.find("faktor").text))) # type: ignore
                             elif widgetTyp == class_widgets.WidgetTyp.RADIOBUTTON.value:
                                 checked = str(widgetElement.get("checked")) == "True" and partElement.get("geschlechtpruefung") == None
+                                altersregel = str(widgetElement.get("altersregel"))
                                 wertElement = widgetElement.find("wert")
                                 wert = str(wertElement.text) # type: ignore
-                                self.widgets.append(class_widgets.RadioButton(widgetId, partId, widgetTitel, widgetErklaerung, widgetEinheit, wert, checked, alterspruefung))
+                                self.widgets.append(class_widgets.RadioButton(widgetId, partId, widgetTitel, widgetErklaerung, widgetEinheit, wert, checked, alterspruefung, altersregel))
                                 logger.logger.info("Radiobutton angelegt (Part-ID: " + partId + ", Widget-ID: " + widgetId + ") angelegt")
 
             # Formularaufbau
@@ -420,7 +421,7 @@ class MainWindow(QMainWindow):
                         else:
                             partLayout.addWidget(QLabel(), partGridZeile, 2)
                         # Prüfen, ob Alterstextfeld
-                        if widget.getTyp() == class_widgets.WidgetTyp.LINEEDIT and self.alterspruefung and widget.alterspruefungAktiv():
+                        if widget.getTyp() == class_widgets.WidgetTyp.LINEEDIT and  widget.alterspruefungAktiv():
                             widget.getQt().setText(str(getAktuellesAlterInJahren(geburtsdatumAlsDate)))
                             logger.logger.info("Alter aus GDT-Datei in Lineedit " + widget.getId() + " eingetragen")
                             if not widget.zahlengrenzregelnErfuellt():
@@ -428,7 +429,12 @@ class MainWindow(QMainWindow):
                                 mb.exec() 
                                 widget.getQt().setFocus()
                                 widget.getQt().selectAll()
-                        # Pruefen, ob Geschlechtpart
+                        elif widget.getTyp() == (class_widgets.WidgetTyp.CHECKBOX or widget.getTyp() == class_widgets.WidgetTyp.RADIOBUTTON) and widget.alterspruefungAktiv():
+                            print("sdf")
+                            regel = str(getAktuellesAlterInJahren(geburtsdatumAlsDate)) + widget.getAltersregel()
+                            widget.getQt().setChecked(self.regelIstErfuellt(regel))
+                            widget.getQt().setChecked(self.regelIstErfuellt(regel))
+                        # Prüfen, ob Geschlechtpart
                         if part.geschlechtpruefungAktiv() and widget.getTyp() == class_widgets.WidgetTyp.RADIOBUTTON:
                             if widget.getTitel().lower() == "männlich" and self.geschlecht == "1":
                                 widget.getQt().setChecked(True)
@@ -793,7 +799,7 @@ class MainWindow(QMainWindow):
                     widget.getQt().selectAll()
                     formularOk = False
                     break
-                elif self.zahlengrenzenmuss and widget.zahlengrenzeGesetzt():
+                elif self.bereichsgrenzenerzwingen and widget.zahlengrenzeGesetzt():
                     if not widget.zahlengrenzregelnErfuellt():
                         mb = QMessageBox(QMessageBox.Icon.Information, "Hinweis von ScoreGDT", "Textfeld " + widget.getTitel() + " ungültig ausgefüllt.", QMessageBox.StandardButton.Ok)
                         mb.exec()
@@ -801,7 +807,7 @@ class MainWindow(QMainWindow):
                         widget.getQt().selectAll()
                         formularOk = False
                         break
-                elif not self.zahlengrenzenmuss and widget.zahlengrenzeGesetzt():
+                elif not self.bereichsgrenzenerzwingen and widget.zahlengrenzeGesetzt():
                     if not widget.zahlengrenzregelnErfuellt():
                         zahl = float(widget.getQt().text().replace(",", "."))
                         widget.getQt().setText(str(widget.getGrenzzahl(zahl)).replace(".", ",").replace(",0", ""))
@@ -1003,8 +1009,7 @@ class MainWindow(QMainWindow):
     def einstellungenAllgmein(self, checked, neustartfrage=False):
         de = dialogEinstellungenAllgemein.EinstellungenAllgemein(self.configPath)
         if de.exec() == 1:
-            self.configIni["Allgemein"]["alterspruefung"] = str(de.checkBoxAlterspruefung.isChecked())
-            self.configIni["Allgemein"]["zahlengrenzenmuss"] = str(de.checkBoxZahlengrenzenpruefung.isChecked())
+            self.configIni["Allgemein"]["bereichsgrenzenerzwingen"] = str(de.checkBoxZahlengrenzenpruefung.isChecked())
             with open(os.path.join(self.configPath, "config.ini"), "w") as configfile:
                 self.configIni.write(configfile)
             if neustartfrage:

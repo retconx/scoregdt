@@ -89,13 +89,14 @@ class ComboBox(Widget):
         return self.typ
     
 class CheckBox(Widget):
-    def __init__(self, id, partId:str, titel:str, erklaerung:str, einheit:str, wert:str, checked:bool, alterspruefung:bool):
+    def __init__(self, id, partId:str, titel:str, erklaerung:str, einheit:str, wert:str, checked:bool, alterspruefung:bool, altersregel:str):
         super().__init__(id, partId, titel, erklaerung, einheit, alterspruefung)
         self.wert = wert
         self.checked = checked
         self.checkbox = QCheckBox()
         self.checkbox.setChecked(self.checked == True)
         self.typ = WidgetTyp.CHECKBOX
+        self.altersregel = altersregel
         
     def getQt(self):
         return self.checkbox
@@ -108,6 +109,9 @@ class CheckBox(Widget):
     
     def isChecked(self):
         return self.checkbox.isChecked()
+    
+    def getAltersregel(self):
+        return self.altersregel
     
 class LineEdit(Widget):
     def __init__(self, id, partId:str, titel:str, erklaerung:str, einheit:str, regexPattern:str, alterspruefung:bool):
@@ -173,13 +177,14 @@ class LineEdit(Widget):
         self.faktor = faktor
     
 class RadioButton(Widget):
-    def __init__(self, id, partId:str, titel:str, erklaerung:str, einheit:str, wert:str, checked:bool, alterspruefung:bool):
+    def __init__(self, id, partId:str, titel:str, erklaerung:str, einheit:str, wert:str, checked:bool, alterspruefung:bool, altersregel:str):
         super().__init__(id, partId, titel, erklaerung, einheit, alterspruefung)
         self.wert = wert
         self.checked = checked
         self.radiobutton = QRadioButton()
         self.radiobutton.setChecked(self.checked == True)
         self.typ = WidgetTyp.RADIOBUTTON
+        self.altersregel = altersregel
         
     def getQt(self):
         return self.radiobutton
@@ -192,6 +197,9 @@ class RadioButton(Widget):
     
     def isChecked(self):
         return self.radiobutton.isChecked()
+    
+    def getAltersregel(self):
+        return self.altersregel
 
 @staticmethod
 def getNaechstliegendeZahl(zahlenliste:list, zahl:float):
