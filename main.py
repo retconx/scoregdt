@@ -288,6 +288,14 @@ class MainWindow(QMainWindow):
             self.widget = QWidget()
             self.widget.installEventFilter(self)
 
+            # Updateprüfung auf Github
+            try:
+                self.updatePruefung(meldungNurWennUpdateVerfuegbar=True)
+            except Exception as e:
+                mb = QMessageBox(QMessageBox.Icon.Warning, "Hinweis von ScoreGDT", "Updateprüfung nicht möglich.\nBitte überprüfen Sie Ihre Internetverbindung.", QMessageBox.StandardButton.Ok)
+                mb.exec()
+                logger.logger.warning("Updateprüfung nicht möglich: " + str(e))
+
             # scores.xml auslesen
             try:
                 tree = ElementTree.parse(os.path.join(basedir, "scores", "scores.xml"))
@@ -303,7 +311,9 @@ class MainWindow(QMainWindow):
                 ds = dialogScoreAuswahl.ScoreAuswahl(self.root)
                 if ds.exec() == 1:
                     self.scoreRoot = self.getScoreXml(ds.aktuellGewaehlterScore)
+                    logger.logger.info("Score " + ds.aktuellGewaehlterScore + " ausgewählt")
                 else:
+                    logger.logger.info("Kein Score ausgewählt")
                     sys.exit()
                 if self.scoreRoot != None:
                     self.parts = []
@@ -338,14 +348,17 @@ class MainWindow(QMainWindow):
                                     itemText = str(itemElement.text)
                                     itemsUndWerte.append((itemText, itemWert))
                                 self.widgets.append(class_widgets.ComboBox(widgetId, partId, widgetTitel, widgetErklaerung, widgetEinheit, itemsUndWerte.copy(), alterspruefung))
+                                logger.logger.info("Combobox angelegt (Part-ID: " + partId + ", Widget-ID: " + widgetId + ") angelegt")
                             elif widgetTyp == class_widgets.WidgetTyp.CHECKBOX.value:
                                 checked = str(widgetElement.get("checked")) == "True"
                                 wertElement = widgetElement.find("wert")
                                 wert = str(wertElement.text) # type: ignore
                                 self.widgets.append(class_widgets.CheckBox(widgetId, partId, widgetTitel, widgetErklaerung, widgetEinheit, wert, checked, alterspruefung))
+                                logger.logger.info("Checkbox angelegt (Part-ID: " + partId + ", Widget-ID: " + widgetId + ") angelegt")
                             elif widgetTyp == class_widgets.WidgetTyp.LINEEDIT.value:
                                 regexPattern = str(widgetElement.find("regex").text) # type: ignore
                                 self.widgets.append(class_widgets.LineEdit(widgetId, partId, widgetTitel, widgetErklaerung, widgetEinheit, regexPattern, alterspruefung))
+                                logger.logger.info("Lineedit angelegt (Part-ID: " + partId + ", Widget-ID: " + widgetId + ") angelegt")
                                 # Zahlengrenzen festlegen
                                 for zahlengrenzeElement in widgetElement.findall("zahlengrenze"):
                                     zahlengrenze = float(str(zahlengrenzeElement.text))
@@ -359,6 +372,7 @@ class MainWindow(QMainWindow):
                                 wertElement = widgetElement.find("wert")
                                 wert = str(wertElement.text) # type: ignore
                                 self.widgets.append(class_widgets.RadioButton(widgetId, partId, widgetTitel, widgetErklaerung, widgetEinheit, wert, checked, alterspruefung))
+                                logger.logger.info("Radiobutton angelegt (Part-ID: " + partId + ", Widget-ID: " + widgetId + ") angelegt")
 
             # Formularaufbau
             mainLayoutV = QVBoxLayout()
@@ -408,6 +422,7 @@ class MainWindow(QMainWindow):
                         # Prüfen, ob Alterstextfeld
                         if widget.getTyp() == class_widgets.WidgetTyp.LINEEDIT and self.alterspruefung and widget.alterspruefungAktiv():
                             widget.getQt().setText(str(getAktuellesAlterInJahren(geburtsdatumAlsDate)))
+                            logger.logger.info("Alter aus GDT-Datei in Lineedit " + widget.getId() + " eingetragen")
                             if not widget.zahlengrenzregelnErfuellt():
                                 mb = QMessageBox(QMessageBox.Icon.Information, "Hinweis von ScoreGDT", "Das Alter liegt außerhalb der zulässigen Grenzen.", QMessageBox.StandardButton.Ok)
                                 mb.exec() 
@@ -417,8 +432,10 @@ class MainWindow(QMainWindow):
                         if part.geschlechtpruefungAktiv() and widget.getTyp() == class_widgets.WidgetTyp.RADIOBUTTON:
                             if widget.getTitel().lower() == "männlich" and self.geschlecht == "1":
                                 widget.getQt().setChecked(True)
+                                logger.logger.info("Radiobutton " + widget.getId() + "als männlich aktiviert")
                             elif widget.getTitel().lower() == "weiblich" and self.geschlecht == "2":
                                 widget.getQt().setChecked(True)
+                                logger.logger.info("Radiobutton " + widget.getId() + "als weiblich aktiviert")
                         partGridZeile += 1
                 if part.getTyp() == class_part.PartTyp.FRAME:
                     frame = QFrame()
@@ -580,14 +597,6 @@ class MainWindow(QMainWindow):
             hilfeMenu.addAction(hilfeEulaAction)
             hilfeMenu.addSeparator()
             hilfeMenu.addAction(hilfeLogExportieren)
-            
-            # Updateprüfung auf Github
-            try:
-                self.updatePruefung(meldungNurWennUpdateVerfuegbar=True)
-            except Exception as e:
-                mb = QMessageBox(QMessageBox.Icon.Warning, "Hinweis von ScoreGDT", "Updateprüfung nicht möglich.\nBitte überprüfen Sie Ihre Internetverbindung.", QMessageBox.StandardButton.Ok)
-                mb.exec()
-                logger.logger.warning("Updateprüfung nicht möglich: " + str(e))
         else:
             sys.exit()
 
