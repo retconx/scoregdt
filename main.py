@@ -140,6 +140,9 @@ class MainWindow(QMainWindow):
 
         ## Nachträglich hinzufefügte Options
         # 1.1.1
+        self.standardscore = ""
+        if self.configIni.has_option("Allgemein", "standardscore"):
+            self.standardscore = self.configIni["Allgemein"]["standardscore"]
         ## /Nachträglich hinzufefügte Options
 
         z = self.configIni["GDT"]["zeichensatz"]
@@ -195,11 +198,9 @@ class MainWindow(QMainWindow):
                 self.configIni["Allgemein"]["version"] = configIniBase["Allgemein"]["version"]
                 self.configIni["Allgemein"]["releasedatum"] = configIniBase["Allgemein"]["releasedatum"] 
                 ## config.ini aktualisieren
-                # 1.0.2 -> 1.1.0: ["Allgemein"]["archivierungspfad"] und ["Allgemein"]["vorherigedokuladen"] hinzufügen
-                # if not self.configIni.has_option("Allgemein", "archivierungspfad"):
-                #     self.configIni["Allgemein"]["archivierungspfad"] = ""
-                # if not self.configIni.has_option("Allgemein", "vorherigedokuladen"):
-                #     self.configIni["Allgemein"]["vorherigedokuladen"] = "False"
+                # 1.0.4 -> 1.0.5: ["Allgemein"]["standardscore"] hinzufügen
+                if not self.configIni.has_option("Allgemein", "standardscore"):
+                    self.configIni["Allgemein"]["standardscore"] = ""
                 ## /config.ini aktualisieren
 
                 with open(os.path.join(self.configPath, "config.ini"), "w") as configfile:
@@ -307,7 +308,7 @@ class MainWindow(QMainWindow):
             
             if self.root != None:
                 self.scoreRoot = self.root.find("score")
-                ds = dialogScoreAuswahl.ScoreAuswahl(self.root)
+                ds = dialogScoreAuswahl.ScoreAuswahl(self.root, self.standardscore)
                 if ds.exec() == 1:
                     self.scoreRoot = self.getScoreXml(ds.aktuellGewaehlterScore)
                     logger.logger.info("Score " + ds.aktuellGewaehlterScore + " ausgewählt")
@@ -932,7 +933,7 @@ class MainWindow(QMainWindow):
                 elif widget.getTyp() == class_widgets.WidgetTyp.CHECKBOX:
                     wert = "0"
                     if widget.getQt().isChecked():
-                        wert = widget.getWert()
+                        wert = widget.getWert().replace(".", ",").replace(",0", "")
                     test = gdt.GdtTest("ScoreGDT" + "_" + widget.getId(), widget.getTitel(), wert, widget.getEinheit()) # type: ignore
                 else:
                     test = gdt.GdtTest("ScoreGDT" + "_" + widget.getId(), widget.getTitel(), widget.getWert().replace(".", ",").replace(",0", ""), widget.getEinheit()) # type: ignore
@@ -1007,9 +1008,10 @@ class MainWindow(QMainWindow):
         os.execl(sys.executable, __file__, *sys.argv)
 
     def einstellungenAllgmein(self, checked, neustartfrage=False):
-        de = dialogEinstellungenAllgemein.EinstellungenAllgemein(self.configPath)
+        de = dialogEinstellungenAllgemein.EinstellungenAllgemein(self.configPath, self.root, self.standardscore)
         if de.exec() == 1:
             self.configIni["Allgemein"]["bereichsgrenzenerzwingen"] = str(de.checkBoxZahlengrenzenpruefung.isChecked())
+            self.configIni["Allgemein"]["standardscore"] = de.comboBoxScoreAuswahl.currentText()
             with open(os.path.join(self.configPath, "config.ini"), "w") as configfile:
                 self.configIni.write(configfile)
             if neustartfrage:

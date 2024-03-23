@@ -15,12 +15,13 @@ from PySide6.QtWidgets import (
 )
 
 class ScoreAuswahl(QDialog):
-    def __init__(self, root:ElementTree.Element):
+    def __init__(self, root:ElementTree.Element, standardScore:str):
         super().__init__()
         self.fontNormal = QFont()
         self.fontNormal.setBold(False)
         self.fontBold = QFont()
         self.fontBold.setBold(True)
+        
 
         self.setWindowTitle("Score auswählen")
         self.buttonBox = QDialogButtonBox(QDialogButtonBox.StandardButton.Ok | QDialogButtonBox.StandardButton.Cancel)
@@ -54,7 +55,6 @@ class ScoreAuswahl(QDialog):
         buttonGroup.setParent(self)
         self.radioButtonsScore = []
         radioButtonNr = 0
-        laengen = []
         for scoreGruppe in scoreGruppen:
             groupBoxScoreGruppe = QGroupBox(scoreGruppe)
             groupBoxScoreGruppe.setFont(self.fontBold)
@@ -63,6 +63,9 @@ class ScoreAuswahl(QDialog):
             for score in scoreGruppen[scoreGruppe]:
                 tempRadioButtonScore = QRadioButton(score[0])
                 tempRadioButtonScore.setFont(self.fontNormal)
+                if score[0] == standardScore:
+                    tempRadioButtonScore.setChecked(True)
+                    self.aktuellGewaehlterScore = score[0]
                 tempRadioButtonScore.clicked.connect(lambda checked=False, rn = radioButtonNr: self.radioButtonClicked(checked, rn))
                 buttonGroup.addButton(tempRadioButtonScore)
                 self.radioButtonsScore.append(tempRadioButtonScore)
@@ -80,9 +83,10 @@ class ScoreAuswahl(QDialog):
         for rb in self.radioButtonsScore:
             rb.setFixedWidth(200)
         
-        # Ersten Button aktivieren
-        self.radioButtonsScore[0].setChecked(True)
-        self.aktuellGewaehlterScore = self.radioButtonsScore[0].text()
+        # Ggf ersten Button aktivieren
+        if self.aktuellGewaehlterScore == "":
+            self.radioButtonsScore[0].setChecked(True)
+            self.aktuellGewaehlterScore = self.radioButtonsScore[0].text()
     
     def radioButtonClicked(self, checked, radioButtonNr):
         self.aktuellGewaehlterScore = self.radioButtonsScore[radioButtonNr].text()
