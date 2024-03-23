@@ -426,12 +426,16 @@ class MainWindow(QMainWindow):
                             widget.getQt().setText(str(getAktuellesAlterInJahren(geburtsdatumAlsDate)))
                             logger.logger.info("Alter aus GDT-Datei in Lineedit " + widget.getId() + " eingetragen")
                             if not widget.zahlengrenzregelnErfuellt():
-                                mb = QMessageBox(QMessageBox.Icon.Information, "Hinweis von ScoreGDT", "Das Alter liegt außerhalb der zulässigen Grenzen.", QMessageBox.StandardButton.Ok)
-                                mb.exec() 
-                                widget.getQt().setFocus()
+                                mb = QMessageBox(QMessageBox.Icon.Question, "Hinweis von ScoreGDT", "Das Alter liegt außerhalb der zulässigen Grenzen.\nSoll ScoreGDT neu gestartet werden?", QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No)
+                                mb.setDefaultButton(QMessageBox.StandardButton.Yes)
+                                mb.button(QMessageBox.StandardButton.Yes).setText("Ja")
+                                mb.button(QMessageBox.StandardButton.No).setText("Nein")
+                                if mb.exec() == QMessageBox.StandardButton.Yes:
+                                    os.execl(sys.executable, __file__, *sys.argv)
+                                else:
+                                    widget.getQt().setFocus()
                                 widget.getQt().selectAll()
                         elif widget.getTyp() == (class_widgets.WidgetTyp.CHECKBOX or widget.getTyp() == class_widgets.WidgetTyp.RADIOBUTTON) and widget.alterspruefungAktiv():
-                            print("sdf")
                             regel = str(getAktuellesAlterInJahren(geburtsdatumAlsDate)) + widget.getAltersregel()
                             widget.getQt().setChecked(self.regelIstErfuellt(regel))
                             widget.getQt().setChecked(self.regelIstErfuellt(regel))
