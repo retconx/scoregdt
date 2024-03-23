@@ -351,10 +351,13 @@ class MainWindow(QMainWindow):
                                 logger.logger.info("Combobox angelegt (Part-ID: " + partId + ", Widget-ID: " + widgetId + ") angelegt")
                             elif widgetTyp == class_widgets.WidgetTyp.CHECKBOX.value:
                                 checked = str(widgetElement.get("checked")) == "True"
-                                altersregel = str(widgetElement.get("altersregel"))
+                                altersregel = ""
+                                if widgetElement.get("altersregel") != None:
+                                    altersregel = str(widgetElement.get("altersregel"))
+                                geschlechtpruefung = str(widgetElement.get("geschlechtpruefung")) == "True"
                                 wertElement = widgetElement.find("wert")
                                 wert = str(wertElement.text) # type: ignore
-                                self.widgets.append(class_widgets.CheckBox(widgetId, partId, widgetTitel, widgetErklaerung, widgetEinheit, wert, checked, alterspruefung, altersregel))
+                                self.widgets.append(class_widgets.CheckBox(widgetId, partId, widgetTitel, widgetErklaerung, widgetEinheit, wert, checked, alterspruefung, altersregel, geschlechtpruefung))
                                 logger.logger.info("Checkbox angelegt (Part-ID: " + partId + ", Widget-ID: " + widgetId + ") angelegt")
                             elif widgetTyp == class_widgets.WidgetTyp.LINEEDIT.value:
                                 regexPattern = str(widgetElement.find("regex").text) # type: ignore
@@ -436,17 +439,30 @@ class MainWindow(QMainWindow):
                                     widget.getQt().setFocus()
                                 widget.getQt().selectAll()
                         elif widget.getTyp() == (class_widgets.WidgetTyp.CHECKBOX or widget.getTyp() == class_widgets.WidgetTyp.RADIOBUTTON) and widget.alterspruefungAktiv():
-                            regel = str(getAktuellesAlterInJahren(geburtsdatumAlsDate)) + widget.getAltersregel()
-                            widget.getQt().setChecked(self.regelIstErfuellt(regel))
-                            widget.getQt().setChecked(self.regelIstErfuellt(regel))
-                        # Prüfen, ob Geschlechtpart
+                            regelnErfuellt = True
+                            for regel in widget.getAltersregeln():
+                                tempRegel = str(getAktuellesAlterInJahren(geburtsdatumAlsDate)) + regel
+                                if not self.regelIstErfuellt(tempRegel):
+                                    regelnErfuellt = False
+                                    break
+                            widget.getQt().setChecked(regelnErfuellt)
+                        # Prüfen, ob Geschlechtpart (Groupbox mit 2 Radiobuttons)
                         if part.geschlechtpruefungAktiv() and widget.getTyp() == class_widgets.WidgetTyp.RADIOBUTTON:
-                            if widget.getTitel().lower() == "männlich" and self.geschlecht == "1":
+                            if ("männlich" in widget.getTitel().lower() or "männlich" in widget.getErklaerung().lower()) and self.geschlecht == "1":
                                 widget.getQt().setChecked(True)
                                 logger.logger.info("Radiobutton " + widget.getId() + "als männlich aktiviert")
-                            elif widget.getTitel().lower() == "weiblich" and self.geschlecht == "2":
+                            elif ("weiblich" in widget.getTitel().lower() or "weiblich" in widget.getErklaerung().lower()) and self.geschlecht == "2":
                                 widget.getQt().setChecked(True)
                                 logger.logger.info("Radiobutton " + widget.getId() + "als weiblich aktiviert")
+                        # Prüfen, ob Geschlechtwidget (Checkbox)
+                        if widget.getTyp() == class_widgets.WidgetTyp.CHECKBOX and widget.geschlechtpruefungAktiv():
+                            if ("männlich" in widget.getTitel().lower() or "männlich" in widget.getErklaerung().lower()) and self.geschlecht == "1":
+                                widget.getQt().setChecked(True)
+                                logger.logger.info("Checkbox " + widget.getId() + "als männlich aktiviert")
+                            elif ("weiblich" in widget.getTitel().lower() or "weiblich" in widget.getErklaerung().lower()) and self.geschlecht == "2":
+                                widget.getQt().setChecked(True)
+                                logger.logger.info("Checkbox " + widget.getId() + "als weiblich aktiviert")
+
                         partGridZeile += 1
                 if part.getTyp() == class_part.PartTyp.FRAME:
                     frame = QFrame()

@@ -15,7 +15,7 @@
                 <wert>1</wert>
                 <erklaerung>Blutdruck systolisch &#x3c; 90 oder diastolisch &#x3c; 60 mmHg</erklaerung>
             </widget>
-            <widget id="103" typ="CheckBox" titel="65" alterspruefung="True" altersregel ="GROESSERALS65">
+            <widget id="103" typ="CheckBox" titel="65" alterspruefung="True" altersregel="GROESSERGLEICHALS65">
                 <wert>1</wert>
                 <erklaerung>Alter &#x2265; 65 Jahre</erklaerung>
             </widget>
@@ -125,7 +125,7 @@
             <widget id="105" typ="CheckBox" titel="Labile INR-Einstellung">
                 <wert>1</wert>
             </widget>
-            <widget id="106" typ="CheckBox" titel="Elderly">
+            <widget id="106" typ="CheckBox" titel="Elderly" alterspruefung="True" altersregel="GROESSERGLEICHALS65">
                 <wert>1</wert>
                 <erklaerung>Alter &#x3e; 65 Jahre</erklaerung>
             </widget>
@@ -163,7 +163,7 @@
             <widget id="101" typ="CheckBox" titel="Hypertension">
                 <wert>1</wert>
             </widget>
-            <widget id="102" typ="CheckBox" titel="Age">
+            <widget id="102" typ="CheckBox" titel="Age" alterspruefung="True" altersregel="GROESSERGLEICHALS75">
                 <wert>2</wert>
                 <erklaerung>Alter &#x3e; 75 Jahre</erklaerung>
             </widget>
@@ -178,11 +178,11 @@
                 <wert>1</wert>
                 <erklaerung>pAVK, Herzinfarkt, schwere Aortensklerose</erklaerung>
             </widget>
-            <widget id="106" typ="CheckBox" titel="Age">
+            <widget id="106" typ="CheckBox" titel="Age" alterspruefung="True" altersregel="GROESSERGLEICHALS65 UND KLEINERALS75">
                 <wert>1</wert>
                 <erklaerung>Alter 65-74 Jahre</erklaerung>
             </widget>
-            <widget id="107" typ="CheckBox" titel="Sex category">
+            <widget id="107" typ="CheckBox" titel="Sex category" geschlechtpruefung="True">
                 <wert>1</wert>
                 <erklaerung>Weibliches Geschlecht</erklaerung>
             </widget>

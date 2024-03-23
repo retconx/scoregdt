@@ -89,7 +89,7 @@ class ComboBox(Widget):
         return self.typ
     
 class CheckBox(Widget):
-    def __init__(self, id, partId:str, titel:str, erklaerung:str, einheit:str, wert:str, checked:bool, alterspruefung:bool, altersregel:str):
+    def __init__(self, id, partId:str, titel:str, erklaerung:str, einheit:str, wert:str, checked:bool, alterspruefung:bool, altersregel:str, geschlechtpruefung:bool):
         super().__init__(id, partId, titel, erklaerung, einheit, alterspruefung)
         self.wert = wert
         self.checked = checked
@@ -97,6 +97,7 @@ class CheckBox(Widget):
         self.checkbox.setChecked(self.checked == True)
         self.typ = WidgetTyp.CHECKBOX
         self.altersregel = altersregel
+        self.geschlechtpruefung = geschlechtpruefung
         
     def getQt(self):
         return self.checkbox
@@ -110,8 +111,13 @@ class CheckBox(Widget):
     def isChecked(self):
         return self.checkbox.isChecked()
     
-    def getAltersregel(self):
-        return self.altersregel
+    def getAltersregeln(self):
+        # UND entfernrn
+        regeln = self.altersregel.split("UND")
+        return regeln
+    
+    def geschlechtpruefungAktiv(self):
+        return self.geschlechtpruefung
     
 class LineEdit(Widget):
     def __init__(self, id, partId:str, titel:str, erklaerung:str, einheit:str, regexPattern:str, alterspruefung:bool):
@@ -198,8 +204,10 @@ class RadioButton(Widget):
     def isChecked(self):
         return self.radiobutton.isChecked()
     
-    def getAltersregel(self):
-        return self.altersregel
+    def getAltersregeln(self):
+        # UND entfernrn
+        regeln = self.altersregel.split("UND")
+        return regeln
 
 @staticmethod
 def getNaechstliegendeZahl(zahlenliste:list, zahl:float):
