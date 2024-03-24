@@ -14,7 +14,7 @@ class WidgetTyp(Enum):
     LINEEDIT = "LineEdit"
     RADIOBUTTON = "RadioButton"
 
-regexZahl = r"^\d+([.,]\d)?$"
+regexZahl = r"^-?\d+([.,]\d)?$"
 
 class Widget():
     # def __init__(self, id:str, partId:str, titel:str, erklaerung:str, einheit:str, bisherigesRoot:ElementTree.Element):
@@ -158,7 +158,7 @@ class LineEdit(Widget):
         regelnErfuellt = False
         for zahlengrenze in self.zahlengrenzen:
             if re.match(regexZahl, self.lineedit.text()) != None:
-                wert = float(self.lineedit.text())
+                wert = float(self.lineedit.text().replace(",", "."))
                 if self.zahlengrenzen[zahlengrenze] == class_enums.Regelarten.KLEINERALS:
                     regelnErfuellt = wert < zahlengrenze
                 elif self.zahlengrenzen[zahlengrenze] == class_enums.Regelarten.KLEINERGLEICHALS:

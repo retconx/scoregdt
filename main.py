@@ -762,7 +762,7 @@ class MainWindow(QMainWindow):
         Parameter: 
             regel im Format z. B. xKLEINERALSy:str
         """
-        regexZahl = r"^\d+([.,]\d)?$"
+        regexZahl = r"^-?\d+([.,]\d)?$"
         regelErfuellt = False
         regel = regel.replace(" ", "")
         regelMitWerten = self.ersetzeIdVariablen(regel)
@@ -1047,8 +1047,6 @@ class MainWindow(QMainWindow):
                             break
                     logger.logger.info("Therapieindikationsschwelle: " + str(therapieindikationsschwelleProzent) + "%")
                     self.lineEditScoreErgebnis.setText(str(therapieindikationsschwelleProzent))
-                        
-
             except Exception as e:
                 logger.logger.error("Fehler bei der Score-Berechung: " + str(e))
                 mb = QMessageBox(QMessageBox.Icon.Warning, "Hinweis von ScoreGDT", "Fehler bei der Score-Berechung: " + str(e), QMessageBox.StandardButton.Ok)

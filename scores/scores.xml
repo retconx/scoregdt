@@ -7546,12 +7546,14 @@
             </widget>
         </part>
         <part typ="GroupBox" id="8" titel="DXA" zeile="1" spalte="3">
-            <widget id = "150" typ="LineEdit" titel="T-Score Gesamthüfte">
-                <regex>^-\d+([,.]\d)?$</regex>
+            <widget id="150" typ="LineEdit" titel="T-Score Gesamthüfte [-4.0-0]">
+                <regex>^0$|^-\d+([,.]\d)?$</regex>
+                <zahlengrenze regelart="KLEINERGLEICHALS">0</zahlengrenze>
+                <zahlengrenze regelart="GROESSERGLEICHALS">-4</zahlengrenze>
             </widget>
         </part>
         <part typ="GroupBox" id="9" titel="Persönliche Daten" zeile="1" spalte="4">
-            <widget id = "151" typ="LineEdit" titel="Alter [50-90 Jahre]" alterspruefung="True">
+            <widget id="151" typ="LineEdit" titel="Alter [50-90 Jahre]" alterspruefung="True">
                 <regex>^\d+$</regex>
                 <zahlengrenze regelart="GROESSERGLEICHALS">50</zahlengrenze>
                 <zahlengrenze regelart="KLEINERGLEICHALS">90</zahlengrenze>
@@ -7564,6 +7566,158 @@
         <berechnung>
             <formel typ="script">dvo2023</formel>
             <ergebniseinheit>%</ergebniseinheit>
+        </berechnung>
+    </score>
+    <score name="qSofa" gruppe="Infektiologie">
+        <information>Abschätzung des Risikos für die Entwicklung einer Sepsis</information>
+        <part typ="Frame" id="0" titel="" zeile="0" spalte="0">
+            <widget id="100" typ="CheckBox" titel="Atemfrequenz &#x3e; 22/min">
+                <wert>1</wert>
+            </widget>
+            <widget id="101" typ="CheckBox" titel="Verändertes Bewusstsein">
+                <wert>1</wert>
+                <erklaerung>Glasgow Coma Scale &#x3c; 15</erklaerung>
+            </widget>
+			<widget id="102" typ="CheckBox" titel="Blood pressure">
+                <wert>1</wert>
+                <erklaerung>Blutdruck systolisch &#x2264; 100 mmHg</erklaerung>
+            </widget>
+        </part>
+        <berechnung>
+            <formel>
+                <operation>$id{100} PLUS $id{101}</operation>
+                <operation>PLUS $id{102}</operation>
+            </formel>
+            <ergebniseinheit>Punkte</ergebniseinheit>
+            <variablen></variablen>
+        </berechnung>
+    </score>
+    <score name="Epworth Sleepiness Scale (ESS)" gruppe="Neurologie">
+        <information>Beurteilung der Tagesschläfrigkeit</information>
+        <part id="0" typ="GroupBox" titel="Einschlafen beim Sitzen oder Lesen" zeile="0" spalte="0">
+            <widget id="100" typ="RadioButton" titel="Unmöglich" checked="True">
+                <wert>0</wert>
+            </widget>
+            <widget id="101" typ="RadioButton" titel="Kaum möglich">
+                <wert>1</wert>
+            </widget>
+            <widget id="102" typ="RadioButton" titel="Gut möglich">
+                <wert>2</wert>
+            </widget>
+            <widget id="103" typ="RadioButton" titel="Wahrscheinlich">
+                <wert>3</wert>
+            </widget>
+        </part>
+        <part id="1" typ="GroupBox" titel="Einschlafen vor dem Fernseher" zeile="0" spalte="1">
+            <widget id="104" typ="RadioButton" titel="Unmöglich" checked="True">
+                <wert>0</wert>
+            </widget>
+            <widget id="105" typ="RadioButton" titel="Kaum möglich">
+                <wert>1</wert>
+            </widget>
+            <widget id="106" typ="RadioButton" titel="Gut möglich">
+                <wert>2</wert>
+            </widget>
+            <widget id="107" typ="RadioButton" titel="Wahrscheinlich">
+                <wert>3</wert>
+            </widget>
+        </part>
+        <part id="2" typ="GroupBox" titel="Einschlafen im Kino/Theater o. ä." zeile="0" spalte="2">
+            <widget id="108" typ="RadioButton" titel="Unmöglich" checked="True">
+                <wert>0</wert>
+            </widget>
+            <widget id="109" typ="RadioButton" titel="Kaum möglich">
+                <wert>1</wert>
+            </widget>
+            <widget id="110" typ="RadioButton" titel="Gut möglich">
+                <wert>2</wert>
+            </widget>
+            <widget id="111" typ="RadioButton" titel="Wahrscheinlich">
+                <wert>3</wert>
+            </widget>
+        </part>
+        <part id="3" typ="GroupBox" titel="Einschlafen als BeifahrerIn im Auto" zeile="0" spalte="3">
+            <widget id="112" typ="RadioButton" titel="Unmöglich" checked="True">
+                <wert>0</wert>
+            </widget>
+            <widget id="113" typ="RadioButton" titel="Kaum möglich">
+                <wert>1</wert>
+            </widget>
+            <widget id="114" typ="RadioButton" titel="Gut möglich">
+                <wert>2</wert>
+            </widget>
+            <widget id="115" typ="RadioButton" titel="Wahrscheinlich">
+                <wert>3</wert>
+            </widget>
+        </part>
+        <part id="4" typ="GroupBox" titel="Einschlafen beim Hinlegen mittags" zeile="1" spalte="0">
+            <widget id="116" typ="RadioButton" titel="Unmöglich" checked="True">
+                <wert>0</wert>
+            </widget>
+            <widget id="117" typ="RadioButton" titel="Kaum möglich">
+                <wert>1</wert>
+            </widget>
+            <widget id="118" typ="RadioButton" titel="Gut möglich">
+                <wert>2</wert>
+            </widget>
+            <widget id="119" typ="RadioButton" titel="Wahrscheinlich">
+                <wert>3</wert>
+            </widget>
+        </part>
+        <part id="5" typ="GroupBox" titel="Einschlafen im Sitzen beim Gespräch" zeile="1" spalte="1">
+            <widget id="120" typ="RadioButton" titel="Unmöglich" checked="True">
+                <wert>0</wert>
+            </widget>
+            <widget id="121" typ="RadioButton" titel="Kaum möglich">
+                <wert>1</wert>
+            </widget>
+            <widget id="122" typ="RadioButton" titel="Gut möglich">
+                <wert>2</wert>
+            </widget>
+            <widget id="123" typ="RadioButton" titel="Wahrscheinlich">
+                <wert>3</wert>
+            </widget>
+        </part>
+        <part id="6" typ="GroupBox" titel="Einschlafen im Sitzen nach dem Essen" zeile="1" spalte="2">
+            <widget id="124" typ="RadioButton" titel="Unmöglich" checked="True">
+                <wert>0</wert>
+            </widget>
+            <widget id="125" typ="RadioButton" titel="Kaum möglich">
+                <wert>1</wert>
+            </widget>
+            <widget id="126" typ="RadioButton" titel="Gut möglich">
+                <wert>2</wert>
+            </widget>
+            <widget id="127" typ="RadioButton" titel="Wahrscheinlich">
+                <wert>3</wert>
+            </widget>
+        </part>
+        <part id="7" typ="GroupBox" titel="Einschlafen im Auto bei kurzem Stop für Minuten" zeile="1" spalte="3">
+            <widget id="128" typ="RadioButton" titel="Unmöglich" checked="True">
+                <wert>0</wert>
+            </widget>
+            <widget id="129" typ="RadioButton" titel="Kaum möglich">
+                <wert>1</wert>
+            </widget>
+            <widget id="130" typ="RadioButton" titel="Gut möglich">
+                <wert>2</wert>
+            </widget>
+            <widget id="131" typ="RadioButton" titel="Wahrscheinlich">
+                <wert>3</wert>
+            </widget>
+        </part>
+        <berechnung>
+            <formel>
+                <operation>$id{100} PLUS $id{104}</operation>
+                <operation>PLUS $id{108}</operation>
+                <operation>PLUS $id{112}</operation>
+                <operation>PLUS $id{116}</operation>
+                <operation>PLUS $id{120}</operation>
+                <operation>PLUS $id{124}</operation>
+                <operation>PLUS $id{128}</operation>
+            </formel>
+            <ergebniseinheit>Punkte</ergebniseinheit>
+            <variablen></variablen>
         </berechnung>
     </score>
 </root>
