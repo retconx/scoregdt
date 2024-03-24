@@ -1076,31 +1076,35 @@ class MainWindow(QMainWindow):
             gd.addZeile("6200", untersuchungsdatum)
             gd.addZeile("6201", uhrzeit)
             gd.addZeile("8402", "ALLG00")
-            for widget in self.widgets:
-                test = None
-                if widget.getTyp() == class_widgets.WidgetTyp.LINEEDIT:
-                    test = gdt.GdtTest("ScoreGDT" + "_" + widget.getId(), widget.getTitel(), widget.getWertOhneFaktor().replace(".", ",").replace(",0", ""), widget.getEinheit()) # type: ignore
-                elif widget.getTyp() == class_widgets.WidgetTyp.RADIOBUTTON:
-                    if widget.getQt().isChecked():
-                        partId = widget.getPartId()
-                        part = self.getPart(partId)
-                        test = gdt.GdtTest("ScoreGDT" + "_" + widget.getId(), part.getTitel(), widget.getTitel(), widget.getEinheit()) # type: ignore
-                elif widget.getTyp() == class_widgets.WidgetTyp.COMBOBOX:
-                    test = gdt.GdtTest("ScoreGDT" + "_" + widget.getId(), widget.getTitel(), widget.getItemText(widget.getQt().currentIndex()), widget.getEinheit()) # type: ignore
-                elif widget.getTyp() == class_widgets.WidgetTyp.CHECKBOX:
-                    wert = "0"
-                    if widget.getQt().isChecked():
-                        wert = widget.getWert().replace(".", ",").replace(",0", "")
-                    test = gdt.GdtTest("ScoreGDT" + "_" + widget.getId(), widget.getTitel().encode(encoding="cp1252", errors="backslashreplace"), wert, widget.getEinheit()) # type: ignore
-                    print(widget.getTitel())
-                else:
-                    test = gdt.GdtTest("ScoreGDT" + "_" + widget.getId(), widget.getTitel(), widget.getWert().replace(".", ",").replace(",0", ""), widget.getEinheit()) # type: ignore
-                if test != None:
-                    gd.addTest(test)
+            # Tests
+            if str(self.scoreRoot.get("keineTestuebermittlung")) != "True": # type: ignore
+                for widget in self.widgets:
+                    test = None
+                    if widget.getTyp() == class_widgets.WidgetTyp.LINEEDIT:
+                        test = gdt.GdtTest("ScoreGDT" + "_" + widget.getId(), widget.getTitel(), widget.getWertOhneFaktor().replace(".", ",").replace(",0", ""), widget.getEinheit()) # type: ignore
+                    elif widget.getTyp() == class_widgets.WidgetTyp.RADIOBUTTON:
+                        if widget.getQt().isChecked():
+                            partId = widget.getPartId()
+                            part = self.getPart(partId)
+                            test = gdt.GdtTest("ScoreGDT" + "_" + widget.getId(), part.getTitel(), widget.getTitel(), widget.getEinheit()) # type: ignore
+                    elif widget.getTyp() == class_widgets.WidgetTyp.COMBOBOX:
+                        test = gdt.GdtTest("ScoreGDT" + "_" + widget.getId(), widget.getTitel(), widget.getItemText(widget.getQt().currentIndex()), widget.getEinheit()) # type: ignore
+                    elif widget.getTyp() == class_widgets.WidgetTyp.CHECKBOX:
+                        wert = "0"
+                        if widget.getQt().isChecked():
+                            wert = widget.getWert().replace(".", ",").replace(",0", "")
+                        test = gdt.GdtTest("ScoreGDT" + "_" + widget.getId(), widget.getTitel(), wert, widget.getEinheit()) # type: ignore
+                    else:
+                        test = gdt.GdtTest("ScoreGDT" + "_" + widget.getId(), widget.getTitel(), widget.getWert().replace(".", ",").replace(",0", ""), widget.getEinheit()) # type: ignore
+                    if test != None:
+                        gd.addTest(test)
             gdtname = str(self.scoreRoot.get("name")) # type: ignore
             if self.scoreRoot.get("gdtname") != None: # type: ignore
                 gdtname = str(self.scoreRoot.get("gdtname")) # type: ignore
-            befund = gdtname + ": " +  self.lineEditScoreErgebnis.text() + " " + self.labelScoreErgebnisEinheit.text() # type: ignore
+            leerzeichenVorEinheit = " "
+            if self.labelScoreErgebnisEinheit.text() == "%":
+                leerzeichenVorEinheit = ""
+            befund = gdtname + ": " +  self.lineEditScoreErgebnis.text() + leerzeichenVorEinheit + self.labelScoreErgebnisEinheit.text() # type: ignore
             gd.addZeile("6220", befund)
             if self.erfuellteAuswertungsregel != -1:
                 auswertung = "Beurteilung: " + self.labelBeschreibungen[self.erfuellteAuswertungsregel].text()
