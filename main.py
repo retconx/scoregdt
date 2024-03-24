@@ -383,14 +383,17 @@ class MainWindow(QMainWindow):
             mainLayoutV = QVBoxLayout()
             mainLayoutG = QGridLayout()
             # Patientendaten
-            groupboxPatientendaten = QGroupBox("PatientIn")
+            patient = "Patient"
+            if self.geschlecht == "2":
+                patient = "Patientin"
+            groupboxPatientendaten = QGroupBox(patient)
             groupboxPatientendatenLayoutG = QGridLayout()
             self.labelPseudolizenz = QLabel("+++ Pseudolizenz für Test-/ Präsentationszwecke +++")
             self.labelPseudolizenz.setStyleSheet("color:rgb(200,0,0);font-style:italic")
             labelName = QLabel("Name: " + self.name)
             labelPatId = QLabel("ID: " + self.patId)
-            geburtsdatumAlsDate = datetime.date(int(self.geburtsdatum[6:]), int(self.geburtsdatum[3:5]), int(self.geburtsdatum[:2]))
-            labelAlter = QLabel("Alter: " + str(getAktuellesAlterInJahren(geburtsdatumAlsDate)) + " Jahre")
+            self.geburtsdatumAlsDate = datetime.date(int(self.geburtsdatum[6:]), int(self.geburtsdatum[3:5]), int(self.geburtsdatum[:2]))
+            labelAlter = QLabel("Alter: " + str(getAktuellesAlterInJahren(self.geburtsdatumAlsDate)) + " Jahre")
             labelGeburtsdatum = QLabel("Geburtsdatum: " + self.geburtsdatum)
             groupboxPatientendatenLayoutG.addWidget(labelName, 0, 0)
             groupboxPatientendatenLayoutG.addWidget(labelAlter, 0, 1)
@@ -418,15 +421,17 @@ class MainWindow(QMainWindow):
                         widgetWidget = widget.getQt()
                         widgetWidget.setFont(self.fontNormal)
                         partLayout.addWidget(widgetWidget, partGridZeile, 1)
+                        einheitUndErklärung = ""
+                        if widget.getEinheit() != "":
+                            einheitUndErklärung = widget.getEinheit() + " "
                         if widget.getErklaerung() != "":
-                            labelErklaerung = QLabel("(" + widget.getErklaerung() + ")")
-                            labelErklaerung.setFont(self.fontNormal)
-                            partLayout.addWidget(labelErklaerung, partGridZeile, 2)
-                        else:
-                            partLayout.addWidget(QLabel(), partGridZeile, 2)
+                            einheitUndErklärung += "(" + widget.getErklaerung() + ")"
+                        labelEinheitUndErklaerung = QLabel(einheitUndErklärung)
+                        labelEinheitUndErklaerung.setFont(self.fontNormal)
+                        partLayout.addWidget(labelEinheitUndErklaerung, partGridZeile, 2)
                         # Prüfen, ob Alterstextfeld
                         if widget.getTyp() == class_widgets.WidgetTyp.LINEEDIT and  widget.alterspruefungAktiv():
-                            widget.getQt().setText(str(getAktuellesAlterInJahren(geburtsdatumAlsDate)))
+                            widget.getQt().setText(str(getAktuellesAlterInJahren(self.geburtsdatumAlsDate)))
                             logger.logger.info("Alter aus GDT-Datei in Lineedit " + widget.getId() + " eingetragen")
                             if not widget.zahlengrenzregelnErfuellt():
                                 mb = QMessageBox(QMessageBox.Icon.Question, "Hinweis von ScoreGDT", "Das Alter liegt außerhalb der zulässigen Grenzen.\nSoll ScoreGDT neu gestartet werden?", QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No)
@@ -441,7 +446,7 @@ class MainWindow(QMainWindow):
                         elif widget.getTyp() == (class_widgets.WidgetTyp.CHECKBOX or widget.getTyp() == class_widgets.WidgetTyp.RADIOBUTTON) and widget.alterspruefungAktiv():
                             regelnErfuellt = True
                             for regel in widget.getAltersregeln():
-                                tempRegel = str(getAktuellesAlterInJahren(geburtsdatumAlsDate)) + regel
+                                tempRegel = str(getAktuellesAlterInJahren(self.geburtsdatumAlsDate)) + regel
                                 if not self.regelIstErfuellt(tempRegel):
                                     regelnErfuellt = False
                                     break
@@ -838,80 +843,212 @@ class MainWindow(QMainWindow):
                 # $var{...}-Werte auslesen
                 berechnungElement = self.scoreRoot.find("berechnung") # type: ignore
                 formelElement = berechnungElement.find("formel") # type: ignore
-                operationen = []
-                for operationElement in formelElement.findall("operation"): # type: ignore
-                    operationen.append(str(operationElement.text))
-                variablenElement = berechnungElement.find("variablen") # type: ignore
-                variablen = {}
-                for variableElement in variablenElement.findall("variable"): # type: ignore
-                    variablenname = str(variableElement.get("name"))
-                    # Ohne Bedingung
-                    if variableElement.find("bedingung") == None:
-                        variablen[variablenname] = str(self.berechnung(self.ersetzeIdVariablen(str(variableElement.text))))
-                    # Mit Bedinung(en)
-                    else: 
-                        for bedingungElement in variableElement.findall("bedingung"):
-                            regelErfuellt = True
-                            for regelElement in bedingungElement.findall("regel"):
-                                regel = str(regelElement.text)
-                                if not self.regelIstErfuellt(regel):
-                                    regelErfuellt = False
-                            if regelErfuellt:
-                                logger.logger.info("Regel " + regel + " erfüllt")
-                                variablen[variablenname] = str(bedingungElement.find("wert").text) # type: ignore
-                # $var{...}-Variablen durch Werte ersetzen
-                patternVar = r"\$var{[^{}]+}"
-                variablenMitNichtErfuelltenRegeln = []
-                ersteOperation = True
-                tempErgebnis = 0
-                for operation in operationen:
-                    operationMitZahl = operation
-                    if not ersteOperation:
-                        operationMitZahl = str(tempErgebnis) + " " + operationMitZahl
-                        ersteOperation = False
-                    varVariablen = re.findall(patternVar, operation)
-                    for varVariable in varVariablen:
-                        varName = varVariable[5:-1]
-                        if varName in variablen:
-                            operationMitZahl = operationMitZahl.replace(varVariable, variablen[varName])
-                        else:
-                            logger.logger.warning("Variablenname " + varName + " nicht ausgelesen")
-                            variablenMitNichtErfuelltenRegeln.append(varName)
-                    operationMitZahl = self.ersetzeIdVariablen(operationMitZahl)
-                    tempErgebnis = self.berechnung(operationMitZahl)
-                    ersteOperation = False
-                    logger.logger.info("Teilergebnis: " + str(self.berechnung(operationMitZahl)))
-                if len(variablenMitNichtErfuelltenRegeln) == 0:
-                    self.lineEditScoreErgebnis.setText(str(tempErgebnis).replace(".", ","))
-                    logger.logger.info("Endergebnis: " + str(tempErgebnis).replace(".", ","))
-                    # Auswertung
-                    self.erfuellteAuswertungsregel = -1
-                    auswertungElement = self.scoreRoot.find("auswertung") # type: ignore
-                    if auswertungElement != None:
-                        ergebnis = str(tempErgebnis)
-                        beurteilungNr = 0
-                        for beurteilungElement in auswertungElement.findall("beurteilung"):
-                            regelErfuellt = True
-                            for regelElement in beurteilungElement.findall("regel"):
-                                regel = ergebnis + str(regelElement.text)
-                                if not self.regelIstErfuellt(regel):
-                                    regelErfuellt = False
-                                    break
+                self.erfuellteAuswertungsregel = -1
+                if str(formelElement.get("typ")) != "script": # type: ignore        
+                    operationen = []
+                    for operationElement in formelElement.findall("operation"): # type: ignore
+                        operationen.append(str(operationElement.text))
+                    variablenElement = berechnungElement.find("variablen") # type: ignore
+                    variablen = {}
+                    for variableElement in variablenElement.findall("variable"): # type: ignore
+                        variablenname = str(variableElement.get("name"))
+                        # Ohne Bedingung
+                        if variableElement.find("bedingung") == None:
+                            variablen[variablenname] = str(self.berechnung(self.ersetzeIdVariablen(str(variableElement.text))))
+                        # Mit Bedinung(en)
+                        else: 
+                            for bedingungElement in variableElement.findall("bedingung"):
+                                regelErfuellt = True
+                                for regelElement in bedingungElement.findall("regel"):
+                                    regel = str(regelElement.text)
+                                    if not self.regelIstErfuellt(regel):
+                                        regelErfuellt = False
                                 if regelErfuellt:
-                                    self.erfuellteAuswertungsregel = beurteilungNr
-                                    break
-                            beurteilungNr += 1
-                        if self.erfuellteAuswertungsregel != -1:
-                            for i in range(len(self.labelErgebnisbereiche)):
-                                if self.erfuellteAuswertungsregel == i:
-                                    self.labelErgebnisbereiche[i].setStyleSheet("color:rgb(0,150,0)")
-                                    self.labelBeschreibungen[i].setStyleSheet("color:rgb(0,150,0)")
-                                else:
-                                    self.labelErgebnisbereiche[i].setStyleSheet("color:rgb(0,0,100)")
-                                    self.labelBeschreibungen[i].setStyleSheet("color:rgb(0,0,100)")
-                else:
-                    mb = QMessageBox(QMessageBox.Icon.Warning, "Hinweis von ScoreGDT", "Der Score kann nicht berechnet werden, da für die folgenden Variablen keine Regel zutrifft:\n- " + str.join("\n- ", variablenMitNichtErfuelltenRegeln), QMessageBox.StandardButton.Ok)
-                    mb.exec()
+                                    logger.logger.info("Regel " + regel + " erfüllt")
+                                    variablen[variablenname] = str(bedingungElement.find("wert").text) # type: ignore
+                    # $var{...}-Variablen durch Werte ersetzen
+                    patternVar = r"\$var{[^{}]+}"
+                    variablenMitNichtErfuelltenRegeln = []
+                    ersteOperation = True
+                    tempErgebnis = 0
+                    for operation in operationen:
+                        operationMitZahl = operation
+                        if not ersteOperation:
+                            operationMitZahl = str(tempErgebnis) + " " + operationMitZahl
+                            ersteOperation = False
+                        varVariablen = re.findall(patternVar, operation)
+                        for varVariable in varVariablen:
+                            varName = varVariable[5:-1]
+                            if varName in variablen:
+                                operationMitZahl = operationMitZahl.replace(varVariable, variablen[varName])
+                            else:
+                                logger.logger.warning("Variablenname " + varName + " nicht ausgelesen")
+                                variablenMitNichtErfuelltenRegeln.append(varName)
+                        operationMitZahl = self.ersetzeIdVariablen(operationMitZahl)
+                        tempErgebnis = self.berechnung(operationMitZahl)
+                        ersteOperation = False
+                        logger.logger.info("Teilergebnis: " + str(self.berechnung(operationMitZahl)))
+                    if len(variablenMitNichtErfuelltenRegeln) == 0:
+                        self.lineEditScoreErgebnis.setText(str(tempErgebnis).replace(".", ","))
+                        logger.logger.info("Endergebnis: " + str(tempErgebnis).replace(".", ","))
+                        # Auswertung
+                        auswertungElement = self.scoreRoot.find("auswertung") # type: ignore
+                        if auswertungElement != None:
+                            ergebnis = str(tempErgebnis)
+                            beurteilungNr = 0
+                            for beurteilungElement in auswertungElement.findall("beurteilung"):
+                                regelErfuellt = True
+                                for regelElement in beurteilungElement.findall("regel"):
+                                    regel = ergebnis + str(regelElement.text)
+                                    if not self.regelIstErfuellt(regel):
+                                        regelErfuellt = False
+                                        break
+                                    if regelErfuellt:
+                                        self.erfuellteAuswertungsregel = beurteilungNr
+                                        break
+                                beurteilungNr += 1
+                            if self.erfuellteAuswertungsregel != -1:
+                                for i in range(len(self.labelErgebnisbereiche)):
+                                    if self.erfuellteAuswertungsregel == i:
+                                        self.labelErgebnisbereiche[i].setStyleSheet("color:rgb(0,150,0)")
+                                        self.labelBeschreibungen[i].setStyleSheet("color:rgb(0,150,0)")
+                                    else:
+                                        self.labelErgebnisbereiche[i].setStyleSheet("color:rgb(0,0,100)")
+                                        self.labelBeschreibungen[i].setStyleSheet("color:rgb(0,0,100)")
+                    else:
+                        mb = QMessageBox(QMessageBox.Icon.Warning, "Hinweis von ScoreGDT", "Der Score kann nicht berechnet werden, da für die folgenden Variablen keine Regel zutrifft:\n- " + str.join("\n- ", variablenMitNichtErfuelltenRegeln), QMessageBox.StandardButton.Ok)
+                        mb.exec()
+                elif str(formelElement.text) == "dvo2023": # type: ignore
+                    logger.logger.info("dvo2023 gewählt")
+                    risikofaktorBezeichnungen = ["Wirbelfrakturen", "Andere Frakturen", "Allgemeine Risikofaktoren", "Rheumatologie und Glukokortikoide", "Sturzrisiko assoziierte Risikofaktoren/Geriatrie", "Endokrinologie", "Weitere Erkraknungen/Medikationen", "TBS"]
+                    indikationstabelleFrau3 = {
+                        0.0: [13, 8, 6, 4, 3, 2.3, 1.8, 1.5, 1.2],
+                        0.5: [9, 6, 4, 3, 2.2, 1.7, 1.3, 1.1, -3],
+                        1.0: [7, 5, 3, 2.3, 1.6, 1.2, -3, -3, -5],
+                        1.5: [5, 3.5, 2.4, 1.7, 1.2, -3, -3, -5, -5],
+                        2.0: [4, 2.6, 1.8, 1.2, -3, -3, -5, -5, -10],
+                        2.5: [3, 1.9, 1.3, -3, -3, -5, -5, -10, -10],
+                        3.0: [2.1, 1.4, -3, -5, -5, -5, -10, -10, -10],
+                        3.5: [1.5, -3, -5, -5, -10, -10, -10, -10, -10],
+                        4.0: [-3, -5, -5, -10, -10, -10, -10, -10, -10]
+                    }
+                    indikationstabelleFrau5 = {
+                        0.0: [21, 14, 10, 7, 5, 4, 3, 2.4, 2],
+                        0.5: [16, 10, 7, 5, 4, 3, 2.2, 1.8, 1.4],
+                        1.0: [12, 8, 5, 4, 2.7, 2.1, 1.6, 1.3, -5],
+                        1.5: [9, 6, 4, 3, 2, 1.5, 1.2, -5, -5],
+                        2.0: [6, 4, 3, 2.1, 1.5, 1.1, -5, -5, -10],
+                        2.5: [5, 3, 2.2, 1.5, 1.1, -5, -5, -10, -10],
+                        3.0: [3.5, 2.3, 1.6, -5, -5, -5, -10, -10, -10],
+                        3.5: [2.5, 1.7, -5, -5, -10, -10, -10, -10, -10],
+                        4.0: [2, -5, -5, -10, -10, -10, -10, -10, -10]
+                    }
+                    indikationstabelleFrau10 = {
+                        0.0: [42, 28, 19, 14, 10, 8, 6, 5, 4],
+                        0.5: [31, 21, 14, 10, 7, 6, 4.4, 3.6, 3],
+                        1.0: [23, 16, 11, 7.5, 5.5, 4.2, 3.2, 2.6, 2.1],
+                        1.5: [17, 12, 8, 6, 4.1, 3.1, 2.4, 1.9, 1.5],
+                        2.0: [13, 9, 6, 4, 3, 2.2, 1.7, 1.3, -10],
+                        2.5: [9, 6, 4.4, 3.1, 2.2, 1.6, 1.3, -10, -10],
+                        3.0: [7, 5, 3.2, 2.3, 1.6, 1.2, -10, -10, -10],
+                        3.5: [5, 3.5, 2.4, 1.7, -10, -10, -10, -10, -10],
+                        4.0: [3.7, 2.5, 1.7, -10, -10, -10, -10, -10, -10]
+                    }
+                    indikationstabelleMann3 = {
+                        0.0: [10, 8, 6, 5, 4, 3, 2.4, 2, 1.4],
+                        0.5: [7, 5, 4, 3, 2.5, 2, 1.6, 1.3, -3],
+                        1.0: [5, 3.7, 2.8, 2.2, 1.7, 1.4, 1.1, -3, -5],
+                        1.5: [3.4, 2.5, 1.9, 1.5, 1.1, -3, -3, -5, -5],
+                        2.0: [2.3, 1.7, 1.3, -3, -3, -5, -5, -5, -10],
+                        2.5: [1.6, 1.2, -3, -5, -5, -5, -10, -10, -10],
+                        3.0: [1.1, -5, -5, -5, -10, -10, -10, -10, -10],
+                        3.5: [-5, -5, -10, -10, -10, -10, -10, -10, -10],
+                        4.0: [-5, -10, -10, -10, -10, -10, -10, -10, -10]
+                    }
+                    indikationstabelleMann5 = {
+                        0.0: [17, 13, 10, 8, 6, 4, 3, 3.3, 2.4],
+                        0.5: [12, 9, 7, 5, 4, 3.4, 2.7, 2.1, 1.5],
+                        1.0: [8, 6, 5, 3.6, 2.8, 2.3, 1.8, 1.4, -5],
+                        1.5: [6, 4, 3.2, 2.4, 1.9, 1.5, 1.2, -5, -5],
+                        2.0: [4, 2.9, 2.2, 1.6, 1.3, -5, -5, -5, -10],
+                        2.5: [2.6, 2, 1.5, -5, -5, -5, -10, -10, -10],
+                        3.0: [1.8, -5, -5, -5, -10, -10, -10, -10, -10],
+                        3.5: [-5, -5, -10, -10, -10, -10, -10, -10, -10],
+                        4.0: [-5, -10, -10, -10, -10, -10, -10, -10, -10]
+                    }
+                    indikationstabelleMann10 = {
+                        0.0: [33, 26, 20, 16, 12, 10, 8, 7, 5],
+                        0.5: [23, 18, 14, 11, 8, 7, 5, 4, 3],
+                        1.0: [16, 12, 9, 7, 6, 4.5, 3.6, 2.8, 2],
+                        1.5: [11, 8, 6, 5, 4, 3, 2.4, 1.8, 1.3],
+                        2.0: [8, 6, 4, 3, 2.5, 2, 1.6, 1.2, -10],
+                        2.5: [5, 4, 3, 2.2, 1.7, 1.3, -10, -10, -10],
+                        3.0: [3.6, 2.6, 1.9, 1.5, -10, -10, -10, -10, -10],
+                        3.5: [2.5, 1.8, -10, -10, -10, -10, -10, -10, -10],
+                        4.0: [1.7, -10, -10, -10, -10, -10, -10, -10, -10]
+                    }
+                    indikationstabellenFrau = [indikationstabelleFrau10, indikationstabelleFrau5, indikationstabelleFrau3]
+                    indikationstabllenMann = [indikationstabelleMann10, indikationstabelleMann5, indikationstabelleMann3]
+                    maxJePart = {} # key: partId, value: Tupel (höchster Faktor des Parts, sgRisiko)
+                    for widget in self.widgets:
+                        partId = int(widget.getPartId())
+                        if partId < 8:
+                            wert = self.getWertAusWidgetId(widget.getId()).replace(",", ".")
+                            sgRisiko = ""
+                            if wert[-1] == "S" or wert[-1] == "G":
+                                sgRisiko = wert[-1]
+                                wert = wert[:-1]
+                            wertFloat = float(wert)
+                            if not partId in maxJePart or maxJePart[partId][0] < wertFloat:
+                                maxJePart[partId] = (wertFloat, sgRisiko)
+                    sortiert = sorted(maxJePart.items(), key=lambda x:x[1][0], reverse=True)
+                    maxJePartSortiert = dict(sortiert) # maxJePart nach höchstem Faktor sortiert (höchster zuerst)
+                    zweiHoechsteFaktoren = []
+                    sRisiko = False
+                    gRisiko = False
+                    for max in maxJePartSortiert:
+                        faktor = maxJePartSortiert[max][0] 
+                        sgRisiko = maxJePartSortiert[max][1]
+                        if len(zweiHoechsteFaktoren) < 2:
+                            if not sRisiko and not gRisiko:
+                                zweiHoechsteFaktoren.append(faktor)
+                            elif sgRisiko == "S" and not sRisiko:
+                                zweiHoechsteFaktoren.append(faktor)
+                                sRisiko = True
+                            elif sgRisiko == "G" and not gRisiko:
+                                zweiHoechsteFaktoren.append(faktor)
+                                gRisiko = True
+                        else:
+                            break
+                    faktoren = [zweiHoechsteFaktoren[0], zweiHoechsteFaktoren[0] * zweiHoechsteFaktoren[1]]
+                    logger.logger.info("Zwei höchste Faktoren: " + str(zweiHoechsteFaktoren))
+                    tScore = float(self.getWertAusWidgetId("150").replace(",", "."))
+                    tScoreGerundet = round(tScore * 2) / 2
+                    alter = float(self.getWertAusWidgetId("151"))
+                    alterGerundet = round(alter / 10 * 2) / 2 * 10
+                    geschlecht = 2
+                    if self.getWertAusWidgetId("152") == "1":
+                        geschlecht = 1
+                    risikoListe = [10, 5, 3]
+                    therapieindikationsschwelleProzent = 0
+                    for i in range(3):
+                        risiko = risikoListe[i]
+                        indikationstabelle = indikationstabellenFrau[i]
+                        if geschlecht == 1:
+                            indikationstabelle = indikationstabllenMann[i]
+                        tabellenErebnis = indikationstabelle[tScoreGerundet * -1][int((alterGerundet - 50) / 5)]
+                        logger.logger.info("Tabellenergebnis " + str(risiko) + "%: " + str(tabellenErebnis))
+                        for faktor in faktoren:
+                            logger.logger.info("Faktor: " + str(faktor))
+                            if faktor >= tabellenErebnis:
+                                therapieindikationsschwelleProzent = risiko
+                                break
+                        if therapieindikationsschwelleProzent != 0:
+                            break
+                    logger.logger.info("Therapieindikationsschwelle: " + str(therapieindikationsschwelleProzent) + "%")
+                    self.lineEditScoreErgebnis.setText(str(therapieindikationsschwelleProzent))
+                        
+
             except Exception as e:
                 logger.logger.error("Fehler bei der Score-Berechung: " + str(e))
                 mb = QMessageBox(QMessageBox.Icon.Warning, "Hinweis von ScoreGDT", "Fehler bei der Score-Berechung: " + str(e), QMessageBox.StandardButton.Ok)
@@ -954,7 +1091,8 @@ class MainWindow(QMainWindow):
                     wert = "0"
                     if widget.getQt().isChecked():
                         wert = widget.getWert().replace(".", ",").replace(",0", "")
-                    test = gdt.GdtTest("ScoreGDT" + "_" + widget.getId(), widget.getTitel(), wert, widget.getEinheit()) # type: ignore
+                    test = gdt.GdtTest("ScoreGDT" + "_" + widget.getId(), widget.getTitel().encode(encoding="cp1252", errors="backslashreplace"), wert, widget.getEinheit()) # type: ignore
+                    print(widget.getTitel())
                 else:
                     test = gdt.GdtTest("ScoreGDT" + "_" + widget.getId(), widget.getTitel(), widget.getWert().replace(".", ",").replace(",0", ""), widget.getEinheit()) # type: ignore
                 if test != None:
