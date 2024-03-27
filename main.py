@@ -126,7 +126,7 @@ class MainWindow(QMainWindow):
             mb = QMessageBox(QMessageBox.Icon.Critical, "Hinweis von ScoreGDT", "Die Konfigurationsdatei config.ini fehlt. ScoreGDT kann nicht gestartet werden.", QMessageBox.StandardButton.Ok)
             mb.exec()
             sys.exit()
-        self.configIni.read(os.path.join(self.configPath, "config.ini"))
+        self.configIni.read(os.path.join(self.configPath, "config.ini"), encoding="utf-8")
         self.version = self.configIni["Allgemein"]["version"]
         self.eulagelesen = self.configIni["Allgemein"]["eulagelesen"]
         self.bereichsgrenzenerzwingen = self.configIni["Allgemein"]["bereichsgrenzenerzwingen"] == "True"
@@ -1186,7 +1186,7 @@ class MainWindow(QMainWindow):
         if de.exec() == 1:
             self.configIni["Allgemein"]["bereichsgrenzenerzwingen"] = str(de.checkBoxZahlengrenzenpruefung.isChecked())
             self.configIni["Allgemein"]["standardscore"] = de.comboBoxScoreAuswahl.currentText()
-            with open(os.path.join(self.configPath, "config.ini"), "w") as configfile:
+            with open(os.path.join(self.configPath, "config.ini"), "w", encoding="utf-8") as configfile:
                 self.configIni.write(configfile)
             if neustartfrage:
                 mb = QMessageBox(QMessageBox.Icon.Question, "Hinweis von ScoreGDT", "Damit die Einstellungsänderungen wirksam werden, sollte ScoreGDT neu gestartet werden.\nSoll ScoreGDT jetzt neu gestartet werden?", QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No)
