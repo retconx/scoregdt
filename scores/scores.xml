@@ -7720,4 +7720,183 @@
             <variablen></variablen>
         </berechnung>
     </score>
+    <score name="Mini Mental Status Test (MMST)" gruppe="Neurologie">
+        <information>Erfassung kognitiver Störungen</information>
+        <part id="0" typ="GroupBox" titel="Zeitliche Orientierung" erklaerung="&#x22;Welchen Tag haben wir heute&#x22;" zeile="0" spalte="0">
+            <widget id="100" typ="CheckBox" titel="Tag" checked="True">
+                <wert>1</wert>
+            </widget> 
+            <widget id="101" typ="CheckBox" titel="Monat" checked="True">
+                <wert>1</wert>
+            </widget> 
+            <widget id="102" typ="CheckBox" titel="Jahr " checked="True">
+                <wert>1</wert>
+            </widget> 
+            <widget id="103" typ="CheckBox" titel="Wochentag " checked="True">
+                <wert>1</wert>
+            </widget> 
+            <widget id="104" typ="CheckBox" titel="Jahreszeit " checked="True">
+                <wert>1</wert>
+            </widget> 
+        </part>
+        <part id="1" typ="GroupBox" titel="Örtliche Orientierung" erklaerung="&#x22;Wo sind wir jetzt&#x22;" zeile="0" spalte="1">
+            <widget id="105" typ="CheckBox" titel="Stadt" checked="True">
+                <wert>1</wert>
+            </widget> 
+            <widget id="106" typ="CheckBox" titel="Stadtteil" checked="True">
+                <wert>1</wert>
+            </widget> 
+            <widget id="107" typ="CheckBox" titel="Bundesland" checked="True">
+                <wert>1</wert>
+            </widget> 
+            <widget id="108" typ="CheckBox" titel="Klinik/Pflegeheim/Praxis" checked="True">
+                <wert>1</wert>
+            </widget> 
+            <widget id="109" typ="CheckBox" titel="Station/Stockwerk" checked="True">
+                <wert>1</wert>
+            </widget> 
+        </part>
+        <part id="2" typ="GroupBox" titel="Merkfähigkeit" erklaerung="Folgende drei Gegenstände nennen,&#xd;&#xa;dann zur Wiederholung auffordern" zeile="0" spalte="2">
+            <widget id="110" typ="CheckBox" titel="Apfel" checked="True">
+                <wert>1</wert>
+            </widget> 
+            <widget id="111" typ="CheckBox" titel="Schlüssel" checked="True">
+                <wert>1</wert>
+            </widget> 
+            <widget id="112" typ="CheckBox" titel="Ball" checked="True">
+                <wert>1</wert>
+            </widget>
+        </part>
+        <part id="3" typ="GroupBox" titel="Aufmerksamkeit/Rechnen" erklaerung="Jeweils 7 von 100 abziehen oder&#xd;&#xa;&#x22;STUHL&#x22; rückwärts buchstabieren" zeile="0" spalte="3">
+            <widget id="113" typ="CheckBox" titel="93 oder &#x22;L&#x22;" checked="True">
+                <wert>1</wert>
+            </widget> 
+            <widget id="114" typ="CheckBox" titel="86 oder &#x22;H&#x22;" checked="True">
+                <wert>1</wert>
+            </widget> 
+            <widget id="115" typ="CheckBox" titel="79 oder &#x22;U&#x22;" checked="True">
+                <wert>1</wert>
+            </widget>
+            <widget id="116" typ="CheckBox" titel="72 oder &#x22;T&#x22;" checked="True">
+                <wert>1</wert>
+            </widget>
+            <widget id="117" typ="CheckBox" titel="65 oder &#x22;S&#x22;" checked="True">
+                <wert>1</wert>
+            </widget>
+        </part>
+        <part id="4" typ="GroupBox" titel="Erinnern" erklaerung="&#x22;Was waren die Dinge,&#xd;&#xa;die Sie sich vorhin gemerkt haben?&#x22;" zeile="1" spalte="0">
+            <widget id="118" typ="CheckBox" titel="Apfel" checked="True">
+                <wert>1</wert>
+            </widget> 
+            <widget id="119" typ="CheckBox" titel="Schlüssel" checked="True">
+                <wert>1</wert>
+            </widget> 
+            <widget id="120" typ="CheckBox" titel="Ball" checked="True">
+                <wert>1</wert>
+            </widget>
+        </part>
+        <part id="5" typ="GroupBox" titel="Benennen" erklaerung="Die Testperson soll folgende zwei Gegenstände benennen." zeile="1" spalte="1">
+            <widget id="121" typ="CheckBox" titel="Armbanduhr" checked="True">
+                <wert>1</wert>
+            </widget> 
+            <widget id="122" typ="CheckBox" titel="Bleistift/Kugelschreiber" checked="True">
+                <wert>1</wert>
+            </widget> 
+        </part>
+        <part id="6" typ="GroupBox" titel="Wiederholen" erklaerung="Die Testperson soll den folgenden Satz nachsprechen.&#xd;&#xa;Nur ein Versuch ist erlaubt. Die Redewendung&#xd;&#xa;&#x22;Kein wenn und aber&#x22; ist nicht erlaubt." zeile="1" spalte="2">
+            <widget id="123" typ="CheckBox" titel="&#x22;Kein wenn und oder aber&#x22;" checked="True">
+                <wert>1</wert>
+            </widget>  
+        </part>
+        <part id="7" typ="GroupBox" titel="Dreiteiliger Befehl" erklaerung="&#x22;Nehmen Sie das Blatt Papier,&#xd;&#xa;falten es in der Mitte und&#xd;&#xa;lassen es auf den Boden fallen.&#x22;" zeile="1" spalte="3">
+            <widget id="124" typ="CheckBox" titel="&#x22;Nehmen Sie das Blatt Papier,&#x22;" checked="True">
+                <wert>1</wert>
+            </widget>  
+            <widget id="125" typ="CheckBox" titel="&#x22;falten es in der Mitte&#x22;" checked="True">
+                <wert>1</wert>
+            </widget>  
+            <widget id="126" typ="CheckBox" titel="&#x22;und lassen es auf den Boden fallen.&#x22;" checked="True">
+                <wert>1</wert>
+            </widget>  
+        </part>
+        <part id="8" typ="GroupBox" titel="Reagieren" erklaerung="Die Testperson soll den Satz: &#x22;Schließen Sie die Augen.&#x22; lesen und befolgen." zeile="2" spalte="0">
+            <widget id="127" typ="CheckBox" titel="Testperson schließt die Augen" checked="True">
+                <wert>1</wert>
+            </widget>  
+        </part>
+        <part id="9" typ="GroupBox" titel="Schreiben" erklaerung="Die Testperson soll einen beliebigen vollständigen Satz aufschreiben." zeile="2" spalte="1">
+            <widget id="128" typ="CheckBox" titel="Sinnhafter Satz mit Subjekt und Verb" checked="True">
+                <wert>1</wert>
+            </widget>  
+        </part>
+        <part id="10" typ="GroupBox" titel="Abzeichnen" erklaerung="Die Testperson soll eine Figur abzeichnen." zeile="2" spalte="2">
+            <widget id="129" typ="CheckBox" titel="Zwei sich überschneidende Fünfecke" checked="True">
+                <wert>1</wert>
+            </widget>  
+        </part>
+        <part id="11" typ="Frame" titel="Fünfecke" zeile="2" spalte="3" hintergrundbild="mmstFuenfecke.png">
+
+        </part>
+        <berechnung>
+            <formel>
+                <operation>$id{100} PLUS $id{101}</operation>
+                <operation>PLUS $id{102}</operation>
+                <operation>PLUS $id{103}</operation>
+                <operation>PLUS $id{104}</operation>
+                <operation>PLUS $id{105}</operation>
+                <operation>PLUS $id{106}</operation>
+                <operation>PLUS $id{107}</operation>
+                <operation>PLUS $id{108}</operation>
+                <operation>PLUS $id{109}</operation>
+                <operation>PLUS $id{110}</operation>
+                <operation>PLUS $id{111}</operation>
+                <operation>PLUS $id{112}</operation>
+                <operation>PLUS $id{113}</operation>
+                <operation>PLUS $id{114}</operation>
+                <operation>PLUS $id{115}</operation>
+                <operation>PLUS $id{116}</operation>
+                <operation>PLUS $id{117}</operation>
+                <operation>PLUS $id{118}</operation>
+                <operation>PLUS $id{119}</operation>
+                <operation>PLUS $id{120}</operation>
+                <operation>PLUS $id{121}</operation>
+                <operation>PLUS $id{122}</operation>
+                <operation>PLUS $id{123}</operation>
+                <operation>PLUS $id{124}</operation>
+                <operation>PLUS $id{125}</operation>
+                <operation>PLUS $id{126}</operation>
+                <operation>PLUS $id{127}</operation>
+                <operation>PLUS $id{128}</operation>
+                <operation>PLUS $id{129}</operation>
+            </formel>
+            <ergebniseinheit>Punkte</ergebniseinheit>
+            <variablen></variablen>
+        </berechnung>
+        <auswertung>
+			<beurteilung>
+                <ergebnisbereich>30-27 Punkte</ergebnisbereich>
+                <beschreibung>Keine Demenz</beschreibung>
+                <regel>KLEINERGLEICHALS 30</regel>
+                <regel>GROESSERGLEICHALS 27</regel>
+            </beurteilung>
+			<beurteilung>
+                <ergebnisbereich>26-20 Punkte</ergebnisbereich>
+                <beschreibung>Leichte Demenz</beschreibung>
+                <regel>KLEINERGLEICHALS 26</regel>
+                <regel>GROESSERGLEICHALS 20</regel>
+            </beurteilung>
+			<beurteilung>
+                <ergebnisbereich>19-10 Punkte</ergebnisbereich>
+                <beschreibung>Mittelschwere Demenz</beschreibung>
+                <regel>KLEINERGLEICHALS 19</regel>
+                <regel>GROESSERGLEICHALS 10</regel>
+            </beurteilung>
+			<beurteilung>
+                <ergebnisbereich>&#x2264; 9 Punkte</ergebnisbereich>
+                <beschreibung>Schwere Demenz</beschreibung>
+                <regel>KLEINERGLEICHALS 9</regel>
+            </beurteilung>
+			
+		</auswertung>
+    </score>
 </root>

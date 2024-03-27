@@ -4,7 +4,7 @@ import xml.etree.ElementTree as ElementTree
 import gdt, gdtzeile, gdttoolsL, class_part, class_widgets
 import dialogUeberScoreGdt, dialogEinstellungenAllgemein, dialogEinstellungenGdt, dialogEinstellungenBenutzer, dialogEinstellungenLanrLizenzschluessel, dialogEula, dialogEinstellungenImportExport, class_enums,dialogScoreAuswahl
 from PySide6.QtCore import Qt, QTranslator, QLibraryInfo, QDate, QTime
-from PySide6.QtGui import QFont, QAction, QIcon, QDesktopServices
+from PySide6.QtGui import QFont, QAction, QIcon, QDesktopServices, QPixmap
 from PySide6.QtWidgets import (
     QApplication,
     QMainWindow,
@@ -178,6 +178,16 @@ class MainWindow(QMainWindow):
                 mb.exec()
                 sys.exit()
 
+        # scores.xml auslesen
+        try:
+            tree = ElementTree.parse(os.path.join(basedir, "scores", "scores.xml"))
+            self.root = tree.getroot()
+        except Exception as e:
+            mb = QMessageBox(QMessageBox.Icon.Warning, "Hinweis von ScoreGDT", "Fehler beim Laden von \"scores.xml\".\nScoreGDT wird beendet.", QMessageBox.StandardButton.Ok)
+            mb.exec()
+            logger.logger.warning("Fehler beim Laden von scores.xml: " + str(e))
+            sys.exit()
+
         # Grundeinstellungen bei erstem Start
         if ersterStart:
             logger.logger.info("Erster Start")
@@ -295,16 +305,6 @@ class MainWindow(QMainWindow):
                 mb = QMessageBox(QMessageBox.Icon.Warning, "Hinweis von ScoreGDT", "Updateprüfung nicht möglich.\nBitte überprüfen Sie Ihre Internetverbindung.", QMessageBox.StandardButton.Ok)
                 mb.exec()
                 logger.logger.warning("Updateprüfung nicht möglich: " + str(e))
-
-            # scores.xml auslesen
-            try:
-                tree = ElementTree.parse(os.path.join(basedir, "scores", "scores.xml"))
-                self.root = tree.getroot()
-            except Exception as e:
-                mb = QMessageBox(QMessageBox.Icon.Warning, "Hinweis von ScoreGDT", "Fehler beim Laden von \"scores.xml\".\nScoreGDT wird beendet.", QMessageBox.StandardButton.Ok)
-                mb.exec()
-                logger.logger.warning("Fehler beim Laden von scores.xml: " + str(e))
-                sys.exit()
             
             if self.root != None:
                 self.scoreRoot = self.root.find("score")
@@ -323,10 +323,14 @@ class MainWindow(QMainWindow):
                         partId = str(partElement.get("id"))
                         partTyp = class_part.PartTyp(str(partElement.get("typ")))
                         partTitel = str(partElement.get("titel"))
+                        partErklaerung =str(partElement.get("erklaerung"))
                         partZeile = int(str(partElement.get("zeile")))
                         partSpalte = int(str(partElement.get("spalte")))
                         geschlechtpruefung = partElement.get("geschlechtpruefung") != None and str(partElement.get("geschlechtpruefung")) == "True"
-                        self.parts.append(class_part.Part(partId, partTyp, partTitel, partZeile, partSpalte, geschlechtpruefung, self.scoreRoot))
+                        hintergrundbild = ""
+                        if partElement.get("hintergrundbild") != None:
+                            hintergrundbild = str(partElement.get("hintergrundbild"))
+                        self.parts.append(class_part.Part(partId, partTyp, partTitel, partErklaerung, partZeile, partSpalte, geschlechtpruefung, hintergrundbild, self.scoreRoot))
                         for widgetElement in partElement.findall("widget"):
                             widgetId = str(widgetElement.get("id"))
                             widgetTyp = str(widgetElement.get("typ"))
@@ -413,14 +417,19 @@ class MainWindow(QMainWindow):
             for part in self.parts:
                 partLayout = QGridLayout()
                 partGridZeile = 0
+                if part.getErklaerung() != "None":
+                    labelErklaerung = QLabel(part.getErklaerung())
+                    labelErklaerung.setFont(self.fontNormal)
+                    partLayout.addWidget(labelErklaerung, 0, 0, 1, 3, alignment=Qt.AlignmentFlag.AlignTop)
+                    partGridZeile = 1
                 for widget in self.widgets:
                     if part.getId() == widget.getPartId():
                         labelTitel = QLabel(widget.getTitel())
                         labelTitel.setFont(self.fontNormal)
-                        partLayout.addWidget(labelTitel, partGridZeile, 0)
+                        partLayout.addWidget(labelTitel, partGridZeile, 0, alignment=Qt.AlignmentFlag.AlignTop)
                         widgetWidget = widget.getQt()
                         widgetWidget.setFont(self.fontNormal)
-                        partLayout.addWidget(widgetWidget, partGridZeile, 1)
+                        partLayout.addWidget(widgetWidget, partGridZeile, 1, alignment=Qt.AlignmentFlag.AlignTop)
                         einheitUndErklärung = ""
                         if widget.getEinheit() != "":
                             einheitUndErklärung = widget.getEinheit() + " "
@@ -428,7 +437,7 @@ class MainWindow(QMainWindow):
                             einheitUndErklärung += "(" + widget.getErklaerung() + ")"
                         labelEinheitUndErklaerung = QLabel(einheitUndErklärung)
                         labelEinheitUndErklaerung.setFont(self.fontNormal)
-                        partLayout.addWidget(labelEinheitUndErklaerung, partGridZeile, 2)
+                        partLayout.addWidget(labelEinheitUndErklaerung, partGridZeile, 2, alignment=Qt.AlignmentFlag.AlignTop)
                         # Prüfen, ob Alterstextfeld
                         if widget.getTyp() == class_widgets.WidgetTyp.LINEEDIT and  widget.alterspruefungAktiv():
                             widget.getQt().setText(str(getAktuellesAlterInJahren(self.geburtsdatumAlsDate)))
@@ -471,6 +480,11 @@ class MainWindow(QMainWindow):
                         partGridZeile += 1
                 if part.getTyp() == class_part.PartTyp.FRAME:
                     frame = QFrame()
+                    if part.getHintergrundbild() != "":
+                        hintergrundbild = QPixmap(os.path.join(basedir, "bilder", part.getHintergrundbild()))
+                        labelHintergrundbild = QLabel()
+                        labelHintergrundbild.setPixmap(hintergrundbild)
+                        partLayout.addWidget(labelHintergrundbild, 0, 0, alignment=Qt.AlignmentFlag.AlignCenter)
                     frame.setLayout(partLayout)
                     mainLayoutG.addWidget(frame, part.getZeile(), part.getSpalte())
                 elif part.getTyp() == class_part.PartTyp.GROUPBOX:
@@ -568,7 +582,7 @@ class MainWindow(QMainWindow):
             mainLayoutV.addLayout(datumBenutzerLayoutG)
             mainLayoutV.addWidget(self.pushButtonSenden)
             gueltigeLizenztage = gdttoolsL.GdtToolsLizenzschluessel.nochTageGueltig(self.lizenzschluessel)
-            if self.addOnsFreigeschaltet and gueltigeLizenztage  > 0 and gueltigeLizenztage <= 30:
+            if self.addOnsFreigeschaltet and gdttoolsL.GdtToolsLizenzschluessel.getGueltigkeitsdauer(self.lizenzschluessel) == gdttoolsL.Gueltigkeit.EINJAHR and gueltigeLizenztage  > 0 and gueltigeLizenztage <= 30:
                 labelLizenzLaeuftAus = QLabel("Die genutzte Lizenz ist noch " + str(gueltigeLizenztage) + " Tage gültig.")
                 labelLizenzLaeuftAus.setStyleSheet("color:rgb(200,0,0)")
                 mainLayoutV.addWidget(labelLizenzLaeuftAus, alignment=Qt.AlignmentFlag.AlignCenter)

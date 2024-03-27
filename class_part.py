@@ -8,16 +8,18 @@ class PartTyp(Enum):
     GROUPBOX = "GroupBox"
     
 class Part:
-    def __init__(self, id:str, typ:PartTyp, titel:str, zeile:int, spalte:int, geschlechtpruefung:bool, bisherigesRoot:ElementTree.Element):
+    def __init__(self, id:str, typ:PartTyp, titel:str, erklaerung:str, zeile:int, spalte:int, geschlechtpruefung:bool, hintergrundbild:str, bisherigesRoot:ElementTree.Element):
         if id != "":
             self.id = id
         else:
             self.id = self.getNeueId(bisherigesRoot)
         self.typ = typ
         self.titel = titel
+        self.erklaerung = erklaerung
         self.zeile = zeile
         self.spalte = spalte
         self.geschlechtpruefung = geschlechtpruefung
+        self.hintergrundbild = hintergrundbild
     
     def getNeueId(self, bisherigesRoot:ElementTree.Element):
         """
@@ -44,6 +46,9 @@ class Part:
     def getTitel(self):
         return self.titel
     
+    def getErklaerung(self):
+        return self.erklaerung
+    
     def getZeile(self):
         return self.zeile
     
@@ -52,3 +57,6 @@ class Part:
     
     def geschlechtpruefungAktiv(self):
         return self.geschlechtpruefung
+
+    def getHintergrundbild(self):
+        return self.hintergrundbild
