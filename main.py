@@ -158,7 +158,7 @@ class MainWindow(QMainWindow):
         if len(self.lizenzschluessel) == 29:
             logger.logger.info("Lizenzschlüssel unverschlüsselt")
             self.configIni["Erweiterungen"]["lizenzschluessel"] = gdttoolsL.GdtToolsLizenzschluessel.krypt(self.lizenzschluessel)
-            with open(os.path.join(self.configPath, "config.ini"), "w") as configfile:
+            with open(os.path.join(self.configPath, "config.ini"), "w", encoding="utf-8") as configfile:
                     self.configIni.write(configfile)
         else:
             self.lizenzschluessel = gdttoolsL.GdtToolsLizenzschluessel.dekrypt(self.lizenzschluessel)
@@ -170,7 +170,7 @@ class MainWindow(QMainWindow):
             if de.checkBoxZustimmung.isChecked():
                 self.eulagelesen = True
                 self.configIni["Allgemein"]["eulagelesen"] = "True"
-                with open(os.path.join(self.configPath, "config.ini"), "w") as configfile:
+                with open(os.path.join(self.configPath, "config.ini"), "w", encoding="utf-8") as configfile:
                     self.configIni.write(configfile)
                 logger.logger.info("EULA zugestimmt")
             else:
@@ -202,7 +202,7 @@ class MainWindow(QMainWindow):
         # Version vergleichen und gegebenenfalls aktualisieren
         configIniBase = configparser.ConfigParser()
         try:
-            configIniBase.read(os.path.join(basedir, "config.ini"))
+            configIniBase.read(os.path.join(basedir, "config.ini"), encoding="utf-8")
             if versionVeraltet(self.version, configIniBase["Allgemein"]["version"]):
                 # Version aktualisieren
                 self.configIni["Allgemein"]["version"] = configIniBase["Allgemein"]["version"]
@@ -213,7 +213,7 @@ class MainWindow(QMainWindow):
                     self.configIni["Allgemein"]["standardscore"] = ""
                 ## /config.ini aktualisieren
 
-                with open(os.path.join(self.configPath, "config.ini"), "w") as configfile:
+                with open(os.path.join(self.configPath, "config.ini"), "w", encoding="utf-8") as configfile:
                     self.configIni.write(configfile)
                 self.version = self.configIni["Allgemein"]["version"]
                 logger.logger.info("Version auf " + self.version + " aktualisiert")
@@ -222,7 +222,7 @@ class MainWindow(QMainWindow):
                 de.exec()
                 self.eulagelesen = de.checkBoxZustimmung.isChecked()
                 self.configIni["Allgemein"]["eulagelesen"] = str(self.eulagelesen)
-                with open(os.path.join(self.configPath, "config.ini"), "w") as configfile:
+                with open(os.path.join(self.configPath, "config.ini"), "w", encoding="utf-8") as configfile:
                     self.configIni.write(configfile)
                 if self.eulagelesen:
                     logger.logger.info("EULA zugestimmt")
@@ -1130,7 +1130,7 @@ class MainWindow(QMainWindow):
             else: 
                 self.configIni["Benutzer"]["letzter"] = str(self.aktuelleBenuztzernummer)
                 try:
-                    with open(os.path.join(self.configPath, "config.ini"), "w") as configfile:
+                    with open(os.path.join(self.configPath, "config.ini"), "w", encoding="utf-8") as configfile:
                         self.configIni.write(configfile)
                 except:
                     logger.logger.warning("Problem beim Speichern von Benutzer/letzter")
@@ -1206,7 +1206,7 @@ class MainWindow(QMainWindow):
             self.configIni["GDT"]["kuerzelscoregdt"] = de.lineEditScoreGdtKuerzel.text()
             self.configIni["GDT"]["kuerzelpraxisedv"] = de.lineEditPraxisEdvKuerzel.text()
             self.configIni["GDT"]["zeichensatz"] = str(de.aktuelleZeichensatznummer + 1)
-            with open(os.path.join(self.configPath, "config.ini"), "w") as configfile:
+            with open(os.path.join(self.configPath, "config.ini"), "w", encoding="utf-8") as configfile:
                 self.configIni.write(configfile)
             if neustartfrage:
                 mb = QMessageBox(QMessageBox.Icon.Question, "Hinweis von ScoreGDT", "Damit die Einstellungsänderungen wirksam werden, sollte ScoreGDT neu gestartet werden.\nSoll ScoreGDT jetzt neu gestartet werden?", QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No)
@@ -1227,7 +1227,7 @@ class MainWindow(QMainWindow):
                     kuerzel.append(de.lineEditKuerzel[i].text())
             self.configIni["Benutzer"]["namen"] = "::".join(namen)
             self.configIni["Benutzer"]["kuerzel"] = "::".join(kuerzel)
-            with open(os.path.join(self.configPath, "config.ini"), "w") as configfile:
+            with open(os.path.join(self.configPath, "config.ini"), "w", encoding="utf-8") as configfile:
                 self.configIni.write(configfile)
             if neustartfrage:
                 mb = QMessageBox(QMessageBox.Icon.Question, "Hinweis von ScoreGDT", "Damit die Einstellungsänderungen wirksam werden, sollte ScoreGDT neu gestartet werden.\nSoll ScoreGDT jetzt neu gestartet werden?", QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No)
@@ -1242,7 +1242,7 @@ class MainWindow(QMainWindow):
         if de.exec() == 1:
             self.configIni["Erweiterungen"]["lanr"] = de.lineEditLanr.text()
             self.configIni["Erweiterungen"]["lizenzschluessel"] = gdttoolsL.GdtToolsLizenzschluessel.krypt(de.lineEditLizenzschluessel.text())
-            with open(os.path.join(self.configPath, "config.ini"), "w") as configfile:
+            with open(os.path.join(self.configPath, "config.ini"), "w", encoding="utf-8") as configfile:
                 self.configIni.write(configfile)
             if neustartfrage:
                 mb = QMessageBox(QMessageBox.Icon.Question, "Hinweis von ScoreGDT", "Damit die Einstellungsänderungen wirksam werden, sollte ScoreGDT neu gestartet werden.\nSoll ScoreGDT  jetzt neu gestartet werden?", QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No)
