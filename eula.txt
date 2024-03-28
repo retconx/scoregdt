@@ -67,7 +67,7 @@
 <br />(1) Der Lizenzgeber ist berechtigt, Aktualisierungen der Software nach eigenem Ermessen zu erstellen. Der Lizenznehmer hat kein Recht auf die Durchführung einer Änderung oder Aktualisierung.
 
 <br /><br /><b>§ 14 Haftung</b>
-<br />(1) Der Lizenzgeber übernimmt keine Haftung für die Fehlerfreiheit der Software.
+<br />(1) Der Lizenzgeber übernimmt keine Haftung für die Fehlerfreiheit der Software. Insbesondere übernimmt der Lizenzgeber keine Haftung für die Richtigkeit der Score-Berechnungen durch ScoreGDT sowie daraus abgeleitete medizinische, diagnostische oder therapeutische Konsequenzen und eventuell dadurch verursachte gesundheitliche oder finanzielle Schäden des Lizenznehmers und durch ihn behandelte Personen.
 <br />(2) Der Lizenzgeber übernimmt keine Gewährleistung dafür, dass die Software den Anforderungen und Zwecken des Lizenznehmers genügt oder mit anderen von dem Lizenznehmer ausgewählten Programmen zusammenarbeitet.
 <br />(3) Die Verantwortung für die richtige Auswahl und die Folgen der Benutzung der Software einschließlich der zugehörigen Dokumentation sowie der damit beabsichtigten oder erzielten Ergebnisse trägt der Lizenznehmer.
 <br />(4) Der Lizenzgeber haftet nicht für Schäden, die aufgrund der Benutzung dieser Software oder der Unfähigkeit, diese Software zu verwenden, entstehen. Uneingeschränkt eingeschlossen sind Schäden aus entgangenem Gewinn, Betriebsunterbrechung, Verlust von geschäftlichen Informationen oder Daten oder aus anderem finanziellen Verlust, auch wenn der Lizenzgeber von der Möglichkeit eines solchen Schadens unterrichtet worden ist. Dies gilt nicht, sowie wegen Vorsatzes oder grober Fahrlässigkeit zwingend gehaftet wird.
