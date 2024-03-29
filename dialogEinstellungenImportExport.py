@@ -113,7 +113,7 @@ class EinstellungenImportExport(QDialog):
                                 self.configIni[section][option] = configImport.get(section, option)
                         i += 1
                     try:
-                        with open(os.path.join(self.configPath, "config.ini"), "w") as configfile:
+                        with open(os.path.join(self.configPath, "config.ini"), "w", encoding="utf-8") as configfile:
                             self.configIni.write(configfile)
                         self.done(1)
                         mb = QMessageBox(QMessageBox.Icon.Warning, "Hinweis von ScoreGDT", "Die Einstellungen wurden erfolgreich importiert. Damit diese wirksam werden, muss ScoreGDT neu gestartet werden.\nSoll ScoreGDT neu gestartet werden?", QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No)

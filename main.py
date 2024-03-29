@@ -385,6 +385,9 @@ class MainWindow(QMainWindow):
                                 wert = str(wertElement.text) # type: ignore
                                 self.widgets.append(class_widgets.RadioButton(widgetId, partId, widgetTitel, widgetErklaerung, widgetEinheit, wert, checked, alterspruefung, altersregel))
                                 logger.logger.info("Radiobutton angelegt (Part-ID: " + partId + ", Widget-ID: " + widgetId + ") angelegt")
+                            # Prüfen, ob Titelbreite festgelegt
+                            if widgetElement.get("titelbreite") != None:
+                                self.widgets[len(self.widgets) - 1].setTitelbreite(int(str(widgetElement.get("titelbreite"))))
 
             # Formularaufbau
             mainLayoutV = QVBoxLayout()
@@ -429,6 +432,8 @@ class MainWindow(QMainWindow):
                     if part.getId() == widget.getPartId():
                         labelTitel = QLabel(widget.getTitel())
                         labelTitel.setFont(self.fontNormal)
+                        if widget.getTitelbreite() != -1:
+                            labelTitel.setFixedWidth(widget.getTitelbreite())
                         partLayout.addWidget(labelTitel, partGridZeile, 0, alignment=Qt.AlignmentFlag.AlignTop)
                         widgetWidget = widget.getQt()
                         widgetWidget.setFont(self.fontNormal)

@@ -28,6 +28,7 @@ class Widget():
         self.erklaerung = erklaerung
         self.einheit = einheit
         self.alterspruefung = alterspruefung
+        self.titelbreite = -1
 
     # def getNeueId(self, bisherigesRoot:ElementTree.Element):
     #     """
@@ -63,6 +64,12 @@ class Widget():
     
     def alterspruefungAktiv(self):
         return self.alterspruefung
+    
+    def setTitelbreite(self, width:int):
+        self.titelbreite = width
+
+    def getTitelbreite(self):
+        return self.titelbreite
 
 
 class ComboBox(Widget):

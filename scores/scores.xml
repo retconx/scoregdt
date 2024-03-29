@@ -8052,4 +8052,177 @@
             </beurteilung>
 		</auswertung>
     </score>
+    <score name="sv-MADRS" gruppe="Neurologie">
+        <information>Beurteilung des Schweregrads einer Depression</information>
+        <part id="0" typ="Frame" zeile="0" spalte="0">
+            <widget id="100" typ="ComboBox" titel="Sichtbare Traurigkeit" titelbreite="200">
+                <items>
+                    <item wert="0">Keine</item>
+                    <item wert="1">Kaum</item>
+                    <item wert="2">Leicht</item>
+                    <item wert="3">Mäßig</item>
+                    <item wert="4">Deutlich</item>
+                    <item wert="5">Stark</item>
+                    <item wert="6">Extrem</item>
+                </items>
+            </widget>
+        </part>
+        <part id="1" typ="Frame" zeile="1" spalte="0">
+            <widget id="101" typ="ComboBox" titel="Berichtete Traurigkeit" titelbreite="200">
+                <items>
+                    <item wert="0">Keine</item>
+                    <item wert="1">Kaum</item>
+                    <item wert="2">Leicht</item>
+                    <item wert="3">Mäßig</item>
+                    <item wert="4">Deutlich</item>
+                    <item wert="5">Stark</item>
+                    <item wert="6">Extrem</item>
+                </items>
+            </widget>
+        </part>
+        <part id="2" typ="Frame" zeile="2" spalte="0">
+            <widget id="102" typ="ComboBox" titel="Innere Spannung" titelbreite="200">
+                <items>
+                    <item wert="0">Keine</item>
+                    <item wert="1">Kaum</item>
+                    <item wert="2">Leicht</item>
+                    <item wert="3">Mäßig</item>
+                    <item wert="4">Deutlich</item>
+                    <item wert="5">Stark</item>
+                    <item wert="6">Extrem</item>
+                </items>
+            </widget>
+        </part>
+        <part id="3" typ="Frame" zeile="3" spalte="0">
+            <widget id="103" typ="ComboBox" titel="Schlaflosigkti" titelbreite="200">
+                <items>
+                    <item wert="0">Keine</item>
+                    <item wert="1">Kaum</item>
+                    <item wert="2">Leicht</item>
+                    <item wert="3">Mäßig</item>
+                    <item wert="4">Deutlich</item>
+                    <item wert="5">Stark</item>
+                    <item wert="6">Extrem</item>
+                </items>
+            </widget>
+        </part>
+        <part id="4" typ="Frame" zeile="4" spalte="0">
+            <widget id="104" typ="ComboBox" titel="Appetitverlust" titelbreite="200">
+                <items>
+                    <item wert="0">Keine</item>
+                    <item wert="1">Kaum</item>
+                    <item wert="2">Leicht</item>
+                    <item wert="3">Mäßig</item>
+                    <item wert="4">Deutlich</item>
+                    <item wert="5">Stark</item>
+                    <item wert="6">Extrem</item>
+                </items>
+            </widget>
+        </part>
+        <part id="5" typ="Frame" zeile="0" spalte="1">
+            <widget id="105" typ="ComboBox" titel="Konzentrationsschwierigkeiten" titelbreite="200">
+                <items>
+                    <item wert="0">Keine</item>
+                    <item wert="1">Kaum</item>
+                    <item wert="2">Leicht</item>
+                    <item wert="3">Mäßig</item>
+                    <item wert="4">Deutlich</item>
+                    <item wert="5">Stark</item>
+                    <item wert="6">Extrem</item>
+                </items>
+            </widget>
+        </part>
+        <part id="6" typ="Frame" zeile="1" spalte="1">
+            <widget id="106" typ="ComboBox" titel="Untätigkeit" titelbreite="200">
+                <items>
+                    <item wert="0">Keine</item>
+                    <item wert="1">Kaum</item>
+                    <item wert="2">Leicht</item>
+                    <item wert="3">Mäßig</item>
+                    <item wert="4">Deutlich</item>
+                    <item wert="5">Stark</item>
+                    <item wert="6">Extrem</item>
+                </items>
+            </widget>
+        </part>
+        <part id="7" typ="Frame" zeile="2" spalte="1">
+            <widget id="107" typ="ComboBox" titel="Gefühllosigkeit" titelbreite="200">
+                <items>
+                    <item wert="0">Keine</item>
+                    <item wert="1">Kaum</item>
+                    <item wert="2">Leicht</item>
+                    <item wert="3">Mäßig</item>
+                    <item wert="4">Deutlich</item>
+                    <item wert="5">Stark</item>
+                    <item wert="6">Extrem</item>
+                </items>
+            </widget>
+        </part>
+        <part id="8" typ="Frame" zeile="3" spalte="1">
+            <widget id="108" typ="ComboBox" titel="Pessimistische Gedanken" titelbreite="200">
+                <items>
+                    <item wert="0">Keine</item>
+                    <item wert="1">Kaum</item>
+                    <item wert="2">Leicht</item>
+                    <item wert="3">Mäßig</item>
+                    <item wert="4">Deutlich</item>
+                    <item wert="5">Stark</item>
+                    <item wert="6">Extrem</item>
+                </items>
+            </widget>
+        </part>
+        <part id="9" typ="Frame" zeile="4" spalte="1">
+            <widget id="109" typ="ComboBox" titel="Selbstmordgedanken" titelbreite="200">
+                <items>
+                    <item wert="0">Keine</item>
+                    <item wert="1">Kaum</item>
+                    <item wert="2">Leicht</item>
+                    <item wert="3">Mäßig</item>
+                    <item wert="4">Deutlich</item>
+                    <item wert="5">Stark</item>
+                    <item wert="6">Extrem</item>
+                </items>
+            </widget>
+        </part>
+        <berechnung>
+            <formel>
+                <operation>$id{100}PLUS$id{101}</operation>
+                <operation>PLUS$id{102}</operation>
+                <operation>PLUS$id{103}</operation>
+                <operation>PLUS$id{104}</operation>
+                <operation>PLUS$id{105}</operation>
+                <operation>PLUS$id{106}</operation>
+                <operation>PLUS$id{107}</operation>
+                <operation>PLUS$id{108}</operation>
+                <operation>PLUS$id{109}</operation>
+            </formel>
+            <ergebniseinheit></ergebniseinheit>
+            <variablen>
+            </variablen>
+        </berechnung>
+        <auswertung>
+			<beurteilung>
+                <ergebnisbereich>&#x3c; 13 Punkte</ergebnisbereich>
+                <beschreibung>Keine Depression</beschreibung>
+                <regel>KLEINERALS 13</regel>
+            </beurteilung>
+			<beurteilung>
+                <ergebnisbereich>13-21 Punkte</ergebnisbereich>
+                <beschreibung>Leichte Depression</beschreibung>
+                <regel>GROESSERGLEICHALS 13</regel>
+                <regel>KLEINERGLEICHALS 21</regel>
+            </beurteilung>
+			<beurteilung>
+                <ergebnisbereich>22-28 Punkte</ergebnisbereich>
+                <beschreibung>Mäßige Depression</beschreibung>
+                <regel>GROESSERGLEICHALS 22</regel>
+                <regel>KLEINERGLEICHALS 28</regel>
+            </beurteilung>
+			<beurteilung>
+                <ergebnisbereich>29-60 Punkte</ergebnisbereich>
+                <beschreibung>Schwere Depression</beschreibung>
+                <regel>GROESSERGLEICHALS 29</regel>
+            </beurteilung>
+        </auswertung>
+    </score>
 </root>
