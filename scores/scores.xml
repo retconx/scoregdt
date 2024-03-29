@@ -154,7 +154,7 @@
         </berechnung>
     </score>
     <score name="CHA&#x2082;DS&#x2082;-VASc-Score" gruppe="Kardiologie" gdtname="CHA2DS2-VASc-Score">
-        <information>Risikoabschätzung für einen Schlaganfall bei Vorhofflimmern</information>
+        <information>Abschätzung des Schlaganfallrisikos bei Vorhofflimmern</information>
         <part typ="Frame" id="0" titel="" zeile="0" spalte="0">
             <widget id="100" typ="CheckBox" titel="Congestive Heart Failure">
                 <wert>1</wert>
@@ -202,7 +202,7 @@
         </berechnung>
     </score>
     <score name="SCORE2" gruppe="Kardiologie">
-        <information>Risiko für ein kardiovaskuläres Ereignis in den nächsten 10 Jahren</information>
+        <information>Abschätzung des Risikos für ein kardiovaskuläres Ereignis in den nächsten 10 Jahren</information>
         <part typ="Frame" id="0" titel="" zeile="0" spalte="0">
             <widget id="100" typ="LineEdit" titel="Alter [40-69 Jahre]" alterspruefung="True">
                 <regex>^\d+$</regex>  
@@ -4494,7 +4494,7 @@
 		</auswertung>
     </score>
     <score name="SCORE2-OP" gruppe="Kardiologie">
-        <information>Risiko für ein kardiovaskuläres Ereignis in den nächsten 10 Jahren für ältere PatientInnen</information>
+        <information>Abschätzung des Risikos für ein kardiovaskuläres Ereignis in den nächsten 10 Jahren für ältere PatientInnen</information>
         <part typ="Frame" id="0" titel="" zeile="0" spalte="0">
             <widget id="100" typ="LineEdit" titel="Alter [70-89 Jahre]" alterspruefung="True">
                 <regex>^\d+$</regex>  
