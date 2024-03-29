@@ -140,34 +140,34 @@ class EinstellungenImportExport(QDialog):
                 pfad = fd.directory().absolutePath()
                 dateiname = datetime.datetime.strftime(datetime.datetime.now(), "%Y%m%d%H%M%S") + "_ScoreGdtEinstellungen.sed"
                 datei = os.path.join(pfad, dateiname)
-                try:
-                    with open(datei, "w") as exportfile:
-                        if self.checkboxEinstellungen[0].isChecked():
-                            section = "Allgemein"
-                            configExport.add_section(section)
-                            for option in self.configIni.options(section):
-                                if option != "version" and option != "releasedatum":
-                                    configExport[section][option] = self.configIni[section][option]
-                        if self.checkboxEinstellungen[1].isChecked():
-                            section = "GDT"
-                            configExport.add_section(section)
-                            for option in self.configIni.options(section):
-                                configExport[section][option] = self.configIni[section][option]      
-                        if self.checkboxEinstellungen[3].isChecked():
-                            section = "Benutzer"
-                            configExport.add_section(section)
-                            for option in self.configIni.options(section):
+                #try:
+                with open(datei, "w") as exportfile:
+                    if self.checkboxEinstellungen[0].isChecked():
+                        section = "Allgemein"
+                        configExport.add_section(section)
+                        for option in self.configIni.options(section):
+                            if option != "version" and option != "releasedatum":
                                 configExport[section][option] = self.configIni[section][option]
-                        if self.checkboxEinstellungen[4].isChecked():
-                            section = "Erweiterungen"
-                            configExport.add_section(section)
-                            for option in self.configIni.options(section):
-                                configExport[section][option] = self.configIni[section][option]
-                        configExport.write(exportfile)
-                        mb = QMessageBox(QMessageBox.Icon.Information, "Hinweis von ScoreGDT", "Die gewünschten Einstellungen wurden erfolgreich unter dem Namen " + dateiname + " exportiert.", QMessageBox.StandardButton.Ok)
-                        mb.exec()
-                        self.done(1)
-                except Exception as e:
-                    mb = QMessageBox(QMessageBox.Icon.Warning, "Hinweis von ScoreGDT", "Fehler beim Exportieren der Einstellungen: " + str(e), QMessageBox.StandardButton.Ok)
+                    if self.checkboxEinstellungen[1].isChecked():
+                        section = "GDT"
+                        configExport.add_section(section)
+                        for option in self.configIni.options(section):
+                            configExport[section][option] = self.configIni[section][option]      
+                    if self.checkboxEinstellungen[2].isChecked():
+                        section = "Benutzer"
+                        configExport.add_section(section)
+                        for option in self.configIni.options(section):
+                            configExport[section][option] = self.configIni[section][option]
+                    if self.checkboxEinstellungen[3].isChecked():
+                        section = "Erweiterungen"
+                        configExport.add_section(section)
+                        for option in self.configIni.options(section):
+                            configExport[section][option] = self.configIni[section][option]
+                    configExport.write(exportfile)
+                    mb = QMessageBox(QMessageBox.Icon.Information, "Hinweis von ScoreGDT", "Die gewünschten Einstellungen wurden erfolgreich unter dem Namen " + dateiname + " exportiert.", QMessageBox.StandardButton.Ok)
                     mb.exec()
+                    self.done(1)
+                # except Exception as e:
+                #     mb = QMessageBox(QMessageBox.Icon.Warning, "Hinweis von ScoreGDT", "Fehler beim Exportieren der Einstellungen: " + str(e), QMessageBox.StandardButton.Ok)
+                #     mb.exec()
                             

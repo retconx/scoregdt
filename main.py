@@ -1,7 +1,10 @@
 import sys, configparser, os, datetime, shutil, logger, re
 from enum import Enum
 import xml.etree.ElementTree as ElementTree
-import gdt, gdtzeile, gdttoolsL, class_part, class_widgets
+## Nur mit Lizenz
+import gdttoolsL
+## /## Nur mit Lizenz
+import gdt, gdtzeile, class_part, class_widgets
 import dialogUeberScoreGdt, dialogEinstellungenAllgemein, dialogEinstellungenGdt, dialogEinstellungenBenutzer, dialogEinstellungenLanrLizenzschluessel, dialogEula, dialogEinstellungenImportExport, class_enums,dialogScoreAuswahl
 from PySide6.QtCore import Qt, QTranslator, QLibraryInfo, QDate, QTime
 from PySide6.QtGui import QFont, QAction, QIcon, QDesktopServices, QPixmap
@@ -154,6 +157,7 @@ class MainWindow(QMainWindow):
         self.lanr = self.configIni["Erweiterungen"]["lanr"]
         self.lizenzschluessel = self.configIni["Erweiterungen"]["lizenzschluessel"]
 
+        ## Nur mit Lizenz
         # Prüfen, ob Lizenzschlüssel unverschlüsselt
         if len(self.lizenzschluessel) == 29:
             logger.logger.info("Lizenzschlüssel unverschlüsselt")
@@ -162,6 +166,7 @@ class MainWindow(QMainWindow):
                     self.configIni.write(configfile)
         else:
             self.lizenzschluessel = gdttoolsL.GdtToolsLizenzschluessel.dekrypt(self.lizenzschluessel)
+        ## /Nur mit Lizenz
 
         # Prüfen, ob EULA gelesen
         if not self.eulagelesen:
@@ -194,7 +199,9 @@ class MainWindow(QMainWindow):
             mb = QMessageBox(QMessageBox.Icon.Question, "Hinweis von ScoreGDT", "Vermutlich starten Sie ScoreGDT das erste Mal auf diesem PC.\nMöchten Sie jetzt die Grundeinstellungen vornehmen?", QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No)
             mb.setDefaultButton(QMessageBox.StandardButton.Yes)
             if mb.exec() == QMessageBox.StandardButton.Yes:
+                ## Nur mit Lizenz
                 self.einstellungenLanrLizenzschluessel(False)
+                ## /Nur mit Lizenz
                 self.einstellungenGdt(False)
                 self.einstellungenBenutzer(False)
                 self.einstellungenAllgmein(False, True)
@@ -238,6 +245,9 @@ class MainWindow(QMainWindow):
             mb = QMessageBox(QMessageBox.Icon.Warning, "Hinweis von ScoreGDT", "Problem beim Aktualisieren auf Version " + configIniBase["Allgemein"]["version"], QMessageBox.StandardButton.Ok)
             mb.exec()
 
+        self.addOnsFreigeschaltet = True
+
+        ## Nur mit Lizenz
         # Pseudo-Lizenz?
         self.pseudoLizenzId = ""
         rePatId = r"^patid\d+$"
@@ -251,6 +261,7 @@ class MainWindow(QMainWindow):
         if self.lizenzschluessel != "" and gdttoolsL.GdtToolsLizenzschluessel.getSoftwareId(self.lizenzschluessel) == gdttoolsL.SoftwareId.SCOREGDTPSEUDO and self.pseudoLizenzId == "":
             mb = QMessageBox(QMessageBox.Icon.Warning, "Hinweis von ScoreGDT", "Bei Verwendung einer Pseudolizenz muss ScoreGDT mit einer Patienten-Id als Startargument im Format \"patid<Pat.-Id>\" ausgeführt werden.", QMessageBox.StandardButton.Ok)
             mb.exec() 
+        ## /Nur mit Lizenz
         
         jahr = datetime.datetime.now().year
         copyrightJahre = "2024"
@@ -283,9 +294,11 @@ class MainWindow(QMainWindow):
             self.patId = str(gd.getInhalt("3000"))
             self.name = str(gd.getInhalt("3102")) + " " + str(gd.getInhalt("3101"))
             logger.logger.info("PatientIn " + self.name + " (ID: " + self.patId + ") geladen")
+            ## Nur mit Lizenz
             if self.pseudoLizenzId != "":
                 self.patid = self.pseudoLizenzId
                 logger.logger.info("PatId wegen Pseudolizenz auf " + self.pseudoLizenzId + " gesetzt")
+            ## /Nur mit Lizenz
             self.geburtsdatum = str(gd.getInhalt("3103"))[0:2] + "." + str(gd.getInhalt("3103"))[2:4] + "." + str(gd.getInhalt("3103"))[4:8]
             self.geschlecht = str(gd.getInhalt("3110")) # 1=männlich, 2=weiblich
             logger.logger.info("Geschlecht aus PVS-GDT (3110): " + self.geschlecht)
@@ -573,8 +586,10 @@ class MainWindow(QMainWindow):
             datumBenutzerLayoutG.addWidget(self.dateEditUntersuchungsdatum, 1, 0)
             datumBenutzerLayoutG.addWidget(self.comboBoxBenutzer, 1, 1)
                         
+            ## Nur mit Lizenz
             if self.addOnsFreigeschaltet and gdttoolsL.GdtToolsLizenzschluessel.getSoftwareId(self.lizenzschluessel) == gdttoolsL.SoftwareId.SCOREGDTPSEUDO:
                 mainLayoutV.addWidget(self.labelPseudolizenz, alignment=Qt.AlignmentFlag.AlignCenter)
+            ## /Nur mit Lizenz
             mainLayoutV.addWidget(groupboxPatientendaten)
             mainLayoutV.addWidget(labelScoreName, alignment=Qt.AlignmentFlag.AlignCenter)
             mainLayoutV.addWidget(labelScoreInformation, alignment=Qt.AlignmentFlag.AlignCenter)
@@ -589,11 +604,14 @@ class MainWindow(QMainWindow):
                 mainLayoutV.addWidget(groupBoxAuswertung)
             mainLayoutV.addLayout(datumBenutzerLayoutG)
             mainLayoutV.addWidget(self.pushButtonSenden)
-            gueltigeLizenztage = gdttoolsL.GdtToolsLizenzschluessel.nochTageGueltig(self.lizenzschluessel)
-            if self.addOnsFreigeschaltet and gdttoolsL.GdtToolsLizenzschluessel.getGueltigkeitsdauer(self.lizenzschluessel) == gdttoolsL.Gueltigkeit.EINJAHR and gueltigeLizenztage  > 0 and gueltigeLizenztage <= 30:
-                labelLizenzLaeuftAus = QLabel("Die genutzte Lizenz ist noch " + str(gueltigeLizenztage) + " Tage gültig.")
-                labelLizenzLaeuftAus.setStyleSheet("color:rgb(200,0,0)")
-                mainLayoutV.addWidget(labelLizenzLaeuftAus, alignment=Qt.AlignmentFlag.AlignCenter)
+            ## Nur mit Lizenz
+            if self.addOnsFreigeschaltet:
+                gueltigeLizenztage = gdttoolsL.GdtToolsLizenzschluessel.nochTageGueltig(self.lizenzschluessel)
+                if gdttoolsL.GdtToolsLizenzschluessel.getGueltigkeitsdauer(self.lizenzschluessel) == gdttoolsL.Gueltigkeit.EINJAHR and gueltigeLizenztage  > 0 and gueltigeLizenztage <= 30:
+                    labelLizenzLaeuftAus = QLabel("Die genutzte Lizenz ist noch " + str(gueltigeLizenztage) + " Tage gültig.")
+                    labelLizenzLaeuftAus.setStyleSheet("color:rgb(200,0,0)")
+                    mainLayoutV.addWidget(labelLizenzLaeuftAus, alignment=Qt.AlignmentFlag.AlignCenter)
+            ## /Nur mit Lizenz
             self.widget.setLayout(mainLayoutV)
             self.setCentralWidget(self.widget)
 
@@ -617,11 +635,13 @@ class MainWindow(QMainWindow):
             einstellungenBenutzerAction = QAction("BenutzerInnen verwalten", self)
             einstellungenBenutzerAction.triggered.connect(lambda checked=False, neustartfrage=True: self.einstellungenBenutzer(checked, True)) 
 
+            ## Nur mit Lizenz
             einstellungenErweiterungenAction = QAction("LANR/Lizenzschlüssel", self)
             einstellungenErweiterungenAction.triggered.connect(lambda checked=False, neustartfrage=True: self.einstellungenLanrLizenzschluessel(checked, True)) 
             einstellungenImportExportAction = QAction("Im- /Exportieren", self)
             einstellungenImportExportAction.triggered.connect(self.einstellungenImportExport) 
             einstellungenImportExportAction.setMenuRole(QAction.MenuRole.NoRole)
+            ## /Nur mit Lizenz
             hilfeMenu = menubar.addMenu("Hilfe")
             hilfeWikiAction = QAction("ScoreGDT Wiki", self)
             hilfeWikiAction.triggered.connect(self.scoregdtWiki)
@@ -641,8 +661,10 @@ class MainWindow(QMainWindow):
             einstellungenMenu.addAction(einstellungenAllgemeinAction)
             einstellungenMenu.addAction(einstellungenGdtAction)
             einstellungenMenu.addAction(einstellungenBenutzerAction)
+            ## Nur mit Lizenz
             einstellungenMenu.addAction(einstellungenErweiterungenAction)
             einstellungenMenu.addAction(einstellungenImportExportAction)
+            ## /Nur mit Lizenz
             hilfeMenu.addAction(hilfeWikiAction)
             hilfeMenu.addSeparator()
             hilfeMenu.addAction(hilfeUpdateAction)
@@ -1290,6 +1312,7 @@ class MainWindow(QMainWindow):
                 if mb.exec() == QMessageBox.StandardButton.Yes:
                     os.execl(sys.executable, __file__, *sys.argv)
 
+    ## Nur mit Lizenz
     def einstellungenLanrLizenzschluessel(self, checked, neustartfrage = False):
         de = dialogEinstellungenLanrLizenzschluessel.EinstellungenProgrammerweiterungen(self.configPath)
         if de.exec() == 1:
@@ -1309,6 +1332,7 @@ class MainWindow(QMainWindow):
         de = dialogEinstellungenImportExport.EinstellungenImportExport(self.configPath)
         if de.exec() == 1:
             pass
+    ## /Nur mit Lizenz
     
     def scoregdtWiki(self, link):
         QDesktopServices.openUrl("https://github.com/retconx/scoregdt/wiki")
