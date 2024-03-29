@@ -7377,7 +7377,7 @@
             </beurteilung>
 		</auswertung>
     </score>
-    <score name="Therapieschwelle Osteoporose" gruppe="Orthopädie" keineTestuebermittlung="True">
+    <score name="Therapieschwelle Osteoporose" gruppe="Orthopädie">
         <information>Beurteilung der Indikation für eine spezifische Osteoporosetherapie (DVO-Leitlinie 2023)</information>
         <part typ="GroupBox" id="0" titel="Wirbelfrakturen" zeile="0" spalte="0">
             <widget id="100" typ="CheckBox" titel="Wirbelkörperfraktur &#x2264; 12 Monate">
@@ -7970,7 +7970,7 @@
                 <wert>2</wert>
             </widget>
         </part>
-        <part id="9" typ="GroupBox" titel="O&#x2082;-Sättigung &#x3c; 95%" zeile="3" spalte="0">
+        <part id="9" typ="GroupBox" titel="O&#x2082;-Sättigung &#x3c; 95%" gdttitel="O2-Sättigung &#x3c; 95%" zeile="3" spalte="0">
             <widget id="117" typ="RadioButton" titel="Nein" checked="True">
                 <wert>0</wert>
             </widget>

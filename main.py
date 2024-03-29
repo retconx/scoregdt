@@ -1100,6 +1100,25 @@ class MainWindow(QMainWindow):
 
     def comboBoxBenutzerIndexChanged(self, index):
         self.aktuelleBenuztzernummer = index
+
+    def fuerGdtBereinigen(self, string:str):
+        """
+        Ersetzt GDT-unlesbare Unicodezeichen
+        Parameter:
+            string:str
+        Return:
+            Ersetzter String
+        """
+        ersetzt = string
+        zuErsetzendeStrings = {
+            "\u2082": "2",
+            "\u00b2": "2",
+            "\u2264": "<=",
+            "\u2265": ">="
+        }
+        for zuErsetzen in zuErsetzendeStrings:
+            ersetzt = ersetzt.replace(zuErsetzen, zuErsetzendeStrings[zuErsetzen])
+        return ersetzt
             
     def pushButtonSendenClicked(self):
         if self.lineEditScoreErgebnis.text() != "":
@@ -1127,16 +1146,16 @@ class MainWindow(QMainWindow):
                         if widget.getQt().isChecked():
                             partId = widget.getPartId()
                             part = self.getPart(partId)
-                            test = gdt.GdtTest("ScoreGDT" + "_" + widget.getId(), part.getTitel(), widget.getTitel(), widget.getEinheit()) # type: ignore
+                            test = gdt.GdtTest("ScoreGDT" + "_" + widget.getId(), self.fuerGdtBereinigen(part.getTitel()), self.fuerGdtBereinigen(widget.getTitel()), self.fuerGdtBereinigen(widget.getEinheit())) # type: ignore
                     elif widget.getTyp() == class_widgets.WidgetTyp.COMBOBOX:
-                        test = gdt.GdtTest("ScoreGDT" + "_" + widget.getId(), widget.getTitel(), widget.getItemText(widget.getQt().currentIndex()), widget.getEinheit()) # type: ignore
+                        test = gdt.GdtTest("ScoreGDT" + "_" + widget.getId(), self.fuerGdtBereinigen(widget.getTitel()), self.fuerGdtBereinigen(widget.getItemText(widget.getQt().currentIndex())), self.fuerGdtBereinigen(widget.getEinheit())) # type: ignore
                     elif widget.getTyp() == class_widgets.WidgetTyp.CHECKBOX:
                         wert = "0"
                         if widget.getQt().isChecked():
                             wert = widget.getWert().replace(".", ",").replace(",0", "")
-                        test = gdt.GdtTest("ScoreGDT" + "_" + widget.getId(), widget.getTitel(), wert, widget.getEinheit()) # type: ignore
+                        test = gdt.GdtTest("ScoreGDT" + "_" + widget.getId(), self.fuerGdtBereinigen(widget.getTitel()), wert, self.fuerGdtBereinigen(widget.getEinheit())) # type: ignore
                     else:
-                        test = gdt.GdtTest("ScoreGDT" + "_" + widget.getId(), widget.getTitel(), widget.getWert().replace(".", ",").replace(",0", ""), widget.getEinheit()) # type: ignore
+                        test = gdt.GdtTest("ScoreGDT" + "_" + widget.getId(), self.fuerGdtBereinigen(widget.getTitel()), widget.getWert().replace(".", ",").replace(",0", ""), self.fuerGdtBereinigen(widget.getEinheit())) # type: ignore
                     if test != None:
                         gd.addTest(test)
             gdtname = str(self.scoreRoot.get("name")) # type: ignore
