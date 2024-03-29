@@ -3,7 +3,7 @@ from enum import Enum
 import xml.etree.ElementTree as ElementTree
 ## Nur mit Lizenz
 import gdttoolsL
-## /## Nur mit Lizenz
+## /Nur mit Lizenz
 import gdt, gdtzeile, class_part, class_widgets
 import dialogUeberScoreGdt, dialogEinstellungenAllgemein, dialogEinstellungenGdt, dialogEinstellungenBenutzer, dialogEinstellungenLanrLizenzschluessel, dialogEula, dialogEinstellungenImportExport, class_enums,dialogScoreAuswahl
 from PySide6.QtCore import Qt, QTranslator, QLibraryInfo, QDate, QTime
