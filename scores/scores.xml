@@ -8008,7 +8008,7 @@
                 <operation>PLUS$id{119}</operation>
                 <operation>PLUS$id{121}</operation>
             </formel>
-            <ergebniseinheit></ergebniseinheit>
+            <ergebniseinheit>Punkte</ergebniseinheit>
             <variablen>
                 <variable name="alterspunkt">
                     <bedingung>
@@ -8223,6 +8223,148 @@
                 <beschreibung>Schwere Depression</beschreibung>
                 <regel>GROESSERGLEICHALS 29</regel>
             </beurteilung>
+        </auswertung>
+    </score>
+    <score name="PHQ-9-Fragebogen für Patienten" gruppe="Neurologie">
+        <information>Erfassung depressiver Störungen</information>
+        <part id="0" typ="Frame" titel="" erklaerung="Wie oft fühlten Sie sich im Verlauf der letzten 2 Wochen&#xd;&#xa;durch die folgenden Beschwerden beeinträchtigt?" zeile="0" spalte="0">
+            <widget />
+        </part>
+        <part id="1" typ="Frame" titel="" zeile="1" spalte="0" erklaerung="Wenig Interesse oder Freude an Ihren Tätigkeiten">
+            <widget id="100" typ="ComboBox" titel="Interessenslosigkeit" titelbreite="150">
+                <items>
+                    <item wert="0">Überhaupt nicht</item>
+                    <item wert="1">An einzelnen Tagen</item>
+                    <item wert="2">An mehr als der Hälfte der Tage</item>
+                    <item wert="3">Beinahe jeden Tag</item>
+                    </items>
+            </widget>
+        </part>
+        <part id="2" typ="Frame" titel="" zeile="1" spalte="1" erklaerung="Niedergeschlagenheit, Schwermut oder Hoffnungslosigkeit">
+            <widget id="101" typ="ComboBox" titel="Niedergeschlagenheit" titelbreite="150">
+                <items>
+                    <item wert="0">Überhaupt nicht</item>
+                    <item wert="1">An einzelnen Tagen</item>
+                    <item wert="2">An mehr als der Hälfte der Tage</item>
+                    <item wert="3">Beinahe jeden Tag</item>
+                    </items>
+            </widget>
+        </part>
+        <part id="3" typ="Frame" titel="" zeile="1" spalte="2" erklaerung="Schwierigkeiten ein- oder durchzuschlafen oder&#xd;&#xa;vermehrter Schlaf">
+            <widget id="102" typ="ComboBox" titel="Schlafstörung" titelbreite="150">
+                <items>
+                    <item wert="0">Überhaupt nicht</item>
+                    <item wert="1">An einzelnen Tagen</item>
+                    <item wert="2">An mehr als der Hälfte der Tage</item>
+                    <item wert="3">Beinahe jeden Tag</item>
+                    </items>
+            </widget>
+        </part>
+        <part id="4" typ="Frame" titel="" zeile="2" spalte="0" erklaerung="Müdigkeit oder Gefühl, keine Energie zu haben">
+            <widget id="103" typ="ComboBox" titel="Müdigkeit" titelbreite="150">
+                <items>
+                    <item wert="0">Überhaupt nicht</item>
+                    <item wert="1">An einzelnen Tagen</item>
+                    <item wert="2">An mehr als der Hälfte der Tage</item>
+                    <item wert="3">Beinahe jeden Tag</item>
+                    </items>
+            </widget>
+        </part>
+        <part id="5" typ="Frame" titel="" zeile="2" spalte="1" erklaerung="Verminderter Appetit oder übermäßiges Bedürfnis zu essen">
+            <widget id="104" typ="ComboBox" titel="Appetitlosigkeit" titelbreite="150">
+                <items>
+                    <item wert="0">Überhaupt nicht</item>
+                    <item wert="1">An einzelnen Tagen</item>
+                    <item wert="2">An mehr als der Hälfte der Tage</item>
+                    <item wert="3">Beinahe jeden Tag</item>
+                    </items>
+            </widget>
+        </part>
+        <part id="6" typ="Frame" titel="" zeile="2" spalte="2" erklaerung="Schlechte Meinung von sich selbst; Gefühl, ein Versager&#xd;&#xa;zu sein oder die Familie enttäuscht zu haben">
+            <widget id="105" typ="ComboBox" titel="Versagergefühl" titelbreite="150">
+                <items>
+                    <item wert="0">Überhaupt nicht</item>
+                    <item wert="1">An einzelnen Tagen</item>
+                    <item wert="2">An mehr als der Hälfte der Tage</item>
+                    <item wert="3">Beinahe jeden Tag</item>
+                    </items>
+            </widget>
+        </part>
+        <part id="7" typ="Frame" titel="" zeile="3" spalte="0" erklaerung="Schwierigkeiten, sich auf etwas zu konzentrieren,&#xd;&#xa;z. B. beim Zeitunglesen oder Fernsehen">
+            <widget id="106" typ="ComboBox" titel="Konzentrationsstörung" titelbreite="150">
+                <items>
+                    <item wert="0">Überhaupt nicht</item>
+                    <item wert="1">An einzelnen Tagen</item>
+                    <item wert="2">An mehr als der Hälfte der Tage</item>
+                    <item wert="3">Beinahe jeden Tag</item>
+                    </items>
+            </widget>
+        </part>
+        <part id="8" typ="Frame" titel="" zeile="3" spalte="1" erklaerung="Waren Ihre Bewegungen oder Ihre Sprache so verlangsamt,&#xd;&#xa;dass es auch anderen auffallen würde?&#xd;&#xa;Oder waren Sie im Gegenteil „zappelig“ oder ruhelos und&#xd;&#xa;hatten dadurch einen stärkeren Bewegungsdrang als sonst?">
+            <widget id="107" typ="ComboBox" titel="Verlangsamt/Zappelig" titelbreite="150">
+                <items>
+                    <item wert="0">Überhaupt nicht</item>
+                    <item wert="1">An einzelnen Tagen</item>
+                    <item wert="2">An mehr als der Hälfte der Tage</item>
+                    <item wert="3">Beinahe jeden Tag</item>
+                    </items>
+            </widget>
+        </part>
+        <part id="9" typ="Frame" titel="" zeile="3" spalte="2" erklaerung="Gedanken, dass Sie lieber tot wären oder sich Leid&#xd;&#xa;zufügen möchten">
+            <widget id="108" typ="ComboBox" titel="Suizidgedanken" titelbreite="150">
+                <items>
+                    <item wert="0">Überhaupt nicht</item>
+                    <item wert="1">An einzelnen Tagen</item>
+                    <item wert="2">An mehr als der Hälfte der Tage</item>
+                    <item wert="3">Beinahe jeden Tag</item>
+                    </items>
+            </widget>
+        </part>
+        
+        <berechnung>
+            <formel>
+                <operation>$id{100}PLUS$id{101}</operation>
+                <operation>PLUS$id{102}</operation>
+                <operation>PLUS$id{103}</operation>
+                <operation>PLUS$id{104}</operation>
+                <operation>PLUS$id{105}</operation>
+                <operation>PLUS$id{106}</operation>
+                <operation>PLUS$id{107}</operation>
+                <operation>PLUS$id{108}</operation>
+            </formel>
+            <ergebniseinheit>Punkte</ergebniseinheit>
+            <variablen>
+            </variablen>
+        </berechnung>
+        <auswertung>
+            <beurteilung>
+                <ergebnisbereich>&#x3c; 5 Punkte</ergebnisbereich>
+                <beschreibung>Minimale depressive Symptomatik</beschreibung>
+                <regel>KLEINERALS 5</regel>
+            </beurteilung>   
+            <beurteilung>
+                <ergebnisbereich>5-9 Punkte</ergebnisbereich>
+                <beschreibung>Milde depressive Symptomatik</beschreibung>
+                <regel>GROESSERGLEICHALS 5</regel>
+                <regel>KLEINERGLEICHALS 9</regel>
+            </beurteilung>   
+            <beurteilung>
+                <ergebnisbereich>10-14 Punkte</ergebnisbereich>
+                <beschreibung>Leichtgradige depressive Symptomatik</beschreibung>
+                <regel>GROESSERGLEICHALS 10</regel>
+                <regel>KLEINERGLEICHALS 14</regel>
+            </beurteilung>   
+            <beurteilung>
+                <ergebnisbereich>15-19 Punkte</ergebnisbereich>
+                <beschreibung>Mittelgradige depressive Symptomatik</beschreibung>
+                <regel>GROESSERGLEICHALS 10</regel>
+                <regel>KLEINERGLEICHALS 14</regel>
+            </beurteilung>   
+            <beurteilung>
+                <ergebnisbereich>20-27 Punkte</ergebnisbereich>
+                <beschreibung>Schwergradige depressive Symptomatik</beschreibung>
+                <regel>GROESSERGLEICHALS 20</regel>
+            </beurteilung>   
         </auswertung>
     </score>
 </root>
