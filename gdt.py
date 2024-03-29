@@ -274,7 +274,7 @@ class GdtDatei:
             enc = "cp1252"
 
         try:
-            with open(pfad, "w", encoding=enc) as fobj:
+            with open(pfad, "w", encoding=enc, newline="") as fobj:
                 for zeile in self.gdtDatei:
                     fobj.write(zeile)
             return True
