@@ -1269,7 +1269,7 @@ class MainWindow(QMainWindow):
         if de.exec() == 1:
             namen = []
             kuerzel = []
-            for i in range(5):
+            for i in range(10):
                 if de.lineEditNamen[i].text() != "":
                     namen.append(de.lineEditNamen[i].text())
                     kuerzel.append(de.lineEditKuerzel[i].text())
