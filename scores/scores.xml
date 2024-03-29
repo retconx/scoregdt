@@ -7898,4 +7898,158 @@
             </beurteilung>
 		</auswertung>
     </score>
+    <score name="4PEPS" gruppe="Pneumologie">
+        <information>Abschätzung der klinischen Vortestwahrscheinlichkeit für das Vorliegen einer Lungenembolie</information>
+        <part id="0" typ="Frame" zeile="0" spalte="0">
+            <widget id="100" typ="LineEdit" titel="Alter" alterspruefung="True">
+                <regex>^\d+?$</regex>
+                <einheit>Jahre</einheit>
+            </widget>
+        </part>
+        <part id="1" typ="GroupBox" titel="Geschlecht" zeile="0" spalte="1" geschlechtpruefung="True">
+            <widget id="101" typ="RadioButton" titel="Weiblich" checked="True">
+                <wert>0</wert>
+            </widget>
+            <widget id="102" typ="RadioButton" titel="Männlich">
+                <wert>2</wert>
+            </widget>
+        </part>
+        <part id="2" typ="GroupBox" titel="Chronische Atemwegserkrankung" zeile="0" spalte="2">
+            <widget id="103" typ="RadioButton" titel="Nein" checked="True">
+                <wert>0</wert>
+            </widget>
+            <widget id="104" typ="RadioButton" titel="Ja">
+                <wert>-1</wert>
+            </widget>
+        </part>
+        <part id="3" typ="GroupBox" titel="Herzfrequenz &#x3c; 80/min" zeile="1" spalte="0">
+            <widget id="105" typ="RadioButton" titel="Nein" checked="True">
+                <wert>0</wert>
+            </widget>
+            <widget id="106" typ="RadioButton" titel="Ja">
+                <wert>-1</wert>
+            </widget>
+        </part>
+        <part id="4" typ="GroupBox" titel="Brustschmerz UND Atemnot" zeile="1" spalte="1">
+            <widget id="107" typ="RadioButton" titel="Nein" checked="True">
+                <wert>0</wert>
+            </widget>
+            <widget id="108" typ="RadioButton" titel="Ja">
+                <wert>1</wert>
+            </widget>
+        </part>
+        <part id="5" typ="GroupBox" titel="Derzeitige Östrogenbehandlung" zeile="1" spalte="2">
+            <widget id="109" typ="RadioButton" titel="Nein" checked="True">
+                <wert>0</wert>
+            </widget>
+            <widget id="110" typ="RadioButton" titel="Ja">
+                <wert>2</wert>
+            </widget>
+        </part>
+        <part id="6" typ="GroupBox" titel="Anamnestisch venöse Thromboembolie" zeile="2" spalte="0">
+            <widget id="111" typ="RadioButton" titel="Nein" checked="True">
+                <wert>0</wert>
+            </widget>
+            <widget id="112" typ="RadioButton" titel="Ja">
+                <wert>2</wert>
+            </widget>
+        </part>
+        <part id="7" typ="GroupBox" titel="Synkope" zeile="2" spalte="1">
+            <widget id="113" typ="RadioButton" titel="Nein" checked="True">
+                <wert>0</wert>
+            </widget>
+            <widget id="114" typ="RadioButton" titel="Ja">
+                <wert>2</wert>
+            </widget>
+        </part>
+        <part id="8" typ="GroupBox" titel="Immobilität innerhalb der letzten vier Wochen" erklaerung="Operation, Gipsverband an unterer Extremität oder&#xd;&#xa;Bettlägerigkeit &#x3e; Tage wegen akuter Erkrankung" zeile="2" spalte="2">
+            <widget id="115" typ="RadioButton" titel="Nein" checked="True">
+                <wert>0</wert>
+            </widget>
+            <widget id="116" typ="RadioButton" titel="Ja">
+                <wert>2</wert>
+            </widget>
+        </part>
+        <part id="9" typ="GroupBox" titel="O&#x2082;-Sättigung &#x3c; 95%" zeile="3" spalte="0">
+            <widget id="117" typ="RadioButton" titel="Nein" checked="True">
+                <wert>0</wert>
+            </widget>
+            <widget id="118" typ="RadioButton" titel="Ja">
+                <wert>3</wert>
+            </widget>
+        </part>
+        <part id="10" typ="GroupBox" titel="Wadenschmerz und/oder unilaterales Beinödem" zeile="3" spalte="1">
+            <widget id="119" typ="RadioButton" titel="Nein" checked="True">
+                <wert>0</wert>
+            </widget>
+            <widget id="120" typ="RadioButton" titel="Ja">
+                <wert>3</wert>
+            </widget>
+        </part>
+        <part id="11" typ="GroupBox" titel="Lungenembolie wahrscheinlichste Diagnose" zeile="3" spalte="2">
+            <widget id="121" typ="RadioButton" titel="Nein" checked="True">
+                <wert>0</wert>
+            </widget>
+            <widget id="122" typ="RadioButton" titel="Ja">
+                <wert>5</wert>
+            </widget>
+        </part>
+        <berechnung>
+            <formel>
+                <operation>$var{alterspunkt}PLUS$id{101}</operation>
+                <operation>PLUS$id{103}</operation>
+                <operation>PLUS$id{105}</operation>
+                <operation>PLUS$id{107}</operation>
+                <operation>PLUS$id{109}</operation>
+                <operation>PLUS$id{111}</operation>
+                <operation>PLUS$id{113}</operation>
+                <operation>PLUS$id{115}</operation>
+                <operation>PLUS$id{117}</operation>
+                <operation>PLUS$id{119}</operation>
+                <operation>PLUS$id{121}</operation>
+            </formel>
+            <ergebniseinheit></ergebniseinheit>
+            <variablen>
+                <variable name="alterspunkt">
+                    <bedingung>
+                        <regel>$id{100}KLEINERALS50</regel>
+                        <wert>-2</wert>
+                    </bedingung>
+                    <bedingung>
+                        <regel>$id{100}GROESSERGLEICHALS50</regel>
+                        <regel>$id{100}KLEINERGLEICHALS64</regel>
+                        <wert>-1</wert>
+                    </bedingung>
+                    <bedingung>
+                        <regel>$id{100}GROESSERALS64</regel>
+                        <wert>0</wert>
+                    </bedingung>
+                </variable>
+            </variablen>
+        </berechnung>
+        <auswertung>
+			<beurteilung>
+                <ergebnisbereich>&#x3c; 0 Punkte</ergebnisbereich>
+                <beschreibung>Sehr geringe Wahrscheinlichkeit (&#x3c; 2%)</beschreibung>
+                <regel>KLEINERALS 0</regel>
+            </beurteilung>
+			<beurteilung>
+                <ergebnisbereich>0-5 Punkte</ergebnisbereich>
+                <beschreibung>Geringe Wahrscheinlichkeit (2-20%)</beschreibung>
+                <regel>GROESSERGLEICHALS 0</regel>
+                <regel>KLEINERGLEICHALS 5</regel>
+            </beurteilung>
+			<beurteilung>
+                <ergebnisbereich>6-12 Punkte</ergebnisbereich>
+                <beschreibung>Mäßige Wahrscheinlichkeit (20-65%)</beschreibung>
+                <regel>GROESSERGLEICHALS 6</regel>
+                <regel>KLEINERGLEICHALS 12</regel>
+            </beurteilung>
+			<beurteilung>
+                <ergebnisbereich>&#x3e; 12 Punkte</ergebnisbereich>
+                <beschreibung>Hohe Wahrscheinlichkeit (&#x3e; 65%)</beschreibung>
+                <regel>GROESSERALS 12</regel>
+            </beurteilung>
+		</auswertung>
+    </score>
 </root>

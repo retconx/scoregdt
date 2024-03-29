@@ -271,7 +271,8 @@ class MainWindow(QMainWindow):
         gd = gdt.GdtDatei()
         self.patId = "-"
         self.name = "-"
-        self.geburtsdatum = "-"
+        self.geburtsdatum =  datetime.date.today().strftime("%d.%m.%Y")
+        self.geschlecht = "1"
         mbErg = QMessageBox.StandardButton.Yes
         try:
             # Prüfen, ob PVS-GDT-ID eingetragen
@@ -287,6 +288,7 @@ class MainWindow(QMainWindow):
                 logger.logger.info("PatId wegen Pseudolizenz auf " + self.pseudoLizenzId + " gesetzt")
             self.geburtsdatum = str(gd.getInhalt("3103"))[0:2] + "." + str(gd.getInhalt("3103"))[2:4] + "." + str(gd.getInhalt("3103"))[4:8]
             self.geschlecht = str(gd.getInhalt("3110")) # 1=männlich, 2=weiblich
+            logger.logger.info("Geschlecht aus PVS-GDT (3110): " + self.geschlecht)
         except (IOError, gdtzeile.GdtFehlerException) as e:
             logger.logger.warning("Fehler beim Laden der GDT-Datei: " + str(e))
             mb = QMessageBox(QMessageBox.Icon.Information, "Hinweis von ScoreGDT", "Fehler beim Laden der GDT-Datei:\n" + str(e) + "\n\nSoll ScoreGDT dennoch geöffnet werden?", QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No)
@@ -297,6 +299,7 @@ class MainWindow(QMainWindow):
         if mbErg == QMessageBox.StandardButton.Yes:
             self.widget = QWidget()
             self.widget.installEventFilter(self)
+            logger.logger.warning("ScoreGDT öffnen trotz GDT-Ladefehler")
 
             # Updateprüfung auf Github
             try:
@@ -305,7 +308,7 @@ class MainWindow(QMainWindow):
                 mb = QMessageBox(QMessageBox.Icon.Warning, "Hinweis von ScoreGDT", "Updateprüfung nicht möglich.\nBitte überprüfen Sie Ihre Internetverbindung.", QMessageBox.StandardButton.Ok)
                 mb.exec()
                 logger.logger.warning("Updateprüfung nicht möglich: " + str(e))
-            
+
             if self.root != None:
                 self.scoreRoot = self.root.find("score")
                 ds = dialogScoreAuswahl.ScoreAuswahl(self.root, self.standardscore)
@@ -439,10 +442,10 @@ class MainWindow(QMainWindow):
                         labelEinheitUndErklaerung.setFont(self.fontNormal)
                         partLayout.addWidget(labelEinheitUndErklaerung, partGridZeile, 2, alignment=Qt.AlignmentFlag.AlignTop)
                         # Prüfen, ob Alterstextfeld
-                        if widget.getTyp() == class_widgets.WidgetTyp.LINEEDIT and  widget.alterspruefungAktiv():
+                        if widget.getTyp() == class_widgets.WidgetTyp.LINEEDIT and widget.alterspruefungAktiv():
                             widget.getQt().setText(str(getAktuellesAlterInJahren(self.geburtsdatumAlsDate)))
                             logger.logger.info("Alter aus GDT-Datei in Lineedit " + widget.getId() + " eingetragen")
-                            if not widget.zahlengrenzregelnErfuellt():
+                            if widget.zahlengrenzeGesetzt() and not widget.zahlengrenzregelnErfuellt():
                                 mb = QMessageBox(QMessageBox.Icon.Question, "Hinweis von ScoreGDT", "Das Alter liegt außerhalb der zulässigen Grenzen.\nSoll ScoreGDT neu gestartet werden?", QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No)
                                 mb.setDefaultButton(QMessageBox.StandardButton.Yes)
                                 mb.button(QMessageBox.StandardButton.Yes).setText("Ja")
@@ -779,10 +782,10 @@ class MainWindow(QMainWindow):
         regexZahl = r"^-?\d+([.,]\d)?$"
         regelErfuellt = False
         regel = regel.replace(" ", "")
-        regelMitWerten = self.ersetzeIdVariablen(regel)
+        # regelMitWerten = self.ersetzeIdVariablen(regel)
         for regelart in class_enums.Regelarten._member_names_:
-            if regelart in regelMitWerten:
-                operanden = regelMitWerten.split(regelart)
+            if regelart in regel: # ehemals regelMitWerten
+                operanden = regel.split(regelart) # ehemals regelMitWerten
                 operandenAlsZahl = []
                 sindZahlen = True
                 for operand in operanden:
@@ -828,6 +831,24 @@ class MainWindow(QMainWindow):
             ersetzt = ersetzt.replace(idVariable, self.getWertAusWidgetId(id))
         return ersetzt
     
+    def ersetzeVariablen(self, variablen:dict, string:str):
+        """
+        Ersetzt Variablen im Format $var{xxx} durch deen Wert
+        Parameter:
+            variablen: dict mit key: Variablenname, value: Variablenwert
+            strint:. str
+        Return: string mit ersetzten Variablen
+        """
+        patternVar = r"\$var{[^{}]+}"
+        varVariablen = re.findall(patternVar, string)
+        ersetzt = string
+        for varVariable in varVariablen:
+            varName = varVariable[5:-1]
+            if varName in variablen:
+                ersetzt = ersetzt.replace(varVariable, variablen[varName])
+        return ersetzt
+
+    
     def pushButtonBerechnenClicked(self):
         formularOk = True
         for widget in self.widgets:
@@ -868,18 +889,26 @@ class MainWindow(QMainWindow):
                         variablenname = str(variableElement.get("name"))
                         # Ohne Bedingung
                         if variableElement.find("bedingung") == None:
-                            variablen[variablenname] = str(self.berechnung(self.ersetzeIdVariablen(str(variableElement.text))))
+                            text = str(variableElement.text)
+                            textMitIdWertErsetzt = self.ersetzeIdVariablen(text)
+                            textMitVarWertErsezt = self.ersetzeVariablen(variablen, textMitIdWertErsetzt)
+                            variablen[variablenname] = str(self.berechnung(textMitVarWertErsezt))
                         # Mit Bedinung(en)
                         else: 
                             for bedingungElement in variableElement.findall("bedingung"):
                                 regelErfuellt = True
                                 for regelElement in bedingungElement.findall("regel"):
                                     regel = str(regelElement.text)
-                                    if not self.regelIstErfuellt(regel):
+                                    regelMitIdWertErsetzt = self.ersetzeIdVariablen(regel)
+                                    regelMitVarWertErsetzt = self.ersetzeVariablen(variablen, regelMitIdWertErsetzt)
+                                    if not self.regelIstErfuellt(regelMitVarWertErsetzt):
                                         regelErfuellt = False
                                 if regelErfuellt:
                                     logger.logger.info("Regel " + regel + " erfüllt")
-                                    variablen[variablenname] = str(bedingungElement.find("wert").text) # type: ignore
+                                    wert = str(bedingungElement.find("wert").text) # type: ignore
+                                    wertMitIdWertErsetzt = self.ersetzeIdVariablen(wert)
+                                    wertMitVarWertErsetzt = self.ersetzeVariablen(variablen, wertMitIdWertErsetzt)
+                                    variablen[variablenname] = wertMitVarWertErsetzt
                     # $var{...}-Variablen durch Werte ersetzen
                     patternVar = r"\$var{[^{}]+}"
                     variablenMitNichtErfuelltenRegeln = []
