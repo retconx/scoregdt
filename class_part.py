@@ -1,4 +1,4 @@
-from PySide6.QtWidgets import QGroupBox, QGridLayout
+from PySide6.QtWidgets import QGroupBox, QFrame
 import xml.etree.ElementTree as ElementTree
 
 from enum import Enum

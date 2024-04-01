@@ -167,7 +167,7 @@
             <widget id="101" typ="CheckBox" titel="Hypertension">
                 <wert>1</wert>
             </widget>
-            <widget id="102" typ="CheckBox" titel="Age" alterspruefung="True" altersregel="GROESSERGLEICHALS75">
+            <widget id="102" typ="CheckBox" titel="Age &#x3e; 75" alterspruefung="True" altersregel="GROESSERGLEICHALS75">
                 <wert>2</wert>
                 <erklaerung>Alter &#x3e; 75 Jahre</erklaerung>
             </widget>
@@ -182,11 +182,11 @@
                 <wert>1</wert>
                 <erklaerung>pAVK, Herzinfarkt, schwere Aortensklerose</erklaerung>
             </widget>
-            <widget id="106" typ="CheckBox" titel="Age" alterspruefung="True" altersregel="GROESSERGLEICHALS65 UND KLEINERALS75">
+            <widget id="106" typ="CheckBox" titel="Age 65-74" alterspruefung="True" altersregel="GROESSERGLEICHALS65 UND KLEINERALS75">
                 <wert>1</wert>
                 <erklaerung>Alter 65-74 Jahre</erklaerung>
             </widget>
-            <widget id="107" typ="CheckBox" titel="Sex category" geschlechtpruefung="True">
+            <widget id="107" typ="CheckBox" titel="Sex category (female)" geschlechtpruefung="True">
                 <wert>1</wert>
                 <erklaerung>Weibliches Geschlecht</erklaerung>
             </widget>
@@ -8377,6 +8377,91 @@
                 <ergebnisbereich>20-27 Punkte</ergebnisbereich>
                 <beschreibung>Schwergradige depressive Symptomatik</beschreibung>
                 <regel>GROESSERGLEICHALS 20</regel>
+            </beurteilung>   
+        </auswertung>
+    </score>
+    <score name="Marburger Herz-Score" gruppe="Kardiologie">
+        <information>Abschätzung der Wahrscheinlichkeit einer Koronaren Herzkrankheit als Ursache für Brustschmerzen</information>
+        <quelle autor="Bösner et al.">Ruling out coronary heart disease in Primary Care. Development and international validation of a simple rule</quelle>
+        <part id="0" typ="GroupBox" titel="Geschlecht" zeile="0" spalte="0" geschlechtpruefung="True">
+            <widget id="100" typ="RadioButton" titel="Männlich" checked="True">
+                <wert>0</wert>   
+            </widget>
+            <widget id="101" typ="RadioButton" titel="Weiblich">
+                <wert>1</wert>   
+            </widget> 
+        </part>
+        <part id="1" typ="GroupBox" titel="Höheres Alter" zeile="0" spalte="1" erklaerung="Männer &#x2265; 55, Frauen &#x2265; 65 Jahre">
+            <widget id="102" typ="RadioButton" titel="Ja" titelbreite="250" alterspruefung="True" altersregel="M:GROESSERGLEICHALS55_W:GROESSERGLEICHALS65">
+                <wert>1</wert>  
+            </widget>
+            <widget id="103" typ="RadioButton" titel="Nein" titelbreite="250">
+                <wert>0</wert>  
+            </widget>
+        </part>
+        <part id="2" typ="GroupBox" titel="Vermutet der/die Patient/in eine Herzkrankheit als Ursache?" zeile="1" spalte="0">
+            <widget id="104" typ="RadioButton" titel="Ja" titelbreite="250">
+                <wert>1</wert>   
+            </widget>
+            <widget id="105" typ="RadioButton" titel="Nein" checked="True" titelbreite="250">
+                <wert>0</wert>   
+            </widget>
+        </part>
+        <part id="3" typ="GroupBox" titel="Sind die Schmerzen abhängig von körperlicher Belastung?" zeile="1" spalte="1">
+            <widget id="106" typ="RadioButton" titel="Ja" titelbreite="250">
+                <wert>1</wert>   
+            </widget>
+            <widget id="107" typ="RadioButton" titel="Nein" checked="True" titelbreite="250">
+                <wert>0</wert>   
+            </widget>
+        </part>
+        <part id="4" typ="GroupBox" titel="Sind die Schmerzen durch Palpation reproduzierbar?" zeile="2" spalte="0">
+            <widget id="108" typ="RadioButton" titel="Ja" titelbreite="250">
+                <wert>0</wert>   
+            </widget>
+            <widget id="109" typ="RadioButton" titel="Nein" checked="True" titelbreite="250">
+                <wert>1</wert>   
+            </widget>
+        </part>
+        <part id="5" typ="GroupBox" titel="Eine vaskuläre Erkrankung ist bereits bekannt." erklaerung="KHK, pAVK, Schlaganfall, TIA" zeile="2" spalte="1">
+            <widget id="110" typ="RadioButton" titel="Ja" titelbreite="250">
+                <wert>1</wert>   
+            </widget>
+            <widget id="111" typ="RadioButton" titel="Nein" checked="True" titelbreite="250">
+                <wert>0</wert>   
+            </widget>
+        </part>
+        <berechnung>
+            <formel>
+                <operation>$id{102}PLUS$id{104}</operation>
+                <operation>PLUS$id{106}</operation>
+                <operation>PLUS$id{108}</operation>
+                <operation>PLUS$id{110}</operation>
+            </formel>
+            <ergebniseinheit>Punkte</ergebniseinheit>
+            <variablen>
+            </variablen>
+        </berechnung>
+        <auswertung>
+            <beurteilung>
+                <ergebnisbereich>&#x3c; 2 Punkte</ergebnisbereich>
+                <beschreibung>Sehr geringe Wahrscheinlichkeit (&#x3c; 1%)</beschreibung>
+                <regel>KLEINERALS 2</regel>
+            </beurteilung>   
+            <beurteilung>
+                <ergebnisbereich>2 Punkte</ergebnisbereich>
+                <beschreibung>Geringe Wahrscheinlichkeit (4%)</beschreibung>
+                <regel>ISTGLEICH 2</regel>
+            </beurteilung>   
+            <beurteilung>
+                <ergebnisbereich>3 Punkte</ergebnisbereich>
+                <beschreibung>Mittlere Wahrscheinlichkeit (17%)</beschreibung>
+                <regel>ISTGLEICH 3</regel>
+            </beurteilung>   
+            <beurteilung>
+                <ergebnisbereich>&#x3e; 3 Punkte</ergebnisbereich>
+                <beschreibung>Hohe Wahrscheinlichkeit (50%)</beschreibung>
+                <regel>GROESSERALS 3</regel>
             </beurteilung>   
         </auswertung>
     </score>

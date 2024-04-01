@@ -22,7 +22,8 @@ from PySide6.QtWidgets import (
     QDateEdit,
     QMessageBox,
     QPushButton,
-    QComboBox
+    QComboBox, 
+    QRadioButton
 )
 
 @staticmethod
@@ -469,7 +470,7 @@ class MainWindow(QMainWindow):
                             einheitUndErklärung += "(" + widget.getErklaerung() + ")"
                         labelEinheitUndErklaerung = QLabel(einheitUndErklärung)
                         labelEinheitUndErklaerung.setFont(self.fontNormal)
-                        partLayout.addWidget(labelEinheitUndErklaerung, partGridZeile, 2, alignment=Qt.AlignmentFlag.AlignTop)
+                        partLayout.addWidget(labelEinheitUndErklaerung, partGridZeile, 2, alignment=Qt.AlignmentFlag.AlignTop | Qt.AlignmentFlag.AlignLeft)
                         # Prüfen, ob Alterstextfeld
                         if widget.getTyp() == class_widgets.WidgetTyp.LINEEDIT and widget.alterspruefungAktiv():
                             widget.getQt().setText(str(getAktuellesAlterInJahren(self.geburtsdatumAlsDate)))
@@ -484,14 +485,30 @@ class MainWindow(QMainWindow):
                                 else:
                                     widget.getQt().setFocus()
                                 widget.getQt().selectAll()
-                        elif widget.getTyp() == (class_widgets.WidgetTyp.CHECKBOX or widget.getTyp() == class_widgets.WidgetTyp.RADIOBUTTON) and widget.alterspruefungAktiv():
+                        elif (widget.getTyp() == class_widgets.WidgetTyp.CHECKBOX or widget.getTyp() == class_widgets.WidgetTyp.RADIOBUTTON) and widget.alterspruefungAktiv():
                             regelnErfuellt = True
                             for regel in widget.getAltersregeln():
+                                # Prüfen, ob geschlechtsabhängige Regel (Format z.B.: M:GROESSERALS50_W:GROESSERALS60)
+                                regelnMW = regel.split("_")
                                 tempRegel = str(getAktuellesAlterInJahren(self.geburtsdatumAlsDate)) + regel
+                                if "_" in regel:
+                                    regelM = regelnMW[0][2:]
+                                    regelW = regelnMW[1][2:]
+                                    if self.geschlecht == "1":
+                                        tempRegel = str(getAktuellesAlterInJahren(self.geburtsdatumAlsDate)) + regelM
+                                        print("m")
+                                    else:
+                                        tempRegel = str(getAktuellesAlterInJahren(self.geburtsdatumAlsDate)) + regelW
+                                        print("w")
+                                print(tempRegel)
                                 if not self.regelIstErfuellt(tempRegel):
                                     regelnErfuellt = False
                                     break
                             widget.getQt().setChecked(regelnErfuellt)
+                            # Wenn RadioButton, andere Buttons unchecken
+                            for w in self.widgets:
+                                if w.getId() != widget.getId() and w.getPartId() == widget.getPartId():
+                                    w.getQt().setChecked(not regelnErfuellt)
                         # Prüfen, ob Geschlechtpart (Groupbox mit 2 Radiobuttons)
                         if part.geschlechtpruefungAktiv() and widget.getTyp() == class_widgets.WidgetTyp.RADIOBUTTON:
                             if ("männlich" in widget.getTitel().lower() or "männlich" in widget.getErklaerung().lower()) and self.geschlecht == "1":
