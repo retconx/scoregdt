@@ -7,7 +7,7 @@ import gdttoolsL
 import gdt, gdtzeile, class_part, class_widgets
 import dialogUeberScoreGdt, dialogEinstellungenAllgemein, dialogEinstellungenGdt, dialogEinstellungenBenutzer, dialogEinstellungenLanrLizenzschluessel, dialogEula, dialogEinstellungenImportExport, class_enums,dialogScoreAuswahl
 from PySide6.QtCore import Qt, QTranslator, QLibraryInfo, QDate, QTime
-from PySide6.QtGui import QFont, QAction, QIcon, QDesktopServices, QPixmap
+from PySide6.QtGui import QFont, QAction, QIcon, QDesktopServices, QPixmap, QCursor
 from PySide6.QtWidgets import (
     QApplication,
     QMainWindow,
@@ -312,7 +312,6 @@ class MainWindow(QMainWindow):
         if mbErg == QMessageBox.StandardButton.Yes:
             self.widget = QWidget()
             self.widget.installEventFilter(self)
-            logger.logger.warning("ScoreGDT öffnen trotz GDT-Ladefehler")
 
             # Updateprüfung auf Github
             try:
@@ -431,7 +430,19 @@ class MainWindow(QMainWindow):
                 labelScoreInformation = QLabel(str(self.scoreRoot.find("information").text)) #type: ignore
                 labelScoreInformation.setFont(self.fontNormal)
                 labelScoreInformation.setStyleSheet("color:rgb(0,0,200)")
-
+            if self.scoreRoot.find("quelle") != None: #type: ignore
+                autor = str(self.scoreRoot.find("quelle").get("autor")) # type: ignore
+                quelle = "Quelle: " + str(self.scoreRoot.find("quelle").text) + " (" + autor + ")" # type: ignore
+                maxQuellenLaenge = 100
+                if len(quelle) > maxQuellenLaenge:
+                    pos = int(maxQuellenLaenge / 2)
+                    while pos < len(quelle):
+                        while pos < len(quelle) and quelle[pos] != " ":
+                            pos += 1
+                        quelle = quelle[:pos] + os.linesep + quelle[pos + 1:]
+                        pos += int(maxQuellenLaenge / 2)
+                labelScoreName.setToolTip(quelle)
+                labelScoreName.setCursor(Qt.CursorShape.WhatsThisCursor)
             # Score
             for part in self.parts:
                 partLayout = QGridLayout()
@@ -592,7 +603,8 @@ class MainWindow(QMainWindow):
             ## /Nur mit Lizenz
             mainLayoutV.addWidget(groupboxPatientendaten)
             mainLayoutV.addWidget(labelScoreName, alignment=Qt.AlignmentFlag.AlignCenter)
-            mainLayoutV.addWidget(labelScoreInformation, alignment=Qt.AlignmentFlag.AlignCenter)
+            if self.scoreRoot.find("information") != None: #type: ignore
+                mainLayoutV.addWidget(labelScoreInformation, alignment=Qt.AlignmentFlag.AlignCenter)
             mainLayoutV.addLayout(mainLayoutG)
             mainLayoutV.addWidget(self.pushButtonBerechnen)
             ergebnisLayoutH.addWidget(labelScoreErgebnis)
@@ -1346,7 +1358,7 @@ filename = "qtbase_de"
 directory = QLibraryInfo.path(QLibraryInfo.LibraryPath.TranslationsPath)
 qt.load(filename, directory)
 app.installTranslator(qt)
-app.setWindowIcon(QIcon(os.path.join(basedir, "icons/program.png")))
+app.setWindowIcon(QIcon(os.path.join(basedir, "icons", "program.png")))
 window = MainWindow()
 window.show()
 app.exec()

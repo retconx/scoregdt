@@ -2,6 +2,7 @@
 <root>
 	<score name="CRB-65-Index" gruppe="Pneumologie">
         <information>Abschätzung des Schweregrades einer ambulant erworbenen Pneumonie</information>
+        <quelle autor="Bauer et al.">CRB-65 predicts death from community-acquired pneumonia</quelle>
         <part typ="Frame" id="0" titel="" zeile="0" spalte="0">
             <widget id="100" typ="CheckBox" titel="Confusion">
                 <wert>1</wert>
@@ -50,6 +51,7 @@
     </score>
 	<score name="Wells-Score (Wells I)" gruppe="Pneumologie">
         <information>Abschätzung der Wahrscheinlichkeit für das Vorliegen einer Lungenembolie</information>
+        <quelle autor="Wells et al.">Excluding pulmonary embolism at the bedside without diagnostic imaging:&#xd;&#xa;management of patients with suspected pulmonary embolism presenting to the emergency&#xd;&#xa;department by using a simple clinical model and d-dimer</quelle>
         <part typ="Frame" id="0" titel="" zeile="0" spalte="0">
             <widget id="100" typ="CheckBox" titel="Klinische Zeichen für tiefe Beinvenenthrombose">
                 <wert>3</wert>
@@ -106,6 +108,7 @@
     </score>
 	<score name="HAS-BLED-Score" gruppe="Kardiologie">
         <information>Abschätzung des Blutungsrisikos unter oraler Antikoagulation bei Vorhofflimmern</information>
+        <quelle autor="Pisters et al.">A Novel User-Friendly Score (HAS-BLED) To Assess 1-Year Risk of Major Bleeding in Patients With Atrial Fibrillation</quelle>
         <part typ="Frame" id="0" titel="" zeile="0" spalte="0">
             <widget id="100" typ="CheckBox" titel="Hypertension">
                 <wert>1</wert>
@@ -155,6 +158,7 @@
     </score>
     <score name="CHA&#x2082;DS&#x2082;-VASc-Score" gruppe="Kardiologie" gdtname="CHA2DS2-VASc-Score">
         <information>Abschätzung des Schlaganfallrisikos bei Vorhofflimmern</information>
+        <quelle autor="ESC Task Force">2020 ESC Guidelines for the diagnosis and management of atrial fibrillation developed in collaboration with the European Association for Cardio-Thoracic Surgery (EACTS)</quelle>
         <part typ="Frame" id="0" titel="" zeile="0" spalte="0">
             <widget id="100" typ="CheckBox" titel="Congestive Heart Failure">
                 <wert>1</wert>
@@ -203,6 +207,7 @@
     </score>
     <score name="SCORE2" gruppe="Kardiologie">
         <information>Abschätzung des Risikos für ein kardiovaskuläres Ereignis in den nächsten 10 Jahren</information>
+        <quelle autor="SCORE2 working group">SCORE2 risk prediction algorithms: new models to estimate 10-year risk of cardiovascular disease in Europe</quelle>
         <part typ="Frame" id="0" titel="" zeile="0" spalte="0">
             <widget id="100" typ="LineEdit" titel="Alter [40-69 Jahre]" alterspruefung="True">
                 <regex>^\d+$</regex>  
@@ -4495,6 +4500,7 @@
     </score>
     <score name="SCORE2-OP" gruppe="Kardiologie">
         <information>Abschätzung des Risikos für ein kardiovaskuläres Ereignis in den nächsten 10 Jahren für ältere PatientInnen</information>
+        <quelle autor="SCORE2-OP working group">SCORE2-OP risk prediction algorithms: estimating incident cardiovascular event risk in older persons in four geographical risk regions</quelle>
         <part typ="Frame" id="0" titel="" zeile="0" spalte="0">
             <widget id="100" typ="LineEdit" titel="Alter [70-89 Jahre]" alterspruefung="True">
                 <regex>^\d+$</regex>  
@@ -7379,6 +7385,7 @@
     </score>
     <score name="Therapieschwelle Osteoporose" gruppe="Orthopädie">
         <information>Beurteilung der Indikation für eine spezifische Osteoporosetherapie (DVO-Leitlinie 2023)</information>
+        <quelle autor="Dachverband der Deutschsprachigen Wissenschaftlichen Osteologischen Gesellschaften e.V.">Prophylaxe, Diagnostik und Therapie der Osteoporose</quelle>
         <part typ="GroupBox" id="0" titel="Wirbelfrakturen" zeile="0" spalte="0">
             <widget id="100" typ="CheckBox" titel="Wirbelkörperfraktur &#x2264; 12 Monate">
             <wert>2.9</wert>
@@ -7570,6 +7577,7 @@
     </score>
     <score name="qSofa" gruppe="Infektiologie">
         <information>Abschätzung des Risikos für die Entwicklung einer Sepsis</information>
+        <quelle autor="Singer et al.">The Third International Consensus Definitions&#xd;&#xa;for Sepsis and Septic Shock (Sepsis-3)</quelle>
         <part typ="Frame" id="0" titel="" zeile="0" spalte="0">
             <widget id="100" typ="CheckBox" titel="Atemfrequenz &#x3e; 22/min">
                 <wert>1</wert>
@@ -7594,6 +7602,7 @@
     </score>
     <score name="Epworth Sleepiness Scale (ESS)" gruppe="Neurologie">
         <information>Beurteilung der Tagesschläfrigkeit</information>
+        <quelle autor="Johns">A new method for measuring daytime sleepiness: The Epworth Sleepiness Scale.</quelle>
         <part id="0" typ="GroupBox" titel="Einschlafen beim Sitzen oder Lesen" zeile="0" spalte="0">
             <widget id="100" typ="RadioButton" titel="Unmöglich" checked="True">
                 <wert>0</wert>
@@ -7722,6 +7731,7 @@
     </score>
     <score name="Mini Mental Status Test (MMST)" gruppe="Neurologie">
         <information>Erfassung kognitiver Störungen</information>
+        <quelle autor="Folstein et al.">&#x22;Mini Mental State&#x22; A practical method for grading the cognitive state of patients fort he clinician</quelle>
         <part id="0" typ="GroupBox" titel="Zeitliche Orientierung" erklaerung="&#x22;Welchen Tag haben wir heute&#x22;" zeile="0" spalte="0">
             <widget id="100" typ="CheckBox" titel="Tag" checked="True">
                 <wert>1</wert>
@@ -7900,6 +7910,7 @@
     </score>
     <score name="4PEPS" gruppe="Pneumologie">
         <information>Abschätzung der klinischen Vortestwahrscheinlichkeit für das Vorliegen einer Lungenembolie</information>
+        <quelle autor="Roy et al.">Derivation and Validation of a 4-Level Clinical Pretest Probability Score for Suspected Pulmonary Embolism to Safely Decrease Imaging Testing</quelle>
         <part id="0" typ="Frame" zeile="0" spalte="0">
             <widget id="100" typ="LineEdit" titel="Alter" alterspruefung="True">
                 <regex>^\d+?$</regex>
@@ -8054,6 +8065,7 @@
     </score>
     <score name="sv-MADRS" gruppe="Neurologie">
         <information>Beurteilung des Schweregrads einer Depression</information>
+        <quelle autor="Möller et al.">Einsatz einer modifizierten MADRS bei depressiven Patienten in einer prospektiven Kohortenstudie</quelle>
         <part id="0" typ="Frame" zeile="0" spalte="0">
             <widget id="100" typ="ComboBox" titel="Sichtbare Traurigkeit" titelbreite="200">
                 <items>
@@ -8227,6 +8239,7 @@
     </score>
     <score name="PHQ-9-Fragebogen für Patienten" gruppe="Neurologie">
         <information>Erfassung depressiver Störungen</information>
+        <quelle autor="Kroenke et al.">The PHQ-9: Validity of a brief depression severity measure.</quelle>
         <part id="0" typ="Frame" titel="" erklaerung="Wie oft fühlten Sie sich im Verlauf der letzten 2 Wochen&#xd;&#xa;durch die folgenden Beschwerden beeinträchtigt?" zeile="0" spalte="0">
             <widget />
         </part>

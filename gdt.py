@@ -273,6 +273,17 @@ class GdtDatei:
         else:
             enc = "cp1252"
 
+        # Satzlänge setzen
+        laenge = 9 + 5
+        for zeile in self.gdtDatei:
+            if zeile[3:7] != "8100":
+                laenge += len(zeile[7:]) + 7
+        laengeFormatiert = ("{:>05}".format(laenge))
+        i = 0
+        for i in range(len(self.gdtDatei)):
+            if self.gdtDatei[i][3:7] == "8100":
+                self.gdtDatei[i] = gdtzeile.erzeugeZeile("8100", laengeFormatiert)
+
         try:
             with open(pfad, "w", encoding=enc, newline="") as fobj:
                 for zeile in self.gdtDatei:
