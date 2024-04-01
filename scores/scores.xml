@@ -215,13 +215,13 @@
                 <zahlengrenze regelart="KLEINERGLEICHALS">69</zahlengrenze>
                 <einheit>Jahre</einheit>
             </widget>
-            <widget id="101" typ="LineEdit" titel="Systolischer Blutdruck [100-179 mmHg] ">
+            <widget id="101" typ="LineEdit" titel="Systolischer Blutdruck [100-179 mmHg]">
                 <regex>^\d+$</regex>  
                 <zahlengrenze regelart="GROESSERGLEICHALS">100</zahlengrenze>
                 <zahlengrenze regelart="KLEINERGLEICHALS">179</zahlengrenze>
                 <einheit>mmHg</einheit>
             </widget>
-            <widget id="102" typ="LineEdit" titel="Non-HDL-Cholesterin [116-270 mg/dl] ">
+            <widget id="102" typ="LineEdit" titel="Non-HDL-Cholesterin [116-270 mg/dl]">
                 <regex>^\d+([.,]\d+)?$</regex>  
                 <zahlengrenze regelart="GROESSERGLEICHALS">116</zahlengrenze>
                 <zahlengrenze regelart="KLEINERGLEICHALS">270</zahlengrenze>
@@ -4508,13 +4508,13 @@
                 <zahlengrenze regelart="KLEINERGLEICHALS">89</zahlengrenze>
                 <einheit>Jahre</einheit>
             </widget>
-            <widget id="101" typ="LineEdit" titel="Systolischer Blutdruck [100-179 mmHg] ">
+            <widget id="101" typ="LineEdit" titel="Systolischer Blutdruck [100-179 mmHg]">
                 <regex>^\d+$</regex>  
                 <zahlengrenze regelart="GROESSERGLEICHALS">100</zahlengrenze>
                 <zahlengrenze regelart="KLEINERGLEICHALS">179</zahlengrenze>
                 <einheit>mmHg</einheit>
             </widget>
-            <widget id="102" typ="LineEdit" titel="Non-HDL-Cholesterin [116-270 mg/dl] ">
+            <widget id="102" typ="LineEdit" titel="Non-HDL-Cholesterin [116-270 mg/dl]">
                 <regex>^\d+([.,]\d+)?$</regex>  
                 <zahlengrenze regelart="GROESSERGLEICHALS">116</zahlengrenze>
                 <zahlengrenze regelart="KLEINERGLEICHALS">270</zahlengrenze>
@@ -7739,13 +7739,13 @@
             <widget id="101" typ="CheckBox" titel="Monat" checked="True">
                 <wert>1</wert>
             </widget> 
-            <widget id="102" typ="CheckBox" titel="Jahr " checked="True">
+            <widget id="102" typ="CheckBox" titel="Jahr" checked="True">
                 <wert>1</wert>
             </widget> 
-            <widget id="103" typ="CheckBox" titel="Wochentag " checked="True">
+            <widget id="103" typ="CheckBox" titel="Wochentag" checked="True">
                 <wert>1</wert>
             </widget> 
-            <widget id="104" typ="CheckBox" titel="Jahreszeit " checked="True">
+            <widget id="104" typ="CheckBox" titel="Jahreszeit" checked="True">
                 <wert>1</wert>
             </widget> 
         </part>
