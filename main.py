@@ -496,18 +496,15 @@ class MainWindow(QMainWindow):
                                     regelW = regelnMW[1][2:]
                                     if self.geschlecht == "1":
                                         tempRegel = str(getAktuellesAlterInJahren(self.geburtsdatumAlsDate)) + regelM
-                                        print("m")
                                     else:
                                         tempRegel = str(getAktuellesAlterInJahren(self.geburtsdatumAlsDate)) + regelW
-                                        print("w")
-                                print(tempRegel)
                                 if not self.regelIstErfuellt(tempRegel):
                                     regelnErfuellt = False
                                     break
                             widget.getQt().setChecked(regelnErfuellt)
                             # Wenn RadioButton, andere Buttons unchecken
                             for w in self.widgets:
-                                if w.getId() != widget.getId() and w.getPartId() == widget.getPartId():
+                                if widget.getTyp() == class_widgets.WidgetTyp.RADIOBUTTON and w.getId() != widget.getId() and w.getPartId() == widget.getPartId():
                                     w.getQt().setChecked(not regelnErfuellt)
                         # Prüfen, ob Geschlechtpart (Groupbox mit 2 Radiobuttons)
                         if part.geschlechtpruefungAktiv() and widget.getTyp() == class_widgets.WidgetTyp.RADIOBUTTON:
