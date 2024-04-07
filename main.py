@@ -4,10 +4,11 @@ import xml.etree.ElementTree as ElementTree
 ## Nur mit Lizenz
 import gdttoolsL
 ## /Nur mit Lizenz
-import gdt, gdtzeile, class_part, class_widgets
-import dialogUeberScoreGdt, dialogEinstellungenAllgemein, dialogEinstellungenGdt, dialogEinstellungenBenutzer, dialogEinstellungenLanrLizenzschluessel, dialogEula, dialogEinstellungenImportExport, class_enums,dialogScoreAuswahl
+import gdt, gdtzeile, class_part, class_widgets, class_score
+import dialogUeberScoreGdt, dialogEinstellungenAllgemein, dialogEinstellungenGdt, dialogEinstellungenBenutzer, dialogEinstellungenLanrLizenzschluessel, dialogEula, dialogEinstellungenImportExport, dialogScoreAuswahl, dialogEinstellungenFavoriten
+import class_enums, class_score
 from PySide6.QtCore import Qt, QTranslator, QLibraryInfo, QDate, QTime
-from PySide6.QtGui import QFont, QAction, QIcon, QDesktopServices, QPixmap, QCursor
+from PySide6.QtGui import QFont, QAction, QIcon, QDesktopServices, QPixmap
 from PySide6.QtWidgets import (
     QApplication,
     QMainWindow,
@@ -22,8 +23,7 @@ from PySide6.QtWidgets import (
     QDateEdit,
     QMessageBox,
     QPushButton,
-    QComboBox, 
-    QRadioButton
+    QComboBox
 )
 
 @staticmethod
@@ -141,6 +141,7 @@ class MainWindow(QMainWindow):
         self.benutzernamenListe = self.configIni["Benutzer"]["namen"].split("::")
         self.benutzerkuerzelListe = self.configIni["Benutzer"]["kuerzel"].split("::")
         self.aktuelleBenuztzernummer = int(self.configIni["Benutzer"]["letzter"])
+        self.scoresPfad = os.path.join(basedir, "scores")
 
         ## Nachträglich hinzufefügte Options
         # 1.1.1
@@ -184,16 +185,6 @@ class MainWindow(QMainWindow):
                 mb.exec()
                 sys.exit()
 
-        # scores.xml auslesen
-        try:
-            tree = ElementTree.parse(os.path.join(basedir, "scores", "scores.xml"))
-            self.root = tree.getroot()
-        except Exception as e:
-            mb = QMessageBox(QMessageBox.Icon.Warning, "Hinweis von ScoreGDT", "Fehler beim Laden von \"scores.xml\".\nScoreGDT wird beendet.", QMessageBox.StandardButton.Ok)
-            mb.exec()
-            logger.logger.warning("Fehler beim Laden von scores.xml: " + str(e))
-            sys.exit()
-
         # Grundeinstellungen bei erstem Start
         if ersterStart:
             logger.logger.info("Erster Start")
@@ -220,6 +211,29 @@ class MainWindow(QMainWindow):
                 if not self.configIni.has_option("Allgemein", "standardscore"):
                     self.configIni["Allgemein"]["standardscore"] = ""
                 ## /config.ini aktualisieren
+                ## scores.xml löschen (ab 1.8.0)
+                try:
+                    os.unlink(os.path.join(self.scoresPfad, "scores.xml"))
+                    logger.logger.info(os.path.join(self.scoresPfad, "scores.xml") + " gelöscht")
+                except:
+                    pass
+                ## /scores.xml löschen
+                ## favoriten.xml anlegen (ab 1.8.0)
+                try:
+                    if not os.path.exists(os.path.join(self.configPath, "favoriten.xml")):
+                        favoritenElement = ElementTree.Element("favoriten")
+                        tree = ElementTree.ElementTree(favoritenElement)
+                        gesamtRoot = class_score.Score.getGesamtRoot(self.scoresPfad)
+                        for scoreElement in gesamtRoot.findall("score"):
+                            favoritElement = ElementTree.Element("favorit")
+                            favoritElement.text = str(scoreElement.get("name"))
+                            favoritenElement.append(favoritElement)
+                        ElementTree.indent(tree)
+                        tree.write(os.path.join(self.configPath, "favoriten.xml"), "utf-8", True)
+                        logger.logger.info(os.path.join(self.configPath, "favoriten.xml") + " erstellt")
+                except:
+                    pass
+                ## /favoriten.xml anlegen
 
                 with open(os.path.join(self.configPath, "config.ini"), "w", encoding="utf-8") as configfile:
                     self.configIni.write(configfile)
@@ -245,6 +259,20 @@ class MainWindow(QMainWindow):
             logger.logger.error("Problem beim Aktualisieren auf Version " + configIniBase["Allgemein"]["version"])
             mb = QMessageBox(QMessageBox.Icon.Warning, "Hinweis von ScoreGDT", "Problem beim Aktualisieren auf Version " + configIniBase["Allgemein"]["version"], QMessageBox.StandardButton.Ok)
             mb.exec()
+        
+        # Score-Favoriten auslesen
+        if not class_score.Score.namenEindeutig(self.scoresPfad):
+            logger.logger.warning("Score-Namen nicht eindeutig")
+            logger.logger.error("Fehler beim Vergeben eindeutiger Score-IDs (Scores-Pfad: " + self.scoresPfad + ")")
+            mb = QMessageBox(QMessageBox.Icon.Warning, "Hinweis von ScoreGDT", "Die Score-Namen sind nicht eindeutig.", QMessageBox.StandardButton.Ok)
+            mb.exec()
+        try:
+            self.root = class_score.Score.getScoreFavoritenRoot(self.configPath, self.scoresPfad)
+        except Exception as e:
+            logger.logger.error("Fehler beim Laden der Scores (Scorepfad: " + self.scoresPfad + ")")
+            mb = QMessageBox(QMessageBox.Icon.Warning, "Hinweis von ScoreGDT", "Fehler beim Laden der Scores.\nScoreGDT wird beendet.", QMessageBox.StandardButton.Ok)
+            mb.exec()
+            sys.exit()
 
         self.addOnsFreigeschaltet = True
 
@@ -326,7 +354,7 @@ class MainWindow(QMainWindow):
                 self.scoreRoot = self.root.find("score")
                 ds = dialogScoreAuswahl.ScoreAuswahl(self.root, self.standardscore)
                 if ds.exec() == 1:
-                    self.scoreRoot = self.getScoreXml(ds.aktuellGewaehlterScore)
+                    self.scoreRoot = class_score.Score.getScoreXml(self.scoresPfad, ds.aktuellGewaehlterScore)
                     logger.logger.info("Score " + ds.aktuellGewaehlterScore + " ausgewählt")
                 else:
                     logger.logger.info("Kein Score ausgewählt")
@@ -401,6 +429,11 @@ class MainWindow(QMainWindow):
                             # Prüfen, ob Titelbreite festgelegt
                             if widgetElement.get("titelbreite") != None:
                                 self.widgets[len(self.widgets) - 1].setTitelbreite(int(str(widgetElement.get("titelbreite"))))
+                else:
+                    mb = QMessageBox(QMessageBox.Icon.Warning, "Hinweis von ScoreGDT", "Problem beim Laden der Score-Daten.\nScoreGDT wird beendet.", QMessageBox.StandardButton.Ok)
+                    mb.exec()
+                    logger.logger.error("Problem beim Laden der Score-Daten. self.root: " + str(self.scoreRoot))
+                    sys.exit()
 
             # Formularaufbau
             mainLayoutV = QVBoxLayout()
@@ -510,18 +543,18 @@ class MainWindow(QMainWindow):
                         if part.geschlechtpruefungAktiv() and widget.getTyp() == class_widgets.WidgetTyp.RADIOBUTTON:
                             if ("männlich" in widget.getTitel().lower() or "männlich" in widget.getErklaerung().lower()) and self.geschlecht == "1":
                                 widget.getQt().setChecked(True)
-                                logger.logger.info("Radiobutton " + widget.getId() + "als männlich aktiviert")
+                                logger.logger.info("Radiobutton " + widget.getId() + " als männlich aktiviert")
                             elif ("weiblich" in widget.getTitel().lower() or "weiblich" in widget.getErklaerung().lower()) and self.geschlecht == "2":
                                 widget.getQt().setChecked(True)
-                                logger.logger.info("Radiobutton " + widget.getId() + "als weiblich aktiviert")
+                                logger.logger.info("Radiobutton " + widget.getId() + " als weiblich aktiviert")
                         # Prüfen, ob Geschlechtwidget (Checkbox)
                         if widget.getTyp() == class_widgets.WidgetTyp.CHECKBOX and widget.geschlechtpruefungAktiv():
                             if ("männlich" in widget.getTitel().lower() or "männlich" in widget.getErklaerung().lower()) and self.geschlecht == "1":
                                 widget.getQt().setChecked(True)
-                                logger.logger.info("Checkbox " + widget.getId() + "als männlich aktiviert")
+                                logger.logger.info("Checkbox " + widget.getId() + " als männlich aktiviert")
                             elif ("weiblich" in widget.getTitel().lower() or "weiblich" in widget.getErklaerung().lower()) and self.geschlecht == "2":
                                 widget.getQt().setChecked(True)
-                                logger.logger.info("Checkbox " + widget.getId() + "als weiblich aktiviert")
+                                logger.logger.info("Checkbox " + widget.getId() + " als weiblich aktiviert")
 
                         partGridZeile += 1
                 if part.getTyp() == class_part.PartTyp.FRAME:
@@ -652,7 +685,9 @@ class MainWindow(QMainWindow):
             updateAction.triggered.connect(self.updatePruefung) 
             scoreMenu = menubar.addMenu("Score")
             scoreMenuAuswaehlenAction = QAction("Score auswählen (Neustart)", self)
-            scoreMenuAuswaehlenAction.triggered.connect(lambda checked=False, neustartfrage=True: self.scoreAuswaehlen(checked, True))
+            scoreMenuAuswaehlenAction.triggered.connect(self.scoreAuswaehlen)
+            scoreMenuFavoritenVerwaltenAction = QAction("Favoriten verwalten", self)
+            scoreMenuFavoritenVerwaltenAction.triggered.connect(self.scoreFavoritenVerwalten)
             einstellungenMenu = menubar.addMenu("Einstellungen")
             einstellungenAllgemeinAction = QAction("Allgemeine Einstellungen", self)
             einstellungenAllgemeinAction.triggered.connect(lambda checked=False, neustartfrage=True: self.einstellungenAllgmein(checked, True))
@@ -684,6 +719,7 @@ class MainWindow(QMainWindow):
             anwendungMenu.addAction(aboutAction)
             anwendungMenu.addAction(updateAction)
             scoreMenu.addAction(scoreMenuAuswaehlenAction)
+            scoreMenu.addAction(scoreMenuFavoritenVerwaltenAction)
             einstellungenMenu.addAction(einstellungenAllgemeinAction)
             einstellungenMenu.addAction(einstellungenGdtAction)
             einstellungenMenu.addAction(einstellungenBenutzerAction)
@@ -1279,8 +1315,12 @@ class MainWindow(QMainWindow):
             mb = QMessageBox(QMessageBox.Icon.Warning, "Hinweis von ScoreGDT", "Das Log-Verzeichnis wurde nicht gefunden.", QMessageBox.StandardButton.Ok)
             mb.exec() 
 
-    def scoreAuswaehlen(self, checked, neustartfrage=False):
+    def scoreAuswaehlen(self, checked):
         os.execl(sys.executable, __file__, *sys.argv)
+
+    def scoreFavoritenVerwalten(self, checked):
+        df = dialogEinstellungenFavoriten.EinstellungenFavoriten(self.configPath, self.scoresPfad)
+        df.exec()   
 
     def einstellungenAllgmein(self, checked, neustartfrage=False):
         de = dialogEinstellungenAllgemein.EinstellungenAllgemein(self.configPath, self.root, self.standardscore)

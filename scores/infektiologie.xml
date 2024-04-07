@@ -1,0 +1,27 @@
+<root>
+    <score name="qSofa" gruppe="Infektiologie">
+        <information>Abschätzung des Risikos für die Entwicklung einer Sepsis</information>
+        <quelle autor="Singer et al.">The Third International Consensus Definitions for Sepsis and Septic Shock (Sepsis-3)</quelle>
+        <part typ="Frame" id="0" titel="" zeile="0" spalte="0">
+            <widget id="100" typ="CheckBox" titel="Atemfrequenz &gt; 22/min">
+                <wert>1</wert>
+            </widget>
+            <widget id="101" typ="CheckBox" titel="Verändertes Bewusstsein">
+                <wert>1</wert>
+                <erklaerung>Glasgow Coma Scale &lt; 15</erklaerung>
+            </widget>
+			<widget id="102" typ="CheckBox" titel="Blood pressure">
+                <wert>1</wert>
+                <erklaerung>Blutdruck systolisch ≤ 100 mmHg</erklaerung>
+            </widget>
+        </part>
+        <berechnung>
+            <formel>
+                <operation>$id{100} PLUS $id{101}</operation>
+                <operation>PLUS $id{102}</operation>
+            </formel>
+            <ergebniseinheit>Punkte</ergebniseinheit>
+            <variablen />
+        </berechnung>
+    </score>
+</root>

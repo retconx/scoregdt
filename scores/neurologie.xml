@@ -1,0 +1,627 @@
+<root>
+    <score name="Epworth Sleepiness Scale (ESS)" gruppe="Neurologie">
+        <information>Beurteilung der Tagesschläfrigkeit</information>
+        <quelle autor="Johns">A new method for measuring daytime sleepiness: The Epworth Sleepiness Scale.</quelle>
+        <part id="0" typ="GroupBox" titel="Einschlafen beim Sitzen oder Lesen" zeile="0" spalte="0">
+            <widget id="100" typ="RadioButton" titel="Unmöglich" checked="True">
+                <wert>0</wert>
+            </widget>
+            <widget id="101" typ="RadioButton" titel="Kaum möglich">
+                <wert>1</wert>
+            </widget>
+            <widget id="102" typ="RadioButton" titel="Gut möglich">
+                <wert>2</wert>
+            </widget>
+            <widget id="103" typ="RadioButton" titel="Wahrscheinlich">
+                <wert>3</wert>
+            </widget>
+        </part>
+        <part id="1" typ="GroupBox" titel="Einschlafen vor dem Fernseher" zeile="0" spalte="1">
+            <widget id="104" typ="RadioButton" titel="Unmöglich" checked="True">
+                <wert>0</wert>
+            </widget>
+            <widget id="105" typ="RadioButton" titel="Kaum möglich">
+                <wert>1</wert>
+            </widget>
+            <widget id="106" typ="RadioButton" titel="Gut möglich">
+                <wert>2</wert>
+            </widget>
+            <widget id="107" typ="RadioButton" titel="Wahrscheinlich">
+                <wert>3</wert>
+            </widget>
+        </part>
+        <part id="2" typ="GroupBox" titel="Einschlafen im Kino/Theater o. ä." zeile="0" spalte="2">
+            <widget id="108" typ="RadioButton" titel="Unmöglich" checked="True">
+                <wert>0</wert>
+            </widget>
+            <widget id="109" typ="RadioButton" titel="Kaum möglich">
+                <wert>1</wert>
+            </widget>
+            <widget id="110" typ="RadioButton" titel="Gut möglich">
+                <wert>2</wert>
+            </widget>
+            <widget id="111" typ="RadioButton" titel="Wahrscheinlich">
+                <wert>3</wert>
+            </widget>
+        </part>
+        <part id="3" typ="GroupBox" titel="Einschlafen als BeifahrerIn im Auto" zeile="0" spalte="3">
+            <widget id="112" typ="RadioButton" titel="Unmöglich" checked="True">
+                <wert>0</wert>
+            </widget>
+            <widget id="113" typ="RadioButton" titel="Kaum möglich">
+                <wert>1</wert>
+            </widget>
+            <widget id="114" typ="RadioButton" titel="Gut möglich">
+                <wert>2</wert>
+            </widget>
+            <widget id="115" typ="RadioButton" titel="Wahrscheinlich">
+                <wert>3</wert>
+            </widget>
+        </part>
+        <part id="4" typ="GroupBox" titel="Einschlafen beim Hinlegen mittags" zeile="1" spalte="0">
+            <widget id="116" typ="RadioButton" titel="Unmöglich" checked="True">
+                <wert>0</wert>
+            </widget>
+            <widget id="117" typ="RadioButton" titel="Kaum möglich">
+                <wert>1</wert>
+            </widget>
+            <widget id="118" typ="RadioButton" titel="Gut möglich">
+                <wert>2</wert>
+            </widget>
+            <widget id="119" typ="RadioButton" titel="Wahrscheinlich">
+                <wert>3</wert>
+            </widget>
+        </part>
+        <part id="5" typ="GroupBox" titel="Einschlafen im Sitzen beim Gespräch" zeile="1" spalte="1">
+            <widget id="120" typ="RadioButton" titel="Unmöglich" checked="True">
+                <wert>0</wert>
+            </widget>
+            <widget id="121" typ="RadioButton" titel="Kaum möglich">
+                <wert>1</wert>
+            </widget>
+            <widget id="122" typ="RadioButton" titel="Gut möglich">
+                <wert>2</wert>
+            </widget>
+            <widget id="123" typ="RadioButton" titel="Wahrscheinlich">
+                <wert>3</wert>
+            </widget>
+        </part>
+        <part id="6" typ="GroupBox" titel="Einschlafen im Sitzen nach dem Essen" zeile="1" spalte="2">
+            <widget id="124" typ="RadioButton" titel="Unmöglich" checked="True">
+                <wert>0</wert>
+            </widget>
+            <widget id="125" typ="RadioButton" titel="Kaum möglich">
+                <wert>1</wert>
+            </widget>
+            <widget id="126" typ="RadioButton" titel="Gut möglich">
+                <wert>2</wert>
+            </widget>
+            <widget id="127" typ="RadioButton" titel="Wahrscheinlich">
+                <wert>3</wert>
+            </widget>
+        </part>
+        <part id="7" typ="GroupBox" titel="Einschlafen im Auto bei kurzem Stop für Minuten" zeile="1" spalte="3">
+            <widget id="128" typ="RadioButton" titel="Unmöglich" checked="True">
+                <wert>0</wert>
+            </widget>
+            <widget id="129" typ="RadioButton" titel="Kaum möglich">
+                <wert>1</wert>
+            </widget>
+            <widget id="130" typ="RadioButton" titel="Gut möglich">
+                <wert>2</wert>
+            </widget>
+            <widget id="131" typ="RadioButton" titel="Wahrscheinlich">
+                <wert>3</wert>
+            </widget>
+        </part>
+        <berechnung>
+            <formel>
+                <operation>$id{100} PLUS $id{104}</operation>
+                <operation>PLUS $id{108}</operation>
+                <operation>PLUS $id{112}</operation>
+                <operation>PLUS $id{116}</operation>
+                <operation>PLUS $id{120}</operation>
+                <operation>PLUS $id{124}</operation>
+                <operation>PLUS $id{128}</operation>
+            </formel>
+            <ergebniseinheit>Punkte</ergebniseinheit>
+            <variablen />
+        </berechnung>
+    </score>
+    <score name="Mini Mental Status Test (MMST)" gruppe="Neurologie">
+        <information>Erfassung kognitiver Störungen</information>
+        <quelle autor="Folstein et al.">"Mini Mental State" A practical method for grading the cognitive state of patients fort he clinician</quelle>
+        <part id="0" typ="GroupBox" titel="Zeitliche Orientierung" erklaerung="&quot;Welchen Tag haben wir heute&quot;" zeile="0" spalte="0">
+            <widget id="100" typ="CheckBox" titel="Tag" checked="True">
+                <wert>1</wert>
+            </widget> 
+            <widget id="101" typ="CheckBox" titel="Monat" checked="True">
+                <wert>1</wert>
+            </widget> 
+            <widget id="102" typ="CheckBox" titel="Jahr" checked="True">
+                <wert>1</wert>
+            </widget> 
+            <widget id="103" typ="CheckBox" titel="Wochentag" checked="True">
+                <wert>1</wert>
+            </widget> 
+            <widget id="104" typ="CheckBox" titel="Jahreszeit" checked="True">
+                <wert>1</wert>
+            </widget> 
+        </part>
+        <part id="1" typ="GroupBox" titel="Örtliche Orientierung" erklaerung="&quot;Wo sind wir jetzt&quot;" zeile="0" spalte="1">
+            <widget id="105" typ="CheckBox" titel="Stadt" checked="True">
+                <wert>1</wert>
+            </widget> 
+            <widget id="106" typ="CheckBox" titel="Stadtteil" checked="True">
+                <wert>1</wert>
+            </widget> 
+            <widget id="107" typ="CheckBox" titel="Bundesland" checked="True">
+                <wert>1</wert>
+            </widget> 
+            <widget id="108" typ="CheckBox" titel="Klinik/Pflegeheim/Praxis" checked="True">
+                <wert>1</wert>
+            </widget> 
+            <widget id="109" typ="CheckBox" titel="Station/Stockwerk" checked="True">
+                <wert>1</wert>
+            </widget> 
+        </part>
+        <part id="2" typ="GroupBox" titel="Merkfähigkeit" erklaerung="Folgende drei Gegenstände nennen,&#13;&#10;dann zur Wiederholung auffordern" zeile="0" spalte="2">
+            <widget id="110" typ="CheckBox" titel="Apfel" checked="True">
+                <wert>1</wert>
+            </widget> 
+            <widget id="111" typ="CheckBox" titel="Schlüssel" checked="True">
+                <wert>1</wert>
+            </widget> 
+            <widget id="112" typ="CheckBox" titel="Ball" checked="True">
+                <wert>1</wert>
+            </widget>
+        </part>
+        <part id="3" typ="GroupBox" titel="Aufmerksamkeit/Rechnen" erklaerung="Jeweils 7 von 100 abziehen oder&#13;&#10;&quot;STUHL&quot; rückwärts buchstabieren" zeile="0" spalte="3">
+            <widget id="113" typ="CheckBox" titel="93 oder &quot;L&quot;" checked="True">
+                <wert>1</wert>
+            </widget> 
+            <widget id="114" typ="CheckBox" titel="86 oder &quot;H&quot;" checked="True">
+                <wert>1</wert>
+            </widget> 
+            <widget id="115" typ="CheckBox" titel="79 oder &quot;U&quot;" checked="True">
+                <wert>1</wert>
+            </widget>
+            <widget id="116" typ="CheckBox" titel="72 oder &quot;T&quot;" checked="True">
+                <wert>1</wert>
+            </widget>
+            <widget id="117" typ="CheckBox" titel="65 oder &quot;S&quot;" checked="True">
+                <wert>1</wert>
+            </widget>
+        </part>
+        <part id="4" typ="GroupBox" titel="Erinnern" erklaerung="&quot;Was waren die Dinge,&#13;&#10;die Sie sich vorhin gemerkt haben?&quot;" zeile="1" spalte="0">
+            <widget id="118" typ="CheckBox" titel="Apfel" checked="True">
+                <wert>1</wert>
+            </widget> 
+            <widget id="119" typ="CheckBox" titel="Schlüssel" checked="True">
+                <wert>1</wert>
+            </widget> 
+            <widget id="120" typ="CheckBox" titel="Ball" checked="True">
+                <wert>1</wert>
+            </widget>
+        </part>
+        <part id="5" typ="GroupBox" titel="Benennen" erklaerung="Die Testperson soll folgende zwei Gegenstände benennen." zeile="1" spalte="1">
+            <widget id="121" typ="CheckBox" titel="Armbanduhr" checked="True">
+                <wert>1</wert>
+            </widget> 
+            <widget id="122" typ="CheckBox" titel="Bleistift/Kugelschreiber" checked="True">
+                <wert>1</wert>
+            </widget> 
+        </part>
+        <part id="6" typ="GroupBox" titel="Wiederholen" erklaerung="Die Testperson soll den folgenden Satz nachsprechen.&#13;&#10;Nur ein Versuch ist erlaubt. Die Redewendung&#13;&#10;&quot;Kein wenn und aber&quot; ist nicht erlaubt." zeile="1" spalte="2">
+            <widget id="123" typ="CheckBox" titel="&quot;Kein wenn und oder aber&quot;" checked="True">
+                <wert>1</wert>
+            </widget>  
+        </part>
+        <part id="7" typ="GroupBox" titel="Dreiteiliger Befehl" erklaerung="&quot;Nehmen Sie das Blatt Papier,&#13;&#10;falten es in der Mitte und&#13;&#10;lassen es auf den Boden fallen.&quot;" zeile="1" spalte="3">
+            <widget id="124" typ="CheckBox" titel="&quot;Nehmen Sie das Blatt Papier,&quot;" checked="True">
+                <wert>1</wert>
+            </widget>  
+            <widget id="125" typ="CheckBox" titel="&quot;falten es in der Mitte&quot;" checked="True">
+                <wert>1</wert>
+            </widget>  
+            <widget id="126" typ="CheckBox" titel="&quot;und lassen es auf den Boden fallen.&quot;" checked="True">
+                <wert>1</wert>
+            </widget>  
+        </part>
+        <part id="8" typ="GroupBox" titel="Reagieren" erklaerung="Die Testperson soll den Satz: &quot;Schließen Sie die Augen.&quot; lesen und befolgen." zeile="2" spalte="0">
+            <widget id="127" typ="CheckBox" titel="Testperson schließt die Augen" checked="True">
+                <wert>1</wert>
+            </widget>  
+        </part>
+        <part id="9" typ="GroupBox" titel="Schreiben" erklaerung="Die Testperson soll einen beliebigen vollständigen Satz aufschreiben." zeile="2" spalte="1">
+            <widget id="128" typ="CheckBox" titel="Sinnhafter Satz mit Subjekt und Verb" checked="True">
+                <wert>1</wert>
+            </widget>  
+        </part>
+        <part id="10" typ="GroupBox" titel="Abzeichnen" erklaerung="Die Testperson soll eine Figur abzeichnen." zeile="2" spalte="2">
+            <widget id="129" typ="CheckBox" titel="Zwei sich überschneidende Fünfecke" checked="True">
+                <wert>1</wert>
+            </widget>  
+        </part>
+        <part id="11" typ="Frame" titel="Fünfecke" zeile="2" spalte="3" hintergrundbild="mmstFuenfecke.png">
+
+        </part>
+        <berechnung>
+            <formel>
+                <operation>$id{100} PLUS $id{101}</operation>
+                <operation>PLUS $id{102}</operation>
+                <operation>PLUS $id{103}</operation>
+                <operation>PLUS $id{104}</operation>
+                <operation>PLUS $id{105}</operation>
+                <operation>PLUS $id{106}</operation>
+                <operation>PLUS $id{107}</operation>
+                <operation>PLUS $id{108}</operation>
+                <operation>PLUS $id{109}</operation>
+                <operation>PLUS $id{110}</operation>
+                <operation>PLUS $id{111}</operation>
+                <operation>PLUS $id{112}</operation>
+                <operation>PLUS $id{113}</operation>
+                <operation>PLUS $id{114}</operation>
+                <operation>PLUS $id{115}</operation>
+                <operation>PLUS $id{116}</operation>
+                <operation>PLUS $id{117}</operation>
+                <operation>PLUS $id{118}</operation>
+                <operation>PLUS $id{119}</operation>
+                <operation>PLUS $id{120}</operation>
+                <operation>PLUS $id{121}</operation>
+                <operation>PLUS $id{122}</operation>
+                <operation>PLUS $id{123}</operation>
+                <operation>PLUS $id{124}</operation>
+                <operation>PLUS $id{125}</operation>
+                <operation>PLUS $id{126}</operation>
+                <operation>PLUS $id{127}</operation>
+                <operation>PLUS $id{128}</operation>
+                <operation>PLUS $id{129}</operation>
+            </formel>
+            <ergebniseinheit>Punkte</ergebniseinheit>
+            <variablen />
+        </berechnung>
+        <auswertung>
+			<beurteilung>
+                <ergebnisbereich>30-27 Punkte</ergebnisbereich>
+                <beschreibung>Keine Demenz</beschreibung>
+                <regel>KLEINERGLEICHALS 30</regel>
+                <regel>GROESSERGLEICHALS 27</regel>
+            </beurteilung>
+			<beurteilung>
+                <ergebnisbereich>26-20 Punkte</ergebnisbereich>
+                <beschreibung>Leichte Demenz</beschreibung>
+                <regel>KLEINERGLEICHALS 26</regel>
+                <regel>GROESSERGLEICHALS 20</regel>
+            </beurteilung>
+			<beurteilung>
+                <ergebnisbereich>19-10 Punkte</ergebnisbereich>
+                <beschreibung>Mittelschwere Demenz</beschreibung>
+                <regel>KLEINERGLEICHALS 19</regel>
+                <regel>GROESSERGLEICHALS 10</regel>
+            </beurteilung>
+			<beurteilung>
+                <ergebnisbereich>≤ 9 Punkte</ergebnisbereich>
+                <beschreibung>Schwere Demenz</beschreibung>
+                <regel>KLEINERGLEICHALS 9</regel>
+            </beurteilung>
+		</auswertung>
+    </score>
+    <score name="sv-MADRS" gruppe="Neurologie">
+        <information>Beurteilung des Schweregrads einer Depression</information>
+        <quelle autor="Möller et al.">Einsatz einer modifizierten MADRS bei depressiven Patienten in einer prospektiven Kohortenstudie</quelle>
+        <part id="0" typ="Frame" zeile="0" spalte="0">
+            <widget id="100" typ="ComboBox" titel="Sichtbare Traurigkeit" titelbreite="200">
+                <items>
+                    <item wert="0">Keine</item>
+                    <item wert="1">Kaum</item>
+                    <item wert="2">Leicht</item>
+                    <item wert="3">Mäßig</item>
+                    <item wert="4">Deutlich</item>
+                    <item wert="5">Stark</item>
+                    <item wert="6">Extrem</item>
+                </items>
+            </widget>
+        </part>
+        <part id="1" typ="Frame" zeile="1" spalte="0">
+            <widget id="101" typ="ComboBox" titel="Berichtete Traurigkeit" titelbreite="200">
+                <items>
+                    <item wert="0">Keine</item>
+                    <item wert="1">Kaum</item>
+                    <item wert="2">Leicht</item>
+                    <item wert="3">Mäßig</item>
+                    <item wert="4">Deutlich</item>
+                    <item wert="5">Stark</item>
+                    <item wert="6">Extrem</item>
+                </items>
+            </widget>
+        </part>
+        <part id="2" typ="Frame" zeile="2" spalte="0">
+            <widget id="102" typ="ComboBox" titel="Innere Spannung" titelbreite="200">
+                <items>
+                    <item wert="0">Keine</item>
+                    <item wert="1">Kaum</item>
+                    <item wert="2">Leicht</item>
+                    <item wert="3">Mäßig</item>
+                    <item wert="4">Deutlich</item>
+                    <item wert="5">Stark</item>
+                    <item wert="6">Extrem</item>
+                </items>
+            </widget>
+        </part>
+        <part id="3" typ="Frame" zeile="3" spalte="0">
+            <widget id="103" typ="ComboBox" titel="Schlaflosigkti" titelbreite="200">
+                <items>
+                    <item wert="0">Keine</item>
+                    <item wert="1">Kaum</item>
+                    <item wert="2">Leicht</item>
+                    <item wert="3">Mäßig</item>
+                    <item wert="4">Deutlich</item>
+                    <item wert="5">Stark</item>
+                    <item wert="6">Extrem</item>
+                </items>
+            </widget>
+        </part>
+        <part id="4" typ="Frame" zeile="4" spalte="0">
+            <widget id="104" typ="ComboBox" titel="Appetitverlust" titelbreite="200">
+                <items>
+                    <item wert="0">Keine</item>
+                    <item wert="1">Kaum</item>
+                    <item wert="2">Leicht</item>
+                    <item wert="3">Mäßig</item>
+                    <item wert="4">Deutlich</item>
+                    <item wert="5">Stark</item>
+                    <item wert="6">Extrem</item>
+                </items>
+            </widget>
+        </part>
+        <part id="5" typ="Frame" zeile="0" spalte="1">
+            <widget id="105" typ="ComboBox" titel="Konzentrationsschwierigkeiten" titelbreite="200">
+                <items>
+                    <item wert="0">Keine</item>
+                    <item wert="1">Kaum</item>
+                    <item wert="2">Leicht</item>
+                    <item wert="3">Mäßig</item>
+                    <item wert="4">Deutlich</item>
+                    <item wert="5">Stark</item>
+                    <item wert="6">Extrem</item>
+                </items>
+            </widget>
+        </part>
+        <part id="6" typ="Frame" zeile="1" spalte="1">
+            <widget id="106" typ="ComboBox" titel="Untätigkeit" titelbreite="200">
+                <items>
+                    <item wert="0">Keine</item>
+                    <item wert="1">Kaum</item>
+                    <item wert="2">Leicht</item>
+                    <item wert="3">Mäßig</item>
+                    <item wert="4">Deutlich</item>
+                    <item wert="5">Stark</item>
+                    <item wert="6">Extrem</item>
+                </items>
+            </widget>
+        </part>
+        <part id="7" typ="Frame" zeile="2" spalte="1">
+            <widget id="107" typ="ComboBox" titel="Gefühllosigkeit" titelbreite="200">
+                <items>
+                    <item wert="0">Keine</item>
+                    <item wert="1">Kaum</item>
+                    <item wert="2">Leicht</item>
+                    <item wert="3">Mäßig</item>
+                    <item wert="4">Deutlich</item>
+                    <item wert="5">Stark</item>
+                    <item wert="6">Extrem</item>
+                </items>
+            </widget>
+        </part>
+        <part id="8" typ="Frame" zeile="3" spalte="1">
+            <widget id="108" typ="ComboBox" titel="Pessimistische Gedanken" titelbreite="200">
+                <items>
+                    <item wert="0">Keine</item>
+                    <item wert="1">Kaum</item>
+                    <item wert="2">Leicht</item>
+                    <item wert="3">Mäßig</item>
+                    <item wert="4">Deutlich</item>
+                    <item wert="5">Stark</item>
+                    <item wert="6">Extrem</item>
+                </items>
+            </widget>
+        </part>
+        <part id="9" typ="Frame" zeile="4" spalte="1">
+            <widget id="109" typ="ComboBox" titel="Selbstmordgedanken" titelbreite="200">
+                <items>
+                    <item wert="0">Keine</item>
+                    <item wert="1">Kaum</item>
+                    <item wert="2">Leicht</item>
+                    <item wert="3">Mäßig</item>
+                    <item wert="4">Deutlich</item>
+                    <item wert="5">Stark</item>
+                    <item wert="6">Extrem</item>
+                </items>
+            </widget>
+        </part>
+        <berechnung>
+            <formel>
+                <operation>$id{100}PLUS$id{101}</operation>
+                <operation>PLUS$id{102}</operation>
+                <operation>PLUS$id{103}</operation>
+                <operation>PLUS$id{104}</operation>
+                <operation>PLUS$id{105}</operation>
+                <operation>PLUS$id{106}</operation>
+                <operation>PLUS$id{107}</operation>
+                <operation>PLUS$id{108}</operation>
+                <operation>PLUS$id{109}</operation>
+            </formel>
+            <ergebniseinheit />
+            <variablen>
+            </variablen>
+        </berechnung>
+        <auswertung>
+			<beurteilung>
+                <ergebnisbereich>&lt; 13 Punkte</ergebnisbereich>
+                <beschreibung>Keine Depression</beschreibung>
+                <regel>KLEINERALS 13</regel>
+            </beurteilung>
+			<beurteilung>
+                <ergebnisbereich>13-21 Punkte</ergebnisbereich>
+                <beschreibung>Leichte Depression</beschreibung>
+                <regel>GROESSERGLEICHALS 13</regel>
+                <regel>KLEINERGLEICHALS 21</regel>
+            </beurteilung>
+			<beurteilung>
+                <ergebnisbereich>22-28 Punkte</ergebnisbereich>
+                <beschreibung>Mäßige Depression</beschreibung>
+                <regel>GROESSERGLEICHALS 22</regel>
+                <regel>KLEINERGLEICHALS 28</regel>
+            </beurteilung>
+			<beurteilung>
+                <ergebnisbereich>29-60 Punkte</ergebnisbereich>
+                <beschreibung>Schwere Depression</beschreibung>
+                <regel>GROESSERGLEICHALS 29</regel>
+            </beurteilung>
+        </auswertung>
+    </score>
+    <score name="PHQ-9-Fragebogen für Patienten" gruppe="Neurologie">
+        <information>Erfassung depressiver Störungen</information>
+        <quelle autor="Kroenke et al.">The PHQ-9: Validity of a brief depression severity measure.</quelle>
+        <part id="0" typ="Frame" titel="" erklaerung="Wie oft fühlten Sie sich im Verlauf der letzten 2 Wochen&#13;&#10;durch die folgenden Beschwerden beeinträchtigt?" zeile="0" spalte="0">
+            <widget />
+        </part>
+        <part id="1" typ="Frame" titel="" zeile="1" spalte="0" erklaerung="Wenig Interesse oder Freude an Ihren Tätigkeiten">
+            <widget id="100" typ="ComboBox" titel="Interessenslosigkeit" titelbreite="150">
+                <items>
+                    <item wert="0">Überhaupt nicht</item>
+                    <item wert="1">An einzelnen Tagen</item>
+                    <item wert="2">An mehr als der Hälfte der Tage</item>
+                    <item wert="3">Beinahe jeden Tag</item>
+                    </items>
+            </widget>
+        </part>
+        <part id="2" typ="Frame" titel="" zeile="1" spalte="1" erklaerung="Niedergeschlagenheit, Schwermut oder Hoffnungslosigkeit">
+            <widget id="101" typ="ComboBox" titel="Niedergeschlagenheit" titelbreite="150">
+                <items>
+                    <item wert="0">Überhaupt nicht</item>
+                    <item wert="1">An einzelnen Tagen</item>
+                    <item wert="2">An mehr als der Hälfte der Tage</item>
+                    <item wert="3">Beinahe jeden Tag</item>
+                    </items>
+            </widget>
+        </part>
+        <part id="3" typ="Frame" titel="" zeile="1" spalte="2" erklaerung="Schwierigkeiten ein- oder durchzuschlafen oder&#13;&#10;vermehrter Schlaf">
+            <widget id="102" typ="ComboBox" titel="Schlafstörung" titelbreite="150">
+                <items>
+                    <item wert="0">Überhaupt nicht</item>
+                    <item wert="1">An einzelnen Tagen</item>
+                    <item wert="2">An mehr als der Hälfte der Tage</item>
+                    <item wert="3">Beinahe jeden Tag</item>
+                    </items>
+            </widget>
+        </part>
+        <part id="4" typ="Frame" titel="" zeile="2" spalte="0" erklaerung="Müdigkeit oder Gefühl, keine Energie zu haben">
+            <widget id="103" typ="ComboBox" titel="Müdigkeit" titelbreite="150">
+                <items>
+                    <item wert="0">Überhaupt nicht</item>
+                    <item wert="1">An einzelnen Tagen</item>
+                    <item wert="2">An mehr als der Hälfte der Tage</item>
+                    <item wert="3">Beinahe jeden Tag</item>
+                    </items>
+            </widget>
+        </part>
+        <part id="5" typ="Frame" titel="" zeile="2" spalte="1" erklaerung="Verminderter Appetit oder übermäßiges Bedürfnis zu essen">
+            <widget id="104" typ="ComboBox" titel="Appetitlosigkeit" titelbreite="150">
+                <items>
+                    <item wert="0">Überhaupt nicht</item>
+                    <item wert="1">An einzelnen Tagen</item>
+                    <item wert="2">An mehr als der Hälfte der Tage</item>
+                    <item wert="3">Beinahe jeden Tag</item>
+                    </items>
+            </widget>
+        </part>
+        <part id="6" typ="Frame" titel="" zeile="2" spalte="2" erklaerung="Schlechte Meinung von sich selbst; Gefühl, ein Versager&#13;&#10;zu sein oder die Familie enttäuscht zu haben">
+            <widget id="105" typ="ComboBox" titel="Versagergefühl" titelbreite="150">
+                <items>
+                    <item wert="0">Überhaupt nicht</item>
+                    <item wert="1">An einzelnen Tagen</item>
+                    <item wert="2">An mehr als der Hälfte der Tage</item>
+                    <item wert="3">Beinahe jeden Tag</item>
+                    </items>
+            </widget>
+        </part>
+        <part id="7" typ="Frame" titel="" zeile="3" spalte="0" erklaerung="Schwierigkeiten, sich auf etwas zu konzentrieren,&#13;&#10;z. B. beim Zeitunglesen oder Fernsehen">
+            <widget id="106" typ="ComboBox" titel="Konzentrationsstörung" titelbreite="150">
+                <items>
+                    <item wert="0">Überhaupt nicht</item>
+                    <item wert="1">An einzelnen Tagen</item>
+                    <item wert="2">An mehr als der Hälfte der Tage</item>
+                    <item wert="3">Beinahe jeden Tag</item>
+                    </items>
+            </widget>
+        </part>
+        <part id="8" typ="Frame" titel="" zeile="3" spalte="1" erklaerung="Waren Ihre Bewegungen oder Ihre Sprache so verlangsamt,&#13;&#10;dass es auch anderen auffallen würde?&#13;&#10;Oder waren Sie im Gegenteil „zappelig“ oder ruhelos und&#13;&#10;hatten dadurch einen stärkeren Bewegungsdrang als sonst?">
+            <widget id="107" typ="ComboBox" titel="Verlangsamt/Zappelig" titelbreite="150">
+                <items>
+                    <item wert="0">Überhaupt nicht</item>
+                    <item wert="1">An einzelnen Tagen</item>
+                    <item wert="2">An mehr als der Hälfte der Tage</item>
+                    <item wert="3">Beinahe jeden Tag</item>
+                    </items>
+            </widget>
+        </part>
+        <part id="9" typ="Frame" titel="" zeile="3" spalte="2" erklaerung="Gedanken, dass Sie lieber tot wären oder sich Leid&#13;&#10;zufügen möchten">
+            <widget id="108" typ="ComboBox" titel="Suizidgedanken" titelbreite="150">
+                <items>
+                    <item wert="0">Überhaupt nicht</item>
+                    <item wert="1">An einzelnen Tagen</item>
+                    <item wert="2">An mehr als der Hälfte der Tage</item>
+                    <item wert="3">Beinahe jeden Tag</item>
+                    </items>
+            </widget>
+        </part>
+        
+        <berechnung>
+            <formel>
+                <operation>$id{100}PLUS$id{101}</operation>
+                <operation>PLUS$id{102}</operation>
+                <operation>PLUS$id{103}</operation>
+                <operation>PLUS$id{104}</operation>
+                <operation>PLUS$id{105}</operation>
+                <operation>PLUS$id{106}</operation>
+                <operation>PLUS$id{107}</operation>
+                <operation>PLUS$id{108}</operation>
+            </formel>
+            <ergebniseinheit>Punkte</ergebniseinheit>
+            <variablen>
+            </variablen>
+        </berechnung>
+        <auswertung>
+            <beurteilung>
+                <ergebnisbereich>&lt; 5 Punkte</ergebnisbereich>
+                <beschreibung>Minimale depressive Symptomatik</beschreibung>
+                <regel>KLEINERALS 5</regel>
+            </beurteilung>   
+            <beurteilung>
+                <ergebnisbereich>5-9 Punkte</ergebnisbereich>
+                <beschreibung>Milde depressive Symptomatik</beschreibung>
+                <regel>GROESSERGLEICHALS 5</regel>
+                <regel>KLEINERGLEICHALS 9</regel>
+            </beurteilung>   
+            <beurteilung>
+                <ergebnisbereich>10-14 Punkte</ergebnisbereich>
+                <beschreibung>Leichtgradige depressive Symptomatik</beschreibung>
+                <regel>GROESSERGLEICHALS 10</regel>
+                <regel>KLEINERGLEICHALS 14</regel>
+            </beurteilung>   
+            <beurteilung>
+                <ergebnisbereich>15-19 Punkte</ergebnisbereich>
+                <beschreibung>Mittelgradige depressive Symptomatik</beschreibung>
+                <regel>GROESSERGLEICHALS 10</regel>
+                <regel>KLEINERGLEICHALS 14</regel>
+            </beurteilung>   
+            <beurteilung>
+                <ergebnisbereich>20-27 Punkte</ergebnisbereich>
+                <beschreibung>Schwergradige depressive Symptomatik</beschreibung>
+                <regel>GROESSERGLEICHALS 20</regel>
+            </beurteilung>   
+        </auswertung>
+    </score>
+</root>

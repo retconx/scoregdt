@@ -1,0 +1,263 @@
+<root>
+    <score name="CRB-65-Index" gruppe="Pneumologie">
+        <information>Abschätzung des Schweregrades einer ambulant erworbenen Pneumonie</information>
+        <quelle autor="Bauer et al.">CRB-65 predicts death from community-acquired pneumonia</quelle>
+        <part typ="Frame" id="0" titel="" zeile="0" spalte="0">
+            <widget id="100" typ="CheckBox" titel="Confusion">
+                <wert>1</wert>
+                <erklaerung>Pneumonie-bedingte Verwirrtheit</erklaerung>
+            </widget>
+            <widget id="101" typ="CheckBox" titel="Respiratory rate">
+                <wert>1</wert>
+                <erklaerung>Atemfrequenz &gt; 30/min</erklaerung>
+            </widget>
+			<widget id="102" typ="CheckBox" titel="Blood pressure">
+                <wert>1</wert>
+                <erklaerung>Blutdruck systolisch &lt; 90 oder diastolisch &lt; 60 mmHg</erklaerung>
+            </widget>
+            <widget id="103" typ="CheckBox" titel="65" alterspruefung="True" altersregel="GROESSERGLEICHALS65">
+                <wert>1</wert>
+                <erklaerung>Alter ≥ 65 Jahre</erklaerung>
+            </widget>
+        </part>
+        <berechnung>
+            <formel>
+                <operation>$id{100} PLUS $id{101}</operation>
+                <operation>PLUS $id{102}</operation>
+                <operation>PLUS $id{103}</operation>
+            </formel>
+            <ergebniseinheit>Punkte</ergebniseinheit>
+            <variablen />
+        </berechnung>
+		<auswertung>
+			<beurteilung>
+                <ergebnisbereich>0 Punkte</ergebnisbereich>
+                <beschreibung>Ambulante Behandlung möglich</beschreibung>
+                <regel>KLEINERALS 2</regel>
+            </beurteilung>
+			<beurteilung>
+                <ergebnisbereich>1 - 2 Punkte</ergebnisbereich>
+                <beschreibung>Stationäre Behandlung empfohlen</beschreibung>
+                <regel>GROESSERGLEICHALS 1</regel>
+                <regel>KLEINERGLEICHALS 2</regel>
+            </beurteilung>
+			<beurteilung>
+                <ergebnisbereich>3 - 4 Punkte</ergebnisbereich>
+                <beschreibung>Intensivtherapie empfohlen</beschreibung>
+                <regel>GROESSERGLEICHALS 3</regel>
+            </beurteilung>
+		</auswertung>
+    </score>
+	<score name="Wells-Score (Wells I)" gruppe="Pneumologie">
+        <information>Abschätzung der Wahrscheinlichkeit für das Vorliegen einer Lungenembolie</information>
+        <quelle autor="Wells et al.">Excluding pulmonary embolism at the bedside without diagnostic imaging: management of patients with suspected pulmonary embolism presenting to the emergency department by using a simple clinical model and d-dimer</quelle>
+        <part typ="Frame" id="0" titel="" zeile="0" spalte="0">
+            <widget id="100" typ="CheckBox" titel="Klinische Zeichen für tiefe Beinvenenthrombose">
+                <wert>3</wert>
+            </widget>
+            <widget id="101" typ="CheckBox" titel="Andere Diagnosen unwahrscheinlich">
+                <wert>3</wert>
+            </widget>
+			<widget id="102" typ="CheckBox" titel="Herzfrequenz &gt; 100/min">
+                <wert>1.5</wert>
+            </widget>
+            <widget id="103" typ="CheckBox" titel="Immobilisation &lt; 3 Tage oder OP vor &gt; 4 Wochen">
+                <wert>1.5</wert>
+            </widget>
+            <widget id="104" typ="CheckBox" titel="Lungenembolie oder tiefe Beinvenenthrombose in der Anamnese">
+                <wert>1.5</wert>
+            </widget>
+            <widget id="105" typ="CheckBox" titel="Hämoptyse">
+                <wert>1</wert>
+            </widget>
+            <widget id="106" typ="CheckBox" titel="Neoplasie">
+                <wert>1</wert>
+            </widget>
+        </part>
+        <berechnung>
+            <formel>
+                <operation>$id{100} PLUS $id{101}</operation>
+                <operation>PLUS $id{102}</operation>
+                <operation>PLUS $id{103}</operation>
+                <operation>PLUS $id{104}</operation>
+                <operation>PLUS $id{105}</operation>
+                <operation>PLUS $id{106}</operation>
+            </formel>
+            <ergebniseinheit>Punkte</ergebniseinheit>
+            <variablen />
+        </berechnung>
+		<auswertung>
+			<beurteilung>
+                <ergebnisbereich>&lt; 2 Punkte</ergebnisbereich>
+                <beschreibung>Geringe Wahrscheinlichkeit</beschreibung>
+                <regel>KLEINERALS 2</regel>
+            </beurteilung>
+			<beurteilung>
+                <ergebnisbereich>2 - 6 Punkte</ergebnisbereich>
+                <beschreibung>Mittlere Wahrscheinlichkeit</beschreibung>
+                <regel>GROESSERGLEICHALS 2</regel>
+                <regel>KLEINERGLEICHALS 6</regel>
+            </beurteilung>
+			<beurteilung>
+                <ergebnisbereich>≥ 7 Punkte</ergebnisbereich>
+                <beschreibung>Hohe Wahrscheinlichkeit</beschreibung>
+                <regel>GROESSERGLEICHALS 7</regel>
+            </beurteilung>
+		</auswertung>
+    </score>
+    <score name="4PEPS" gruppe="Pneumologie">
+        <information>Abschätzung der klinischen Vortestwahrscheinlichkeit für das Vorliegen einer Lungenembolie</information>
+        <quelle autor="Roy et al.">Derivation and Validation of a 4-Level Clinical Pretest Probability Score for Suspected Pulmonary Embolism to Safely Decrease Imaging Testing</quelle>
+        <part id="0" typ="Frame" zeile="0" spalte="0">
+            <widget id="100" typ="LineEdit" titel="Alter" alterspruefung="True">
+                <regex>^\d+?$</regex>
+                <einheit>Jahre</einheit>
+            </widget>
+        </part>
+        <part id="1" typ="GroupBox" titel="Geschlecht" zeile="0" spalte="1" geschlechtpruefung="True">
+            <widget id="101" typ="RadioButton" titel="Weiblich" checked="True">
+                <wert>0</wert>
+            </widget>
+            <widget id="102" typ="RadioButton" titel="Männlich">
+                <wert>2</wert>
+            </widget>
+        </part>
+        <part id="2" typ="GroupBox" titel="Chronische Atemwegserkrankung" zeile="0" spalte="2">
+            <widget id="103" typ="RadioButton" titel="Nein" checked="True">
+                <wert>0</wert>
+            </widget>
+            <widget id="104" typ="RadioButton" titel="Ja">
+                <wert>-1</wert>
+            </widget>
+        </part>
+        <part id="3" typ="GroupBox" titel="Herzfrequenz &lt; 80/min" zeile="1" spalte="0">
+            <widget id="105" typ="RadioButton" titel="Nein" checked="True">
+                <wert>0</wert>
+            </widget>
+            <widget id="106" typ="RadioButton" titel="Ja">
+                <wert>-1</wert>
+            </widget>
+        </part>
+        <part id="4" typ="GroupBox" titel="Brustschmerz UND Atemnot" zeile="1" spalte="1">
+            <widget id="107" typ="RadioButton" titel="Nein" checked="True">
+                <wert>0</wert>
+            </widget>
+            <widget id="108" typ="RadioButton" titel="Ja">
+                <wert>1</wert>
+            </widget>
+        </part>
+        <part id="5" typ="GroupBox" titel="Derzeitige Östrogenbehandlung" zeile="1" spalte="2">
+            <widget id="109" typ="RadioButton" titel="Nein" checked="True">
+                <wert>0</wert>
+            </widget>
+            <widget id="110" typ="RadioButton" titel="Ja">
+                <wert>2</wert>
+            </widget>
+        </part>
+        <part id="6" typ="GroupBox" titel="Anamnestisch venöse Thromboembolie" zeile="2" spalte="0">
+            <widget id="111" typ="RadioButton" titel="Nein" checked="True">
+                <wert>0</wert>
+            </widget>
+            <widget id="112" typ="RadioButton" titel="Ja">
+                <wert>2</wert>
+            </widget>
+        </part>
+        <part id="7" typ="GroupBox" titel="Synkope" zeile="2" spalte="1">
+            <widget id="113" typ="RadioButton" titel="Nein" checked="True">
+                <wert>0</wert>
+            </widget>
+            <widget id="114" typ="RadioButton" titel="Ja">
+                <wert>2</wert>
+            </widget>
+        </part>
+        <part id="8" typ="GroupBox" titel="Immobilität innerhalb der letzten vier Wochen" erklaerung="Operation, Gipsverband an unterer Extremität oder&#13;&#10;Bettlägerigkeit &gt; Tage wegen akuter Erkrankung" zeile="2" spalte="2">
+            <widget id="115" typ="RadioButton" titel="Nein" checked="True">
+                <wert>0</wert>
+            </widget>
+            <widget id="116" typ="RadioButton" titel="Ja">
+                <wert>2</wert>
+            </widget>
+        </part>
+        <part id="9" typ="GroupBox" titel="O₂-Sättigung &lt; 95%" gdttitel="O2-Sättigung &lt; 95%" zeile="3" spalte="0">
+            <widget id="117" typ="RadioButton" titel="Nein" checked="True">
+                <wert>0</wert>
+            </widget>
+            <widget id="118" typ="RadioButton" titel="Ja">
+                <wert>3</wert>
+            </widget>
+        </part>
+        <part id="10" typ="GroupBox" titel="Wadenschmerz und/oder unilaterales Beinödem" zeile="3" spalte="1">
+            <widget id="119" typ="RadioButton" titel="Nein" checked="True">
+                <wert>0</wert>
+            </widget>
+            <widget id="120" typ="RadioButton" titel="Ja">
+                <wert>3</wert>
+            </widget>
+        </part>
+        <part id="11" typ="GroupBox" titel="Lungenembolie wahrscheinlichste Diagnose" zeile="3" spalte="2">
+            <widget id="121" typ="RadioButton" titel="Nein" checked="True">
+                <wert>0</wert>
+            </widget>
+            <widget id="122" typ="RadioButton" titel="Ja">
+                <wert>5</wert>
+            </widget>
+        </part>
+        <berechnung>
+            <formel>
+                <operation>$var{alterspunkt}PLUS$id{101}</operation>
+                <operation>PLUS$id{103}</operation>
+                <operation>PLUS$id{105}</operation>
+                <operation>PLUS$id{107}</operation>
+                <operation>PLUS$id{109}</operation>
+                <operation>PLUS$id{111}</operation>
+                <operation>PLUS$id{113}</operation>
+                <operation>PLUS$id{115}</operation>
+                <operation>PLUS$id{117}</operation>
+                <operation>PLUS$id{119}</operation>
+                <operation>PLUS$id{121}</operation>
+            </formel>
+            <ergebniseinheit>Punkte</ergebniseinheit>
+            <variablen>
+                <variable name="alterspunkt">
+                    <bedingung>
+                        <regel>$id{100}KLEINERALS50</regel>
+                        <wert>-2</wert>
+                    </bedingung>
+                    <bedingung>
+                        <regel>$id{100}GROESSERGLEICHALS50</regel>
+                        <regel>$id{100}KLEINERGLEICHALS64</regel>
+                        <wert>-1</wert>
+                    </bedingung>
+                    <bedingung>
+                        <regel>$id{100}GROESSERALS64</regel>
+                        <wert>0</wert>
+                    </bedingung>
+                </variable>
+            </variablen>
+        </berechnung>
+        <auswertung>
+			<beurteilung>
+                <ergebnisbereich>&lt; 0 Punkte</ergebnisbereich>
+                <beschreibung>Sehr geringe Wahrscheinlichkeit (&lt; 2%)</beschreibung>
+                <regel>KLEINERALS 0</regel>
+            </beurteilung>
+			<beurteilung>
+                <ergebnisbereich>0-5 Punkte</ergebnisbereich>
+                <beschreibung>Geringe Wahrscheinlichkeit (2-20%)</beschreibung>
+                <regel>GROESSERGLEICHALS 0</regel>
+                <regel>KLEINERGLEICHALS 5</regel>
+            </beurteilung>
+			<beurteilung>
+                <ergebnisbereich>6-12 Punkte</ergebnisbereich>
+                <beschreibung>Mäßige Wahrscheinlichkeit (20-65%)</beschreibung>
+                <regel>GROESSERGLEICHALS 6</regel>
+                <regel>KLEINERGLEICHALS 12</regel>
+            </beurteilung>
+			<beurteilung>
+                <ergebnisbereich>&gt; 12 Punkte</ergebnisbereich>
+                <beschreibung>Hohe Wahrscheinlichkeit (&gt; 65%)</beschreibung>
+                <regel>GROESSERALS 12</regel>
+            </beurteilung>
+		</auswertung>
+    </score>
+</root>

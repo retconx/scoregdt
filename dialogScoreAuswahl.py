@@ -22,8 +22,7 @@ class ScoreAuswahl(QDialog):
         self.fontBold = QFont()
         self.fontBold.setBold(True)
         
-
-        self.setWindowTitle("Score auswählen")
+        self.setWindowTitle("ScoreGDT - Score auswählen")
         self.buttonBox = QDialogButtonBox(QDialogButtonBox.StandardButton.Ok | QDialogButtonBox.StandardButton.Cancel)
         self.buttonBox.button(QDialogButtonBox.StandardButton.Cancel).setText("Abbrechen")
         self.buttonBox.accepted.connect(self.accept) # type:ignore
@@ -48,7 +47,7 @@ class ScoreAuswahl(QDialog):
                 information = str(scoreElement.find("information").text) # type: ignore
                 if gruppe == scoreGruppenname:
                     scoreNamenUndInfos.append((name, information))
-            scoreGruppen[scoreGruppenname] = sorted(scoreNamenUndInfos.copy(), key=lambda sni:sni[0])
+            scoreGruppen[scoreGruppenname] = scoreNamenUndInfos.copy()
         # Formular aufbauen    
         dialogLayoutV = QVBoxLayout()
         buttonGroup = QButtonGroup()
@@ -83,13 +82,13 @@ class ScoreAuswahl(QDialog):
         for rb in self.radioButtonsScore:
             rb.setFixedWidth(240)
         
-        # Ggf ersten Button aktivieren
+        # Ggf ersten RadioButton aktivieren
         if self.aktuellGewaehlterScore == "":
             self.radioButtonsScore[0].setChecked(True)
             self.aktuellGewaehlterScore = self.radioButtonsScore[0].text()
     
-    def radioButtonClicked(self, checked, radioButtonNr):
-        self.aktuellGewaehlterScore = self.radioButtonsScore[radioButtonNr].text()
+    def radioButtonClicked(self, checked, radioButtoNr):
+        self.aktuellGewaehlterScore = self.radioButtonsScore[radioButtoNr].text()
     
     def accept(self):
         self.done(1)
