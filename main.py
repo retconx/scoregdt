@@ -185,6 +185,37 @@ class MainWindow(QMainWindow):
                 mb.exec()
                 sys.exit()
 
+        ## favoriten.xml anlegen (ab 1.8.0)
+        try:
+            if not os.path.exists(os.path.join(self.configPath, "favoriten.xml")):
+                favoritenElement = ElementTree.Element("favoriten")
+                tree = ElementTree.ElementTree(favoritenElement)
+                gesamtRoot = class_score.Score.getGesamtRoot(self.scoresPfad)
+                for scoreElement in gesamtRoot.findall("score"):
+                    favoritElement = ElementTree.Element("favorit")
+                    favoritElement.text = str(scoreElement.get("name"))
+                    favoritenElement.append(favoritElement)
+                ElementTree.indent(tree)
+                tree.write(os.path.join(self.configPath, "favoriten.xml"), "utf-8", True)
+                logger.logger.info(os.path.join(self.configPath, "favoriten.xml") + " erstellt")
+        except:
+            pass
+        ## /favoriten.xml anlegen
+
+        # Score-Favoriten auslesen
+        if not class_score.Score.namenEindeutig(self.scoresPfad):
+            logger.logger.warning("Score-Namen nicht eindeutig")
+            logger.logger.error("Fehler beim Vergeben eindeutiger Score-IDs (Scores-Pfad: " + self.scoresPfad + ")")
+            mb = QMessageBox(QMessageBox.Icon.Warning, "Hinweis von ScoreGDT", "Die Score-Namen sind nicht eindeutig.", QMessageBox.StandardButton.Ok)
+            mb.exec()
+        try:
+            self.root = class_score.Score.getScoreFavoritenRoot(self.configPath, self.scoresPfad)
+        except Exception as e:
+            logger.logger.error("Fehler beim Laden der Scores (Scorepfad: " + self.scoresPfad + ")")
+            mb = QMessageBox(QMessageBox.Icon.Warning, "Hinweis von ScoreGDT", "Fehler beim Laden der Scores.\nScoreGDT wird beendet.", QMessageBox.StandardButton.Ok)
+            mb.exec()
+            sys.exit()
+        
         # Grundeinstellungen bei erstem Start
         if ersterStart:
             logger.logger.info("Erster Start")
@@ -218,22 +249,6 @@ class MainWindow(QMainWindow):
                 except:
                     pass
                 ## /scores.xml löschen
-                ## favoriten.xml anlegen (ab 1.8.0)
-                try:
-                    if not os.path.exists(os.path.join(self.configPath, "favoriten.xml")):
-                        favoritenElement = ElementTree.Element("favoriten")
-                        tree = ElementTree.ElementTree(favoritenElement)
-                        gesamtRoot = class_score.Score.getGesamtRoot(self.scoresPfad)
-                        for scoreElement in gesamtRoot.findall("score"):
-                            favoritElement = ElementTree.Element("favorit")
-                            favoritElement.text = str(scoreElement.get("name"))
-                            favoritenElement.append(favoritElement)
-                        ElementTree.indent(tree)
-                        tree.write(os.path.join(self.configPath, "favoriten.xml"), "utf-8", True)
-                        logger.logger.info(os.path.join(self.configPath, "favoriten.xml") + " erstellt")
-                except:
-                    pass
-                ## /favoriten.xml anlegen
 
                 with open(os.path.join(self.configPath, "config.ini"), "w", encoding="utf-8") as configfile:
                     self.configIni.write(configfile)
@@ -259,20 +274,6 @@ class MainWindow(QMainWindow):
             logger.logger.error("Problem beim Aktualisieren auf Version " + configIniBase["Allgemein"]["version"])
             mb = QMessageBox(QMessageBox.Icon.Warning, "Hinweis von ScoreGDT", "Problem beim Aktualisieren auf Version " + configIniBase["Allgemein"]["version"], QMessageBox.StandardButton.Ok)
             mb.exec()
-        
-        # Score-Favoriten auslesen
-        if not class_score.Score.namenEindeutig(self.scoresPfad):
-            logger.logger.warning("Score-Namen nicht eindeutig")
-            logger.logger.error("Fehler beim Vergeben eindeutiger Score-IDs (Scores-Pfad: " + self.scoresPfad + ")")
-            mb = QMessageBox(QMessageBox.Icon.Warning, "Hinweis von ScoreGDT", "Die Score-Namen sind nicht eindeutig.", QMessageBox.StandardButton.Ok)
-            mb.exec()
-        try:
-            self.root = class_score.Score.getScoreFavoritenRoot(self.configPath, self.scoresPfad)
-        except Exception as e:
-            logger.logger.error("Fehler beim Laden der Scores (Scorepfad: " + self.scoresPfad + ")")
-            mb = QMessageBox(QMessageBox.Icon.Warning, "Hinweis von ScoreGDT", "Fehler beim Laden der Scores.\nScoreGDT wird beendet.", QMessageBox.StandardButton.Ok)
-            mb.exec()
-            sys.exit()
 
         self.addOnsFreigeschaltet = True
 
