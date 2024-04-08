@@ -37,6 +37,7 @@ class EinstellungenFavoriten(QDialog):
                 name = str(scoreElement.get("name"))
                 if gruppe == tempGruppe:
                     self.namen.append(name)
+            self.namen = sorted(self.namen, key=lambda name:name.casefold())
             self.scoreGruppen[gruppe] = self.namen.copy()
         
         self.fontNormal = QFont()

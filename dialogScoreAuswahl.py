@@ -47,6 +47,7 @@ class ScoreAuswahl(QDialog):
                 information = str(scoreElement.find("information").text) # type: ignore
                 if gruppe == scoreGruppenname:
                     scoreNamenUndInfos.append((name, information))
+                    scoreNamenUndInfos = sorted(scoreNamenUndInfos, key=lambda name: name[0].casefold())
             scoreGruppen[scoreGruppenname] = scoreNamenUndInfos.copy()
         # Formular aufbauen    
         dialogLayoutV = QVBoxLayout()

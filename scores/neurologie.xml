@@ -1,7 +1,7 @@
 <root>
     <score name="Epworth Sleepiness Scale (ESS)" gruppe="Neurologie">
         <information>Beurteilung der Tagesschläfrigkeit</information>
-        <quelle autor="Johns">A new method for measuring daytime sleepiness: The Epworth Sleepiness Scale.</quelle>
+        <quelle autor="Johns">A new method for measuring daytime sleepiness: The Epworth Sleepiness Scale</quelle>
         <part id="0" typ="GroupBox" titel="Einschlafen beim Sitzen oder Lesen" zeile="0" spalte="0">
             <widget id="100" typ="RadioButton" titel="Unmöglich" checked="True">
                 <wert>0</wert>
@@ -483,7 +483,7 @@
     </score>
     <score name="PHQ-9-Fragebogen für Patienten" gruppe="Neurologie">
         <information>Erfassung depressiver Störungen</information>
-        <quelle autor="Kroenke et al.">The PHQ-9: Validity of a brief depression severity measure.</quelle>
+        <quelle autor="Kroenke et al.">The PHQ-9: Validity of a brief depression severity measure</quelle>
         <part id="0" typ="Frame" titel="" erklaerung="Wie oft fühlten Sie sich im Verlauf der letzten 2 Wochen&#13;&#10;durch die folgenden Beschwerden beeinträchtigt?" zeile="0" spalte="0">
             <widget />
         </part>

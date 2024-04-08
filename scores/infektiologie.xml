@@ -1,5 +1,5 @@
 <root>
-    <score name="qSofa" gruppe="Infektiologie">
+    <score name="qSofa-Score" gruppe="Infektiologie">
         <information>Abschätzung des Risikos für die Entwicklung einer Sepsis</information>
         <quelle autor="Singer et al.">The Third International Consensus Definitions for Sepsis and Septic Shock (Sepsis-3)</quelle>
         <part typ="Frame" id="0" titel="" zeile="0" spalte="0">
@@ -23,5 +23,139 @@
             <ergebniseinheit>Punkte</ergebniseinheit>
             <variablen />
         </berechnung>
+    </score>
+    <score name="Centor-Score" gruppe="Infektiologie">
+        <information>Abschätzung der Wahrscheinlichkeit, mit der eine Pharyngitis durch A-Streptokokken verursacht ist</information>
+        <quelle autor="Centor et al.">The diagnosis of strep throat in adults in the emergency room</quelle>
+        <part typ="Frame" id="0" titel="" zeile="0" spalte="0">
+            <widget id="100" typ="CheckBox" titel="Fieber">
+            <erklaerung>&#x3e; 38 Grad</erklaerung>
+                <wert>1</wert>
+            </widget>
+            <widget id="101" typ="CheckBox" titel="Fehlen von Husten">
+                <wert>1</wert>
+            </widget>
+			<widget id="102" typ="CheckBox" titel="Geschwollene, druckschmerzhafte vordere Halslymphknoten">
+                <wert>1</wert>
+            </widget>
+			<widget id="103" typ="CheckBox" titel="Belegte Tonsillen">
+                <wert>1</wert>
+            </widget>
+        </part>
+        <berechnung>
+            <formel>
+                <operation>$id{100} PLUS $id{101}</operation>
+                <operation>PLUS $id{102}</operation>
+                <operation>PLUS $id{103}</operation>
+            </formel>
+            <ergebniseinheit>Punkte</ergebniseinheit>
+            <variablen />
+        </berechnung>
+        <auswertung>
+            <beurteilung>
+                <ergebnisbereich>0 Punkte</ergebnisbereich>
+                <beschreibung>Wahrscheinlichkeit ca. 2,5%</beschreibung>
+                <regel>ISTGLEICH 0</regel>
+            </beurteilung>  
+            <beurteilung>
+                <ergebnisbereich>1 Punkte</ergebnisbereich>
+                <beschreibung>Wahrscheinlichkeit ca. 6-7%</beschreibung>
+                <regel>ISTGLEICH 1</regel>
+            </beurteilung>  
+            <beurteilung>
+                <ergebnisbereich>2 Punkt</ergebnisbereich>
+                <beschreibung>Wahrscheinlichkeit ca. 15%</beschreibung>
+                <regel>ISTGLEICH 2</regel>
+            </beurteilung>  
+            <beurteilung>
+                <ergebnisbereich>3 Punkte</ergebnisbereich>
+                <beschreibung>Wahrscheinlichkeit ca. 30-35%</beschreibung>
+                <regel>ISTGLEICH 3</regel>
+            </beurteilung>  
+            <beurteilung>
+                <ergebnisbereich>4 Punkte</ergebnisbereich>
+                <beschreibung>Wahrscheinlichkeit ca.50-60%</beschreibung>
+                <regel>ISTGLEICH 4</regel>
+            </beurteilung>  
+        </auswertung>
+    </score>
+    <score name="McIsaac-Score" gruppe="Infektiologie">
+        <information>Abschätzung der Wahrscheinlichkeit, mit der eine Pharyngitis durch A-Streptokokken verursacht ist</information>
+        <quelle autor="McIsaac et al.">A clinical score to reduce unnecessary antibiotic use in patients with sore throat</quelle>
+        <part typ="Frame" id="0" titel="" zeile="0" spalte="0">
+            <widget id="100" typ="CheckBox" titel="Fieber">
+            <erklaerung>&#x3e; 38 Grad</erklaerung>
+                <wert>1</wert>
+            </widget>
+            <widget id="101" typ="CheckBox" titel="Fehlen von Husten">
+                <wert>1</wert>
+            </widget>
+			<widget id="102" typ="CheckBox" titel="Geschwollene, druckschmerzhafte vordere Halslymphknoten">
+                <wert>1</wert>
+            </widget>
+			<widget id="103" typ="CheckBox" titel="Belegte Tonsillen">
+                <wert>1</wert>
+            </widget>
+        </part>
+        <part id="1" typ="Frame" zeile="1" spalte="0">
+            <widget id="104" typ="LineEdit" titel="Alter" alterspruefung="True">
+                <regex>^\d+?$</regex>
+                <einheit>Jahre</einheit>
+            </widget>
+        </part>
+        <berechnung>
+            <formel>
+                <operation>$id{100} PLUS $id{101}</operation>
+                <operation>PLUS $id{102}</operation>
+                <operation>PLUS $id{103}</operation>
+                <operation>PLUS $var{alterspunkt}</operation>
+            </formel>
+            <ergebniseinheit>Punkte</ergebniseinheit>
+            <variablen>
+                <variable name="alterspunkt">
+                    <bedingung>
+                        <regel>$id{104}GROESSERGLEICHALS3</regel>
+                        <regel>$id{104}KLEINERGLEICHALS14</regel>
+                        <wert>1</wert>
+                    </bedingung>
+                    <bedingung>
+                        <regel>$id{104}GROESSERGLEICHALS15</regel>
+                        <regel>$id{104}KLEINERGLEICHALS44</regel>
+                        <wert>0</wert>
+                    </bedingung>
+                    <bedingung>
+                        <regel>$id{104}GROESSERGLEICHALS45</regel>
+                        <wert>-1</wert>
+                    </bedingung>
+                </variable>
+            </variablen>
+        </berechnung>
+        <auswertung>
+            <beurteilung>
+                <ergebnisbereich>&#x3c; 1 Punkt</ergebnisbereich>
+                <beschreibung>Wahrscheinlichkeit ca. 1%</beschreibung>
+                <regel>KLEINERGLEICHALS 0</regel>
+            </beurteilung>  
+            <beurteilung>
+                <ergebnisbereich>1 Punkt</ergebnisbereich>
+                <beschreibung>Wahrscheinlichkeit ca. 10%</beschreibung>
+                <regel>ISTGLEICH 1</regel>
+            </beurteilung>  
+            <beurteilung>
+                <ergebnisbereich>2 Punkte</ergebnisbereich>
+                <beschreibung>Wahrscheinlichkeit ca. 17%</beschreibung>
+                <regel>ISTGLEICH 2</regel>
+            </beurteilung>  
+            <beurteilung>
+                <ergebnisbereich>3 Punkte</ergebnisbereich>
+                <beschreibung>Wahrscheinlichkeit ca. 35%</beschreibung>
+                <regel>ISTGLEICH 3</regel>
+            </beurteilung>  
+            <beurteilung>
+                <ergebnisbereich>&#x3e;4 Punkte</ergebnisbereich>
+                <beschreibung>Wahrscheinlichkeit ca.50%</beschreibung>
+                <regel>GROESSERGLEICHALS 4</regel>
+            </beurteilung>  
+        </auswertung>
     </score>
 </root>
