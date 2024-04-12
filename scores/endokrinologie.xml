@@ -1,0 +1,113 @@
+<root>
+    <score name="ACR TI-RADS" gruppe="Endokrinologie">
+        <information>Beurteilung sonographisch detektierter Schilddrüsenknoten</information>
+        <quelle autor="Tessler et al.">ACR Thyroid Imaging, Reporting and Data System (TI-RTADS): White Paper of the ACR TI-RADS Comittee</quelle>
+        <part typ="GroupBox" id="0" titel="Zusammensetzung" zeile="0" spalte="0">
+            <widget id="100" typ="RadioButton" titel="Rein zystisch oder beinahe vollständig zystisch" checked="True">
+                <wert>0</wert>
+            </widget>
+            <widget id="101" typ="RadioButton" titel="Spongiform">
+                <wert>0</wert>
+            </widget>
+            <widget id="102" typ="RadioButton" titel="Gemischt zystisch und solide">
+                <wert>1</wert>
+            </widget>
+            <widget id="103" typ="RadioButton" titel="Solide oder fast vollständig solide">
+                <wert>2</wert>
+            </widget>
+        </part>
+        <part typ="GroupBox" id="1" titel="Echogenität" zeile="0" spalte="1">
+            <widget id="104" typ="RadioButton" titel="Echofrei" checked="True">
+                <wert>0</wert>
+            </widget>
+            <widget id="105" typ="RadioButton" titel="Echoreich oder echogleich">
+                <wert>1</wert>
+            </widget>
+            <widget id="106" typ="RadioButton" titel="Echoarm">
+                <wert>2</wert>
+            </widget>
+            <widget id="107" typ="RadioButton" titel="Sehr echoarm">
+                <wert>3</wert>
+            </widget>
+        </part>
+        <part typ="GroupBox" id="2" titel="Form" zeile="0" spalte="2">
+            <widget id="108" typ="RadioButton" titel="Im Querschnitt breiter als tief" checked="True">
+                <erklaerung>&#x22;wider than tall&#x22;</erklaerung>
+                <wert>0</wert>
+            </widget>
+            <widget id="109" typ="RadioButton" titel="Im Querschnitt tiefer als breit">
+                <erklaerung>&#x22;taller than wide&#x22;</erklaerung>
+                <wert>3</wert>
+            </widget>
+        </part>
+        <part typ="GroupBox" id="3" titel="Randbegrenzung" zeile="1" spalte="0">
+            <widget id="110" typ="RadioButton" titel="Glatt" checked="True">
+                <wert>0</wert>
+            </widget>
+            <widget id="111" typ="RadioButton" titel="Nicht definierbar">
+                <wert>0</wert>
+            </widget>
+            <widget id="112" typ="RadioButton" titel="Lobuliert oder irregulär">
+                <wert>2</wert>
+            </widget>
+            <widget id="113" typ="RadioButton" titel="Extrathyreoidale Ausdehnung">
+                <wert>3</wert>
+            </widget>
+        </part>
+        <part typ="GroupBox" id="4" titel="Echoreiche Herde" zeile="1" spalte="1">
+            <widget id="114" typ="CheckBox" titel="Keine oder Kometenschwanzartefakte &#x3e; 1 mm" checked="True">
+                <wert>0</wert>
+            </widget>
+            <widget id="115" typ="CheckBox" titel="Makrokalzifikationen mit dorsaler Schallauslöschung">
+                <wert>1</wert>
+            </widget>
+            <widget id="116" typ="CheckBox" titel="Periphere (Rand-)Kalzifikationen">
+                <wert>2</wert>
+            </widget>
+            <widget id="117" typ="CheckBox" titel="Punktförmige echogene Herde">
+                <wert>3</wert>
+            </widget>
+        </part>
+        <berechnung>
+            <formel>
+                <operation>$id{100} PLUS $id{104}</operation>
+                <operation>PLUS $id{108}</operation>
+                <operation>PLUS $id{110}</operation>
+                <operation>PLUS $id{114}</operation>
+                <operation>PLUS $id{115}</operation>
+                <operation>PLUS $id{116}</operation>
+                <operation>PLUS $id{117}</operation>
+            </formel>
+            <ergebniseinheit>Punkte</ergebniseinheit>
+            <variablen />
+        </berechnung>
+        <auswertung>
+            <beurteilung>
+                <ergebnisbereich>&#x3c; 2 Punkte</ergebnisbereich>
+                <beschreibung>Empfehlung: benigne, keine Feinnadelpunktion</beschreibung>
+                <regel>KLEINERALS 2</regel>
+            </beurteilung> 
+            <beurteilung>
+                <ergebnisbereich>2 Punkte</ergebnisbereich>
+                <beschreibung>Empfehlung: nicht verdächtig, keine Feinnadelpunktion</beschreibung>
+                <regel>ISTGLEICH 2</regel>
+            </beurteilung> 
+            <beurteilung>
+                <ergebnisbereich>3 Punkte</ergebnisbereich>
+                <beschreibung>Empfehlung: gering verdächtig, Feinnadelpunktion &#x3e; 25 mm</beschreibung>
+                <regel>ISTGLEICH 3</regel>
+            </beurteilung> 
+            <beurteilung>
+                <ergebnisbereich>4-6 Punkte</ergebnisbereich>
+                <beschreibung>Empfehlung: mittelgradig verdächtig, Feinnadelpunktion &#x3e; 15 mm</beschreibung>
+                <regel>GROESSERGLEICHALS 4</regel>
+                <regel>KLEINERGLEICHALS 6</regel>
+            </beurteilung> 
+            <beurteilung>
+                <ergebnisbereich>&#x3e; 6 Punkte</ergebnisbereich>
+                <beschreibung>Empfehlung: hochgradig verdächtig, Feinnadelpunktion &#x3e; 10 mm</beschreibung>
+                <regel>GROESSERALS 6</regel>
+            </beurteilung> 
+        </auswertung>
+    </score>
+</root>

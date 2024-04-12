@@ -838,6 +838,7 @@ class MainWindow(QMainWindow):
                 operandenAlsZahl = []
                 sindZahlen = True
                 for operand in operanden:
+                    print("oo", operand)
                     if re.match(regexZahl, operand) == "None":
                         sindZahlen = False
                     if "." in operand:
@@ -964,7 +965,7 @@ class MainWindow(QMainWindow):
                         widget.getQt().setText(str(widget.getGrenzzahl(zahl)).replace(".", ",").replace(",0", ""))
        
         if formularOk :
-            try:
+            # try:
                 # $var{...}-Werte auslesen
                 berechnungElement = self.scoreRoot.find("berechnung") # type: ignore
                 formelElement = berechnungElement.find("formel") # type: ignore
@@ -1180,10 +1181,10 @@ class MainWindow(QMainWindow):
                             break
                     logger.logger.info("Therapieindikationsschwelle: " + str(therapieindikationsschwelleProzent) + "%")
                     self.lineEditScoreErgebnis.setText(str(therapieindikationsschwelleProzent))
-            except Exception as e:
-                logger.logger.error("Fehler bei der Score-Berechung: " + str(e))
-                mb = QMessageBox(QMessageBox.Icon.Warning, "Hinweis von ScoreGDT", "Fehler bei der Score-Berechung: " + str(e), QMessageBox.StandardButton.Ok)
-                mb.exec()
+            # except Exception as e:
+            #     logger.logger.error("Fehler bei der Score-Berechung: " + str(e))
+            #     mb = QMessageBox(QMessageBox.Icon.Warning, "Hinweis von ScoreGDT", "Fehler bei der Score-Berechung: " + str(e), QMessageBox.StandardButton.Ok)
+            #     mb.exec()
 
     def dateEditUntersuchungsdatumChanged(self, datum):
         self.untersuchungsdatum = datum
