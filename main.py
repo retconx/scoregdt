@@ -838,7 +838,6 @@ class MainWindow(QMainWindow):
                 operandenAlsZahl = []
                 sindZahlen = True
                 for operand in operanden:
-                    print("oo", operand)
                     if re.match(regexZahl, operand) == "None":
                         sindZahlen = False
                     if "." in operand:
