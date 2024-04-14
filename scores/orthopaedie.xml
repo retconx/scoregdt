@@ -3,33 +3,33 @@
         <information>Beurteilung der Indikation für eine spezifische Osteoporosetherapie (DVO-Leitlinie 2023)</information>
         <quelle autor="Dachverband der Deutschsprachigen Wissenschaftlichen Osteologischen Gesellschaften e.V.">Prophylaxe, Diagnostik und Therapie der Osteoporose</quelle>
         <part typ="GroupBox" id="0" titel="Wirbelfrakturen" zeile="0" spalte="0">
-            <widget id="100" typ="CheckBox" titel="Wirbelkörperfraktur ≤ 12 Monate">
+            <widget id="100" buttongroup="wirbelfraktur" typ="CheckBox" titel="Wirbelkörperfraktur ≤ 12 Monate">
             <wert>2.9</wert>
             </widget>
-            <widget id="101" typ="CheckBox" titel="1 osteoporotischer Wirbelbruch &gt; 12 Monate">
+            <widget id="101" buttongroup="wirbelfraktur" typ="CheckBox" titel="1 osteoporotischer Wirbelbruch &gt; 12 Monate">
             <wert>2.0</wert>
             </widget>
-            <widget id="102" typ="CheckBox" titel="2 osteoporotische Wirbelbrüche &gt; 12 Monate">
+            <widget id="102" buttongroup="wirbelfraktur" typ="CheckBox" titel="2 osteoporotische Wirbelbrüche &gt; 12 Monate">
             <wert>2.9</wert>
             </widget>
-            <widget id="103" typ="CheckBox" titel="≥ 3 osteoporotische Wirbelbrüche &gt; 12 Monate">
+            <widget id="103" buttongroup="wirbelfraktur" typ="CheckBox" titel="≥ 3 osteoporotische Wirbelbrüche &gt; 12 Monate">
             <wert>5.0</wert>
             </widget>
-            <widget id="104" typ="CheckBox" titel="Wirbelbruch Schweregrad max. Grad 1 Genant &gt; 12 Monate">
+            <widget id="104" buttongroup="wirbelfraktur" typ="CheckBox" titel="Wirbelbruch Schweregrad max. Grad 1 Genant &gt; 12 Monate">
             <wert>2.0</wert>
             </widget>
-            <widget id="105" typ="CheckBox" titel="Wirbelbruch Schweregrad max. Grad 2 Genant &gt; 12 Monate">
+            <widget id="105" buttongroup="wirbelfraktur" typ="CheckBox" titel="Wirbelbruch Schweregrad max. Grad 2 Genant &gt; 12 Monate">
             <wert>2.9</wert>
             </widget>
-            <widget id="106" typ="CheckBox" titel="Wirbelbruch Schweregrad max. Grad 3 Genant &gt; 12 Monate">
+            <widget id="106" buttongroup="wirbelfraktur" typ="CheckBox" titel="Wirbelbruch Schweregrad max. Grad 3 Genant &gt; 12 Monate">
             <wert>5.0</wert>
             </widget>
         </part>
         <part typ="GroupBox" id="1" titel="Andere Frakturen" zeile="0" spalte="1">
-            <widget id="107" typ="CheckBox" titel="Hüftfraktur ≤ 12 Monate">
+            <widget id="107" buttongroup="hueftfraktur" typ="CheckBox" titel="Hüftfraktur ≤ 12 Monate">
             <wert>4.1</wert>
             </widget>
-            <widget id="108" typ="CheckBox" titel="Hüftfraktur &gt; 12 Monate">
+            <widget id="108" buttongroup="hueftfraktur" typ="CheckBox" titel="Hüftfraktur &gt; 12 Monate">
             <wert>2.5</wert>
             </widget>
             <widget id="109" typ="CheckBox" titel="Humerusfraktur">
@@ -55,13 +55,13 @@
             <widget id="115" typ="CheckBox" titel="COPD">
             <wert>1.3</wert>
             </widget>
-            <widget id="116" typ="CheckBox" titel="BMI ≤ 15 kg/m²">
+            <widget id="116" buttongroup="bmi" typ="CheckBox" titel="BMI ≤ 15 kg/m²">
             <wert>2.2</wert>
             </widget>
-            <widget id="117" typ="CheckBox" titel="BMI 15 - 18,5 kg/m²">
+            <widget id="117" buttongroup="bmi" typ="CheckBox" titel="BMI 15 - 18,5 kg/m²">
             <wert>1.7</wert>
             </widget>
-            <widget id="118" typ="CheckBox" titel="BMI 18 - &lt; 20 kg/m²">
+            <widget id="118" buttongroup="bmi" typ="CheckBox" titel="BMI 18 - &lt; 20 kg/m²">
             <wert>1.3</wert>
             </widget>
         </part>
@@ -72,24 +72,24 @@
             <widget id="120" typ="CheckBox" titel="Rheumatoide Arthritis">
             <wert>2.7G</wert>
             </widget>
-            <widget id="121" typ="CheckBox" titel="Prednisolonäquivalent &lt; 2,5 mg/Tag &gt; 3 Monate">
+            <widget id="121" buttongroup="prednisolon" typ="CheckBox" titel="Prednisolonäquivalent &lt; 2,5 mg/Tag &gt; 3 Monate">
             <wert>1.4G</wert>
             </widget>
-            <widget id="122" typ="CheckBox" titel="Prednisolonäquivalent 2,5 - 7,5 mg/Tag &gt; 3 Monate">
+            <widget id="122" buttongroup="prednisolon" typ="CheckBox" titel="Prednisolonäquivalent 2,5 - 7,5 mg/Tag &gt; 3 Monate">
             <wert>2.3G</wert>
             </widget>
-            <widget id="123" typ="CheckBox" titel="Prednisolonäquivalent &gt; 7,5 mg/Tag &gt; 3 Monate">
+            <widget id="123" buttongroup="prednisolon" typ="CheckBox" titel="Prednisolonäquivalent &gt; 7,5 mg/Tag &gt; 3 Monate">
             <wert>4.0G</wert>
             </widget>
-            <widget id="124" typ="CheckBox" titel="Prednisolonäquivalent ≥ 7,5 mg/Tag ≤ 12 Monate">
+            <widget id="124" buttongroup="prednisolon" typ="CheckBox" titel="Prednisolonäquivalent ≥ 7,5 mg/Tag ≤ 12 Monate">
             <wert>4.9G</wert>
             </widget>
         </part>
         <part typ="GroupBox" id="4" titel="Sturzrisiko assoziierte Risikofaktoren/Geriatrie" zeile="0" spalte="4">
-            <widget id="125" typ="CheckBox" titel="&gt; 1 Sturz ≤ 12 Monate">
+            <widget id="125" buttongroup="sturz" typ="CheckBox" titel="&gt; 1 Sturz ≤ 12 Monate">
             <wert>2.0S</wert>
             </widget>
-            <widget id="126" typ="CheckBox" titel="1 Sturz ≤ 12 Monate">
+            <widget id="126" buttongroup="sturz" typ="CheckBox" titel="1 Sturz ≤ 12 Monate">
             <wert>1.6S</wert>
             </widget>
             <widget id="127" typ="CheckBox" titel="Chronische Hyponatriämie">
@@ -124,13 +124,13 @@
             </widget>
         </part>
         <part typ="GroupBox" id="5" titel="Endokrinologie" zeile="1" spalte="0">
-            <widget id="137" typ="CheckBox" titel="Diabetes mellitus Typ 1">
+            <widget id="137" buttongroup="diabetes" typ="CheckBox" titel="Diabetes mellitus Typ 1">
             <wert>2.5</wert>
             </widget>
-            <widget id="138" typ="CheckBox" titel="Diabetes mellitus Typ 2 seit 5 - 10 Jahren">
+            <widget id="138" buttongroup="diabetes" typ="CheckBox" titel="Diabetes mellitus Typ 2 seit 5 - 10 Jahren">
             <wert>1.1</wert>
             </widget>
-            <widget id="139" typ="CheckBox" titel="Diabetes mellitus Typ 2 seit &gt; 10 Jahren">
+            <widget id="139" buttongroup="diabetes" typ="CheckBox" titel="Diabetes mellitus Typ 2 seit &gt; 10 Jahren">
             <wert>1.6</wert>
             </widget>
             <widget id="140" typ="CheckBox" titel="Primärer Hyperparathyreoidismus">
@@ -155,16 +155,16 @@
             </widget>
         </part>
         <part typ="GroupBox" id="7" titel="TBS" zeile="1" spalte="2">
-            <widget id="146" typ="CheckBox" titel="TBS-Z-Score: -1.0 SD">
+            <widget id="146" buttongroup="tbs" typ="CheckBox" titel="TBS-Z-Score: -1.0 SD">
             <wert>1.3</wert>
             </widget>
-            <widget id="147" typ="CheckBox" titel="TBS-Z-Score: -1.5 SD">
+            <widget id="147" buttongroup="tbs" typ="CheckBox" titel="TBS-Z-Score: -1.5 SD">
             <wert>1.4</wert>
             </widget>
-            <widget id="148" typ="CheckBox" titel="TBS-Z-Score: -2.0 SD">
+            <widget id="148" buttongroup="tbs" typ="CheckBox" titel="TBS-Z-Score: -2.0 SD">
             <wert>1.6</wert>
             </widget>
-            <widget id="149" typ="CheckBox" titel="TBS-Z-Score: -2.5 SD">
+            <widget id="149" buttongroup="tbs" typ="CheckBox" titel="TBS-Z-Score: -2.5 SD">
             <wert>1.8</wert>
             </widget>
         </part>
@@ -190,5 +190,24 @@
             <formel typ="script">dvo2023</formel>
             <ergebniseinheit>%</ergebniseinheit>
         </berechnung>
+        <auswertung>
+            <beurteilung>
+                <ergebnisbereich>Frakturrisiko 3 bis &#x3c; 5% / 3 Jahre</ergebnisbereich>
+                <beschreibung>Eine spezifische medikamentöse Therapie sollte in Betracht gezogen werden</beschreibung>
+                <regel>GROESSERGLEICHALS 3</regel>
+                <regel>KLEINERALS 5</regel>
+            </beurteilung>
+            <beurteilung>
+                <ergebnisbereich>Frakturrisiko 5 bis &#x3c; 10% / 3 Jahre</ergebnisbereich>
+                <beschreibung>Eine spezifische medikamentöse Therapie soll empfohlen werden</beschreibung>
+                <regel>GROESSERGLEICHALS 5</regel>
+                <regel>KLEINERGLEICHALS 10</regel>
+            </beurteilung>
+            <beurteilung>
+                <ergebnisbereich>Frakturrisiko &#x2265; 10% / 3 Jahre</ergebnisbereich>
+                <beschreibung>Eine spezifische medikamentöse Therapie mit Osteoanablikum soll empfohlen werden</beschreibung>
+                <regel>GROESSERGLEICHALS 10</regel>
+            </beurteilung>
+		</auswertung>
     </score>
 </root>

@@ -48,6 +48,18 @@
             <ergebniseinheit>Punkte</ergebniseinheit>
             <variablen />
         </berechnung>
+        <auswertung>
+            <beurteilung>
+                <ergebnisbereich>&#x2264; 2 Punkte</ergebnisbereich>
+                <beschreibung>Geringes Blutungsrisiko bei oraler Antikoagulation</beschreibung>
+                <regel>KLEINERGLEICHALS 2</regel>
+            </beurteilung>  
+            <beurteilung>
+                <ergebnisbereich>&#x3e; 2 Punkte</ergebnisbereich>
+                <beschreibung>Erhöhtes Blutungsrisiko bei oraler Antikoagulation</beschreibung>
+                <regel>GROESSERALS 2</regel>
+            </beurteilung>  
+        </auswertung>
     </score>
     <score name="CHA₂DS₂-VASc-Score" gruppe="Kardiologie" gdtname="CHA2DS2-VASc-Score">
         <information>Abschätzung des Schlaganfallrisikos bei Vorhofflimmern</information>
@@ -60,7 +72,7 @@
             <widget id="101" typ="CheckBox" titel="Hypertension">
                 <wert>1</wert>
             </widget>
-            <widget id="102" typ="CheckBox" titel="Age &gt; 75" alterspruefung="True" altersregel="GROESSERGLEICHALS75">
+            <widget id="102" buttongroup="alter" typ="CheckBox" titel="Age &gt; 75" alterspruefung="True" altersregel="GROESSERGLEICHALS75">
                 <wert>2</wert>
                 <erklaerung>Alter &gt; 75 Jahre</erklaerung>
             </widget>
@@ -75,7 +87,7 @@
                 <wert>1</wert>
                 <erklaerung>pAVK, Herzinfarkt, schwere Aortensklerose</erklaerung>
             </widget>
-            <widget id="106" typ="CheckBox" titel="Age 65-74" alterspruefung="True" altersregel="GROESSERGLEICHALS65 UND KLEINERALS75">
+            <widget id="106" buttongroup="alter" typ="CheckBox" titel="Age 65-74" alterspruefung="True" altersregel="GROESSERGLEICHALS65 UND KLEINERALS75">
                 <wert>1</wert>
                 <erklaerung>Alter 65-74 Jahre</erklaerung>
             </widget>
@@ -97,6 +109,28 @@
             <ergebniseinheit>Punkte</ergebniseinheit>
             <variablen />
         </berechnung>
+        <auswertung>
+            <beurteilung>
+                <ergebnisbereich>0 Punkte</ergebnisbereich>
+                <beschreibung>Keine orale Antikoagulation empfohlen</beschreibung>
+                <regel>ISTGLEICH 0</regel>
+            </beurteilung>
+            <beurteilung>
+                <ergebnisbereich>1 Punkt</ergebnisbereich>
+                <beschreibung>Orale Antikoagulation bei Männern erwägen</beschreibung>
+                <regel>ISTGLEICH 1</regel>
+            </beurteilung>
+            <beurteilung>
+                <ergebnisbereich>2 Punkte</ergebnisbereich>
+                <beschreibung>Orale Antikoagulation bei Männern indiziert, bei Frauen erwägen</beschreibung>
+                <regel>ISTGLEICH 2</regel>
+            </beurteilung>
+            <beurteilung>
+                <ergebnisbereich>&#x3e; 2 Punkte</ergebnisbereich>
+                <beschreibung>Orale Antikoagulation indiziert</beschreibung>
+                <regel>GROESSERALS 2</regel>
+            </beurteilung>
+        </auswertung>
     </score>
     <score name="SCORE2" gruppe="Kardiologie">
         <information>Abschätzung des Risikos für ein kardiovaskuläres Ereignis in den nächsten 10 Jahren</information>
@@ -7351,12 +7385,12 @@
             </beurteilung>   
             <beurteilung>
                 <ergebnisbereich>3 Punkte</ergebnisbereich>
-                <beschreibung>Mittlere Wahrscheinlichkeit (17%)</beschreibung>
+                <beschreibung>Mittlere Wahrscheinlichkeit (17%), weitere Diagnostik erwägen</beschreibung>
                 <regel>ISTGLEICH 3</regel>
             </beurteilung>   
             <beurteilung>
                 <ergebnisbereich>&gt; 3 Punkte</ergebnisbereich>
-                <beschreibung>Hohe Wahrscheinlichkeit (50%)</beschreibung>
+                <beschreibung>Hohe Wahrscheinlichkeit (50%), weitere Diagnostik empfohlen</beschreibung>
                 <regel>GROESSERALS 3</regel>
             </beurteilung>   
         </auswertung>

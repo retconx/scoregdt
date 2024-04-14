@@ -69,12 +69,12 @@
             </beurteilung>  
             <beurteilung>
                 <ergebnisbereich>3 Punkte</ergebnisbereich>
-                <beschreibung>Wahrscheinlichkeit ca. 30-35%</beschreibung>
+                <beschreibung>Wahrscheinlichkeit ca. 30-35%, antibiotische Therapie erwägen</beschreibung>
                 <regel>ISTGLEICH 3</regel>
             </beurteilung>  
             <beurteilung>
                 <ergebnisbereich>4 Punkte</ergebnisbereich>
-                <beschreibung>Wahrscheinlichkeit ca.50-60%</beschreibung>
+                <beschreibung>Wahrscheinlichkeit ca.50-60%, antibiotische Therapie erwägen</beschreibung>
                 <regel>ISTGLEICH 4</regel>
             </beurteilung>  
         </auswertung>
@@ -143,17 +143,17 @@
             </beurteilung>  
             <beurteilung>
                 <ergebnisbereich>2 Punkte</ergebnisbereich>
-                <beschreibung>Wahrscheinlichkeit ca. 17%</beschreibung>
+                <beschreibung>Wahrscheinlichkeit ca. 17%, antibiotische Therapie erwägen, wenn Kultur/Schnelltest positiv</beschreibung>
                 <regel>ISTGLEICH 2</regel>
             </beurteilung>  
             <beurteilung>
                 <ergebnisbereich>3 Punkte</ergebnisbereich>
-                <beschreibung>Wahrscheinlichkeit ca. 35%</beschreibung>
+                <beschreibung>Wahrscheinlichkeit ca. 35%, antibiotische Therapie erwägen, wenn Kultur/Schnelltest positiv</beschreibung>
                 <regel>ISTGLEICH 3</regel>
             </beurteilung>  
             <beurteilung>
-                <ergebnisbereich>&#x3e;4 Punkte</ergebnisbereich>
-                <beschreibung>Wahrscheinlichkeit ca.50%</beschreibung>
+                <ergebnisbereich>&#x3e; 4 Punkte</ergebnisbereich>
+                <beschreibung>Wahrscheinlichkeit ca.50%, antibiotische Therapie erwägen</beschreibung>
                 <regel>GROESSERGLEICHALS 4</regel>
             </beurteilung>  
         </auswertung>

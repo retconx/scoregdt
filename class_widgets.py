@@ -96,8 +96,9 @@ class ComboBox(Widget):
         return self.typ
     
 class CheckBox(Widget):
-    def __init__(self, id, partId:str, titel:str, erklaerung:str, einheit:str, wert:str, checked:bool, alterspruefung:bool, altersregel:str, geschlechtpruefung:bool):
+    def __init__(self, id, partId:str, buttongroup:str, titel:str, erklaerung:str, einheit:str, wert:str, checked:bool, alterspruefung:bool, altersregel:str, geschlechtpruefung:bool):
         super().__init__(id, partId, titel, erklaerung, einheit, alterspruefung)
+        self.buttongroup = buttongroup
         self.wert = wert
         self.checked = checked
         self.checkbox = QCheckBox()
@@ -106,6 +107,9 @@ class CheckBox(Widget):
         self.altersregel = altersregel
         self.geschlechtpruefung = geschlechtpruefung
         
+    def getButtongroup(self):
+        return self.buttongroup
+    
     def getQt(self):
         return self.checkbox
     

@@ -84,28 +84,28 @@
         <auswertung>
             <beurteilung>
                 <ergebnisbereich>&#x3c; 2 Punkte</ergebnisbereich>
-                <beschreibung>Empfehlung: benigne, keine Feinnadelpunktion</beschreibung>
+                <beschreibung>Benigne, keine Feinnadelpunktion empfohlen</beschreibung>
                 <regel>KLEINERALS 2</regel>
             </beurteilung> 
             <beurteilung>
                 <ergebnisbereich>2 Punkte</ergebnisbereich>
-                <beschreibung>Empfehlung: nicht verdächtig, keine Feinnadelpunktion</beschreibung>
+                <beschreibung>Nicht verdächtig, keine Feinnadelpunktion empfohlen</beschreibung>
                 <regel>ISTGLEICH 2</regel>
             </beurteilung> 
             <beurteilung>
                 <ergebnisbereich>3 Punkte</ergebnisbereich>
-                <beschreibung>Empfehlung: gering verdächtig, Feinnadelpunktion &#x3e; 25 mm</beschreibung>
+                <beschreibung>Gering verdächtig, Feinnadelpunktion &#x3e; 25 mm empfohlen</beschreibung>
                 <regel>ISTGLEICH 3</regel>
             </beurteilung> 
             <beurteilung>
                 <ergebnisbereich>4-6 Punkte</ergebnisbereich>
-                <beschreibung>Empfehlung: mittelgradig verdächtig, Feinnadelpunktion &#x3e; 15 mm</beschreibung>
+                <beschreibung>Mittelgradig verdächtig, Feinnadelpunktion &#x3e; 15 mm empfohlen</beschreibung>
                 <regel>GROESSERGLEICHALS 4</regel>
                 <regel>KLEINERGLEICHALS 6</regel>
             </beurteilung> 
             <beurteilung>
                 <ergebnisbereich>&#x3e; 6 Punkte</ergebnisbereich>
-                <beschreibung>Empfehlung: hochgradig verdächtig, Feinnadelpunktion &#x3e; 10 mm</beschreibung>
+                <beschreibung>Hochgradig verdächtig, Feinnadelpunktion &#x3e; 10 mm empfohlen</beschreibung>
                 <regel>GROESSERALS 6</regel>
             </beurteilung> 
         </auswertung>

@@ -23,7 +23,7 @@ class EinstellungenFavoriten(QDialog):
         self.root = class_score.Score.getGesamtRoot(scoresPfad)
         self.favoritenNamen = class_score.Score.getFavoriten(configPfad)
         self.gruppen = []
-        self.namen = []
+        self.namenInformationen = []
         self.scoreGruppen = {} # key: Gruppe, value: Liste von Namen
         for scoreElement in self.root.findall("score"):
             gruppe = str(scoreElement.get("gruppe"))
@@ -31,14 +31,15 @@ class EinstellungenFavoriten(QDialog):
                 self.gruppen.append(gruppe)
         self.gruppen.sort()
         for gruppe in self.gruppen:
-            self.namen.clear()
+            self.namenInformationen.clear()
             for scoreElement in self.root.findall("score"):
                 tempGruppe = str(scoreElement.get("gruppe"))
                 name = str(scoreElement.get("name"))
+                information = str(scoreElement.find("information").text) # type: ignore
                 if gruppe == tempGruppe:
-                    self.namen.append(name)
-            self.namen = sorted(self.namen, key=lambda name:name.casefold())
-            self.scoreGruppen[gruppe] = self.namen.copy()
+                    self.namenInformationen.append((name, information))
+            self.namenInformationen = sorted(self.namenInformationen, key=lambda name:name[0].casefold())
+            self.scoreGruppen[gruppe] = self.namenInformationen.copy()
         
         self.fontNormal = QFont()
         self.fontNormal.setBold(False)
@@ -68,10 +69,11 @@ class EinstellungenFavoriten(QDialog):
             gruppeItem = QTreeWidgetItem(self.treeWidget, [gruppe])
             gruppeItem.setExpanded(True)
             self.treeWidget.addTopLevelItem(gruppeItem)
-            for name in self.scoreGruppen[gruppe]:
-                nameItem = QTreeWidgetItem(gruppeItem, [name])
+            for nameInformation in self.scoreGruppen[gruppe]:
+                nameItem = QTreeWidgetItem(gruppeItem, [nameInformation[0]])
+                nameItem.setToolTip(0, nameInformation[1])
                 checkState = Qt.CheckState.Unchecked
-                if name in self.favoritenNamen:
+                if nameInformation[0] in self.favoritenNamen:
                     checkState = Qt.CheckState.Checked
                 nameItem.setCheckState(0, checkState)
                 self.treeWidget.addTopLevelItem(nameItem)

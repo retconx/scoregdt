@@ -23,7 +23,8 @@ from PySide6.QtWidgets import (
     QDateEdit,
     QMessageBox,
     QPushButton,
-    QComboBox
+    QComboBox,
+    QButtonGroup
 )
 
 @staticmethod
@@ -399,6 +400,9 @@ class MainWindow(QMainWindow):
                                 self.widgets.append(class_widgets.ComboBox(widgetId, partId, widgetTitel, widgetErklaerung, widgetEinheit, itemsUndWerte.copy(), alterspruefung))
                                 logger.logger.info("Combobox angelegt (Part-ID: " + partId + ", Widget-ID: " + widgetId + ") angelegt")
                             elif widgetTyp == class_widgets.WidgetTyp.CHECKBOX.value:
+                                buttongroup = ""
+                                if widgetElement.get("buttongroup") != None:
+                                    buttongroup = str(widgetElement.get("buttongroup"))
                                 checked = str(widgetElement.get("checked")) == "True"
                                 altersregel = ""
                                 if widgetElement.get("altersregel") != None:
@@ -406,7 +410,7 @@ class MainWindow(QMainWindow):
                                 geschlechtpruefung = str(widgetElement.get("geschlechtpruefung")) == "True"
                                 wertElement = widgetElement.find("wert")
                                 wert = str(wertElement.text) # type: ignore
-                                self.widgets.append(class_widgets.CheckBox(widgetId, partId, widgetTitel, widgetErklaerung, widgetEinheit, wert, checked, alterspruefung, altersregel, geschlechtpruefung))
+                                self.widgets.append(class_widgets.CheckBox(widgetId, partId, buttongroup, widgetTitel, widgetErklaerung, widgetEinheit, wert, checked, alterspruefung, altersregel, geschlechtpruefung))
                                 logger.logger.info("Checkbox angelegt (Part-ID: " + partId + ", Widget-ID: " + widgetId + ") angelegt")
                             elif widgetTyp == class_widgets.WidgetTyp.LINEEDIT.value:
                                 regexPattern = str(widgetElement.find("regex").text) # type: ignore
@@ -479,7 +483,12 @@ class MainWindow(QMainWindow):
                 labelScoreName.setToolTip(quelle)
                 labelScoreName.setCursor(Qt.CursorShape.WhatsThisCursor)
             # Score
+            buttonGroups = {}
             for part in self.parts:
+                buttonGroups.clear()
+                for widget in self.widgets:
+                    if widget.getTyp() == class_widgets.WidgetTyp.CHECKBOX and widget.getButtongroup() != "":
+                        buttonGroups[widget.getButtongroup()] = QButtonGroup(self)
                 partLayout = QGridLayout()
                 partGridZeile = 0
                 if part.getErklaerung() != "None":
@@ -505,6 +514,11 @@ class MainWindow(QMainWindow):
                         labelEinheitUndErklaerung = QLabel(einheitUndErklärung)
                         labelEinheitUndErklaerung.setFont(self.fontNormal)
                         partLayout.addWidget(labelEinheitUndErklaerung, partGridZeile, 2, alignment=Qt.AlignmentFlag.AlignTop | Qt.AlignmentFlag.AlignLeft)
+                        # Prüfen, ob CheckBox ButtonGroup zugehörig
+                        if widget.getTyp() == class_widgets.WidgetTyp.CHECKBOX and widget.getButtongroup() in buttonGroups:
+                            buttonGroups[widget.getButtongroup()].addButton(widget.getQt())
+                            widget.getQt().pressed.connect(lambda cb = widget.getQt(): self.buttonGroupCheckBoxPressed(cb))
+                            widget.getQt().clicked.connect(lambda checked = False, cb = widget.getQt(): self.buttonGroupCheckBoxClicked(checked, cb))
                         # Prüfen, ob Alterstextfeld
                         if widget.getTyp() == class_widgets.WidgetTyp.LINEEDIT and widget.alterspruefungAktiv():
                             widget.getQt().setText(str(getAktuellesAlterInJahren(self.geburtsdatumAlsDate)))
@@ -739,6 +753,12 @@ class MainWindow(QMainWindow):
         else:
             sys.exit()
 
+    def buttonGroupCheckBoxPressed(self, checkbox):
+        checkbox.group().setExclusive(not checkbox.isChecked())
+
+    def buttonGroupCheckBoxClicked(self, checked, checkbox):
+        checkbox.group().setExclusive(True)
+
     def getScoreXml(self, name:str):
         """
         Gibt das score-Element aus scores.xml zurück
@@ -964,7 +984,7 @@ class MainWindow(QMainWindow):
                         widget.getQt().setText(str(widget.getGrenzzahl(zahl)).replace(".", ",").replace(",0", ""))
        
         if formularOk :
-            # try:
+            try:
                 # $var{...}-Werte auslesen
                 berechnungElement = self.scoreRoot.find("berechnung") # type: ignore
                 formelElement = berechnungElement.find("formel") # type: ignore
@@ -1025,29 +1045,30 @@ class MainWindow(QMainWindow):
                         self.lineEditScoreErgebnis.setText(str(tempErgebnis).replace(".", ","))
                         logger.logger.info("Endergebnis: " + str(tempErgebnis).replace(".", ","))
                         # Auswertung
-                        auswertungElement = self.scoreRoot.find("auswertung") # type: ignore
-                        if auswertungElement != None:
-                            ergebnis = str(tempErgebnis)
-                            beurteilungNr = 0
-                            for beurteilungElement in auswertungElement.findall("beurteilung"):
-                                regelErfuellt = True
-                                for regelElement in beurteilungElement.findall("regel"):
-                                    regel = ergebnis + str(regelElement.text)
-                                    if not self.regelIstErfuellt(regel):
-                                        regelErfuellt = False
-                                        break
-                                    if regelErfuellt:
-                                        self.erfuellteAuswertungsregel = beurteilungNr
-                                        break
-                                beurteilungNr += 1
-                            if self.erfuellteAuswertungsregel != -1:
-                                for i in range(len(self.labelErgebnisbereiche)):
-                                    if self.erfuellteAuswertungsregel == i:
-                                        self.labelErgebnisbereiche[i].setStyleSheet("color:rgb(0,150,0)")
-                                        self.labelBeschreibungen[i].setStyleSheet("color:rgb(0,150,0)")
-                                    else:
-                                        self.labelErgebnisbereiche[i].setStyleSheet("color:rgb(0,0,100)")
-                                        self.labelBeschreibungen[i].setStyleSheet("color:rgb(0,0,100)")
+                        self.auswertung(tempErgebnis)
+                        # auswertungElement = self.scoreRoot.find("auswertung") # type: ignore
+                        # if auswertungElement != None:
+                        #     ergebnis = str(tempErgebnis)
+                        #     beurteilungNr = 0
+                        #     for beurteilungElement in auswertungElement.findall("beurteilung"):
+                        #         regelErfuellt = True
+                        #         for regelElement in beurteilungElement.findall("regel"):
+                        #             regel = ergebnis + str(regelElement.text)
+                        #             if not self.regelIstErfuellt(regel):
+                        #                 regelErfuellt = False
+                        #                 break
+                        #             if regelErfuellt:
+                        #                 self.erfuellteAuswertungsregel = beurteilungNr
+                        #                 break
+                        #         beurteilungNr += 1
+                        #     if self.erfuellteAuswertungsregel != -1:
+                        #         for i in range(len(self.labelErgebnisbereiche)):
+                        #             if self.erfuellteAuswertungsregel == i:
+                        #                 self.labelErgebnisbereiche[i].setStyleSheet("color:rgb(0,150,0)")
+                        #                 self.labelBeschreibungen[i].setStyleSheet("color:rgb(0,150,0)")
+                        #             else:
+                        #                 self.labelErgebnisbereiche[i].setStyleSheet("color:rgb(0,0,100)")
+                        #                 self.labelBeschreibungen[i].setStyleSheet("color:rgb(0,0,100)")
                     else:
                         mb = QMessageBox(QMessageBox.Icon.Warning, "Hinweis von ScoreGDT", "Der Score kann nicht berechnet werden, da für die folgenden Variablen keine Regel zutrifft:\n- " + str.join("\n- ", variablenMitNichtErfuelltenRegeln), QMessageBox.StandardButton.Ok)
                         mb.exec()
@@ -1180,10 +1201,41 @@ class MainWindow(QMainWindow):
                             break
                     logger.logger.info("Therapieindikationsschwelle: " + str(therapieindikationsschwelleProzent) + "%")
                     self.lineEditScoreErgebnis.setText(str(therapieindikationsschwelleProzent))
-            # except Exception as e:
-            #     logger.logger.error("Fehler bei der Score-Berechung: " + str(e))
-            #     mb = QMessageBox(QMessageBox.Icon.Warning, "Hinweis von ScoreGDT", "Fehler bei der Score-Berechung: " + str(e), QMessageBox.StandardButton.Ok)
-            #     mb.exec()
+                    self.auswertung(therapieindikationsschwelleProzent)
+            except Exception as e:
+                logger.logger.error("Fehler bei der Score-Berechung: " + str(e))
+                mb = QMessageBox(QMessageBox.Icon.Warning, "Hinweis von ScoreGDT", "Fehler bei der Score-Berechung: " + str(e), QMessageBox.StandardButton.Ok)
+                mb.exec()
+
+    def auswertung(self, ergebnis):
+        """
+            Wertet ein Ergebnis aus, falls möglich und färbt die Auswertungsbeschreibungen grün
+            Parameter:
+                ergebnis
+        """
+        auswertungElement = self.scoreRoot.find("auswertung") # type: ignore
+        if auswertungElement != None:
+            ergebnis = str(ergebnis)
+            beurteilungNr = 0
+            for beurteilungElement in auswertungElement.findall("beurteilung"):
+                regelErfuellt = True
+                for regelElement in beurteilungElement.findall("regel"):
+                    regel = ergebnis + str(regelElement.text)
+                    if not self.regelIstErfuellt(regel):
+                        regelErfuellt = False
+                        break
+                    if regelErfuellt:
+                        self.erfuellteAuswertungsregel = beurteilungNr
+                        break
+                beurteilungNr += 1
+            if self.erfuellteAuswertungsregel != -1:
+                for i in range(len(self.labelErgebnisbereiche)):
+                    if self.erfuellteAuswertungsregel == i:
+                        self.labelErgebnisbereiche[i].setStyleSheet("color:rgb(0,150,0)")
+                        self.labelBeschreibungen[i].setStyleSheet("color:rgb(0,150,0)")
+                    else:
+                        self.labelErgebnisbereiche[i].setStyleSheet("color:rgb(0,0,100)")
+                        self.labelBeschreibungen[i].setStyleSheet("color:rgb(0,0,100)")
 
     def dateEditUntersuchungsdatumChanged(self, datum):
         self.untersuchungsdatum = datum
