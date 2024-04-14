@@ -23,7 +23,7 @@
             </widget>
             <widget id="106" typ="CheckBox" titel="Elderly" alterspruefung="True" altersregel="GROESSERGLEICHALS65">
                 <wert>1</wert>
-                <erklaerung>Alter &gt; 65 Jahre</erklaerung>
+                <erklaerung>Alter &#x2265; 65 Jahre</erklaerung>
             </widget>
             <widget id="107" typ="CheckBox" titel="Drugs">
                 <wert>1</wert>
@@ -72,9 +72,9 @@
             <widget id="101" typ="CheckBox" titel="Hypertension">
                 <wert>1</wert>
             </widget>
-            <widget id="102" buttongroup="alter" typ="CheckBox" titel="Age &gt; 75" alterspruefung="True" altersregel="GROESSERGLEICHALS75">
+            <widget id="102" buttongroup="alter" typ="CheckBox" titel="Age &#x2265; 75" alterspruefung="True" altersregel="GROESSERGLEICHALS75">
                 <wert>2</wert>
-                <erklaerung>Alter &gt; 75 Jahre</erklaerung>
+                <erklaerung>Alter &#x2265; 75 Jahre</erklaerung>
             </widget>
             <widget id="103" typ="CheckBox" titel="Diabetes mellitus">
                 <wert>1</wert>
@@ -4408,18 +4408,18 @@
         </berechnung>
         <auswertung>
 			<beurteilung>
-                <ergebnisbereich>&lt; 5%</ergebnisbereich>
+                <ergebnisbereich>&#x3c; 5%</ergebnisbereich>
                 <beschreibung>Geringes Risiko</beschreibung>
                 <regel>KLEINERALS 5</regel>
             </beurteilung>
 			<beurteilung>
-                <ergebnisbereich>5 - &lt; 10%</ergebnisbereich>
+                <ergebnisbereich>5 - &#x3c; 10%</ergebnisbereich>
                 <beschreibung>Mittleres Risiko</beschreibung>
                 <regel>GROESSERGLEICHALS 5</regel>
                 <regel>KLEINERALS 10</regel>
             </beurteilung>
 			<beurteilung>
-                <ergebnisbereich>≥ 10%</ergebnisbereich>
+                <ergebnisbereich>&#x2265; 10%</ergebnisbereich>
                 <beschreibung>Hohes Risiko</beschreibung>
                 <regel>GROESSERGLEICHALS 10</regel>
             </beurteilung>
@@ -7293,18 +7293,18 @@
         </berechnung>
         <auswertung>
 			<beurteilung>
-                <ergebnisbereich>&lt; 5%</ergebnisbereich>
+                <ergebnisbereich>&#x3c; 5%</ergebnisbereich>
                 <beschreibung>Geringes Risiko</beschreibung>
                 <regel>KLEINERALS 5</regel>
             </beurteilung>
 			<beurteilung>
-                <ergebnisbereich>5 - &lt; 10%</ergebnisbereich>
+                <ergebnisbereich>5 - &#x3c; 10%</ergebnisbereich>
                 <beschreibung>Mittleres Risiko</beschreibung>
                 <regel>GROESSERGLEICHALS 5</regel>
                 <regel>KLEINERALS 10</regel>
             </beurteilung>
 			<beurteilung>
-                <ergebnisbereich>≥ 10%</ergebnisbereich>
+                <ergebnisbereich>&#x2265; 10%</ergebnisbereich>
                 <beschreibung>Hohes Risiko</beschreibung>
                 <regel>GROESSERGLEICHALS 10</regel>
             </beurteilung>
@@ -7374,7 +7374,7 @@
         </berechnung>
         <auswertung>
             <beurteilung>
-                <ergebnisbereich>&lt; 2 Punkte</ergebnisbereich>
+                <ergebnisbereich>&#x3c; 2 Punkte</ergebnisbereich>
                 <beschreibung>Sehr geringe Wahrscheinlichkeit (&lt; 1%)</beschreibung>
                 <regel>KLEINERALS 2</regel>
             </beurteilung>   
@@ -7389,7 +7389,7 @@
                 <regel>ISTGLEICH 3</regel>
             </beurteilung>   
             <beurteilung>
-                <ergebnisbereich>&gt; 3 Punkte</ergebnisbereich>
+                <ergebnisbereich>&#x3e; 3 Punkte</ergebnisbereich>
                 <beschreibung>Hohe Wahrscheinlichkeit (50%), weitere Diagnostik empfohlen</beschreibung>
                 <regel>GROESSERALS 3</regel>
             </beurteilung>   
