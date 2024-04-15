@@ -9,11 +9,11 @@
             </widget>
             <widget id="101" typ="CheckBox" titel="Respiratory rate">
                 <wert>1</wert>
-                <erklaerung>Atemfrequenz &gt; 30/min</erklaerung>
+                <erklaerung>Atemfrequenz &#x3e; 30/min</erklaerung>
             </widget>
 			<widget id="102" typ="CheckBox" titel="Blood pressure">
                 <wert>1</wert>
-                <erklaerung>Blutdruck systolisch &lt; 90 oder diastolisch &lt; 60 mmHg</erklaerung>
+                <erklaerung>Blutdruck systolisch &#x3c; 90 oder diastolisch &#x3c; 60 mmHg</erklaerung>
             </widget>
             <widget id="103" typ="CheckBox" titel="65" alterspruefung="True" altersregel="GROESSERGLEICHALS65">
                 <wert>1</wert>
@@ -58,10 +58,10 @@
             <widget id="101" typ="CheckBox" titel="Andere Diagnosen unwahrscheinlich">
                 <wert>3</wert>
             </widget>
-			<widget id="102" typ="CheckBox" titel="Herzfrequenz &gt; 100/min">
+			<widget id="102" typ="CheckBox" titel="Herzfrequenz &#x3e; 100/min">
                 <wert>1.5</wert>
             </widget>
-            <widget id="103" typ="CheckBox" titel="Immobilisation &lt; 3 Tage oder OP vor &gt; 4 Wochen">
+            <widget id="103" typ="CheckBox" titel="Immobilisation &#x3c; 3 Tage oder OP vor &#x3e; 4 Wochen">
                 <wert>1.5</wert>
             </widget>
             <widget id="104" typ="CheckBox" titel="Lungenembolie oder tiefe Beinvenenthrombose in der Anamnese">
@@ -88,7 +88,7 @@
         </berechnung>
 		<auswertung>
 			<beurteilung>
-                <ergebnisbereich>&lt; 2 Punkte</ergebnisbereich>
+                <ergebnisbereich>&#x3c; 2 Punkte</ergebnisbereich>
                 <beschreibung>Geringe Wahrscheinlichkeit</beschreibung>
                 <regel>KLEINERALS 2</regel>
             </beurteilung>
@@ -99,7 +99,7 @@
                 <regel>KLEINERGLEICHALS 6</regel>
             </beurteilung>
 			<beurteilung>
-                <ergebnisbereich>≥ 7 Punkte</ergebnisbereich>
+                <ergebnisbereich>&#x2265; 7 Punkte</ergebnisbereich>
                 <beschreibung>Hohe Wahrscheinlichkeit</beschreibung>
                 <regel>GROESSERGLEICHALS 7</regel>
             </beurteilung>
@@ -130,7 +130,7 @@
                 <wert>-1</wert>
             </widget>
         </part>
-        <part id="3" typ="GroupBox" titel="Herzfrequenz &lt; 80/min" zeile="1" spalte="0">
+        <part id="3" typ="GroupBox" titel="Herzfrequenz &#x3c; 80/min" zeile="1" spalte="0">
             <widget id="105" typ="RadioButton" titel="Nein" checked="True">
                 <wert>0</wert>
             </widget>
@@ -170,7 +170,7 @@
                 <wert>2</wert>
             </widget>
         </part>
-        <part id="8" typ="GroupBox" titel="Immobilität innerhalb der letzten vier Wochen" erklaerung="Operation, Gipsverband an unterer Extremität oder&#13;&#10;Bettlägerigkeit &gt; Tage wegen akuter Erkrankung" zeile="2" spalte="2">
+        <part id="8" typ="GroupBox" titel="Immobilität innerhalb der letzten vier Wochen" erklaerung="Operation, Gipsverband an unterer Extremität oder&#13;&#10;Bettlägerigkeit &#x3e; Tage wegen akuter Erkrankung" zeile="2" spalte="2">
             <widget id="115" typ="RadioButton" titel="Nein" checked="True">
                 <wert>0</wert>
             </widget>
@@ -178,7 +178,7 @@
                 <wert>2</wert>
             </widget>
         </part>
-        <part id="9" typ="GroupBox" titel="O₂-Sättigung &lt; 95%" gdttitel="O2-Sättigung &lt; 95%" zeile="3" spalte="0">
+        <part id="9" typ="GroupBox" titel="O₂-Sättigung &#x3c; 95%" gdttitel="O2-Sättigung &#x3c; 95%" zeile="3" spalte="0">
             <widget id="117" typ="RadioButton" titel="Nein" checked="True">
                 <wert>0</wert>
             </widget>
@@ -237,8 +237,8 @@
         </berechnung>
         <auswertung>
 			<beurteilung>
-                <ergebnisbereich>&lt; 0 Punkte</ergebnisbereich>
-                <beschreibung>Sehr geringe Wahrscheinlichkeit (&lt; 2%)</beschreibung>
+                <ergebnisbereich>&#x3c; 0 Punkte</ergebnisbereich>
+                <beschreibung>Sehr geringe Wahrscheinlichkeit (&#x3c; 2%)</beschreibung>
                 <regel>KLEINERALS 0</regel>
             </beurteilung>
 			<beurteilung>
@@ -254,8 +254,8 @@
                 <regel>KLEINERGLEICHALS 12</regel>
             </beurteilung>
 			<beurteilung>
-                <ergebnisbereich>&gt; 12 Punkte</ergebnisbereich>
-                <beschreibung>Hohe Wahrscheinlichkeit (&gt; 65%)</beschreibung>
+                <ergebnisbereich>&#x3e; 12 Punkte</ergebnisbereich>
+                <beschreibung>Hohe Wahrscheinlichkeit (&#x3e; 65%)</beschreibung>
                 <regel>GROESSERALS 12</regel>
             </beurteilung>
 		</auswertung>

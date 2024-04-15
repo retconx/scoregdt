@@ -458,7 +458,7 @@
         </berechnung>
         <auswertung>
 			<beurteilung>
-                <ergebnisbereich>&lt; 13 Punkte</ergebnisbereich>
+                <ergebnisbereich>&#x3c; 13 Punkte</ergebnisbereich>
                 <beschreibung>Keine Depression</beschreibung>
                 <regel>KLEINERALS 13</regel>
             </beurteilung>
@@ -595,7 +595,7 @@
         </berechnung>
         <auswertung>
             <beurteilung>
-                <ergebnisbereich>&lt; 5 Punkte</ergebnisbereich>
+                <ergebnisbereich>&#x3c; 5 Punkte</ergebnisbereich>
                 <beschreibung>Minimale depressive Symptomatik</beschreibung>
                 <regel>KLEINERALS 5</regel>
             </beurteilung>   

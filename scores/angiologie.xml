@@ -1,0 +1,72 @@
+<root>
+	<score name="Wells-Score TVT" gruppe="Angiologie">
+        <information>Abschätzung der Wahrscheinlichkeit für das Vorliegen einer tiefen Beinvenenthrombose</information>
+        <quelle autor="Wells et al.">Value of assessment of pretest probability of deep-vein thrombosis in clinical management</quelle>
+        <part typ="Frame" id="0" titel="" zeile="0" spalte="0">
+            <widget id="100" typ="CheckBox" titel="Aktive Krebserkrankung innerhalb der letzten 6 Monate">
+                <wert>1</wert>
+            </widget>
+            <widget id="101" typ="CheckBox" titel="Umfangsdifferenz des Unterschenkels &#x3e; 3 cm im Seitenvergleich">
+                <erklaerung>10 cm unterhalb der Tuberositas tibiae gemessen</erklaerung>
+                <wert>1</wert>
+            </widget>
+			<widget id="102" typ="CheckBox" titel="Erweiterte oberflächliche Kollateralvenen auf der betroffenen Seite (keine Varizen)">
+                <wert>1</wert>
+            </widget>
+            <widget id="103" typ="CheckBox" titel="Eindrückbares Ödem am betroffenen Bein">
+                <wert>1</wert>
+            </widget>
+            <widget id="104" typ="CheckBox" titel="Schwellung des gesamten Beins">
+                <wert>1</wert>
+            </widget>
+            <widget id="105" typ="CheckBox" titel="Entlang der Venen lokalisierte Schmerzen im Bein">
+                <wert>1</wert>
+            </widget>
+            <widget id="106" typ="CheckBox" titel="Lähmung oder Immobilisation der Beine">
+                <wert>1</wert>
+            </widget>
+            <widget id="107" typ="CheckBox" titel="Bettruhe für mehr als 3 Tage oder größere OP innerhalb der letzten 12 Wochen">
+                <wert>1</wert>
+            </widget>
+            <widget id="108" typ="CheckBox" titel="TVT in der Anamnese">
+                <wert>1</wert>
+            </widget>
+            <widget id="109" typ="CheckBox" titel="Andere Diagnosen genauso wahrscheinlich">
+                <wert>-2</wert>
+            </widget>
+        </part>
+        <berechnung>
+            <formel>
+                <operation>$id{100} PLUS $id{101}</operation>
+                <operation>PLUS $id{102}</operation>
+                <operation>PLUS $id{103}</operation>
+                <operation>PLUS $id{104}</operation>
+                <operation>PLUS $id{105}</operation>
+                <operation>PLUS $id{106}</operation>
+                <operation>PLUS $id{107}</operation>
+                <operation>PLUS $id{108}</operation>
+                <operation>PLUS $id{109}</operation>
+            </formel>
+            <ergebniseinheit>Punkte</ergebniseinheit>
+            <variablen />
+        </berechnung>
+		<auswertung>
+			<beurteilung>
+                <ergebnisbereich>&#x3e; 1 Punkt</ergebnisbereich>
+                <beschreibung>Geringe Wahrscheinlichkeit, D-Dimer-Bestimmung erwägen</beschreibung>
+                <regel>KLEINERALS 1</regel>
+            </beurteilung>
+			<beurteilung>
+                <ergebnisbereich>1 - 2 Punkte</ergebnisbereich>
+                <beschreibung>Mittlere Wahrscheinlichkeit, Kompressionssonographie empfohlen</beschreibung>
+                <regel>GROESSERGLEICHALS 1</regel>
+                <regel>KLEINERGLEICHALS 2</regel>
+            </beurteilung>
+			<beurteilung>
+                <ergebnisbereich>&#x3e; 2 Punkte</ergebnisbereich>
+                <beschreibung>Hohe Wahrscheinlichkeit, Kompressionssonographie empfohlen</beschreibung>
+                <regel>GROESSERALS 2</regel>
+            </beurteilung>
+		</auswertung>
+    </score>
+</root>

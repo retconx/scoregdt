@@ -7375,7 +7375,7 @@
         <auswertung>
             <beurteilung>
                 <ergebnisbereich>&#x3c; 2 Punkte</ergebnisbereich>
-                <beschreibung>Sehr geringe Wahrscheinlichkeit (&lt; 1%)</beschreibung>
+                <beschreibung>Sehr geringe Wahrscheinlichkeit (&#x3c; 1%)</beschreibung>
                 <regel>KLEINERALS 2</regel>
             </beurteilung>   
             <beurteilung>
