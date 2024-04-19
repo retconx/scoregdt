@@ -29,7 +29,7 @@ class Score:
         return eindeutig
 
     @staticmethod
-    def getFavoriten(configPath:str):
+    def getFavoritenNamen(configPath:str):
         """
         Gibt die Favoriten-Scores zurück
         Parameter:
@@ -54,7 +54,7 @@ class Score:
         Return:
             Root-Element: ElementTree.Element
         """
-        favoritenNamen = Score.getFavoriten(configPath)
+        favoritenNamen = Score.getFavoritenNamen(configPath)
         rootElement = ElementTree.Element("root")
         xmlDateien = os.listdir(scoreverzeichnispfad)
         for xmlDatei in xmlDateien:
@@ -85,6 +85,17 @@ class Score:
         return rootElement
     
     @staticmethod
+    def getScoreAnzahl(scoreverzeichnispfad:str):
+        """
+        Gibt die Anzahl der Scores zurück
+        Parameter:
+            Pfad der config.ini:str
+        Return:
+            Anzahl: int
+        """
+        return len(Score.getGesamtRoot(scoreverzeichnispfad).findall("score"))
+    
+    @staticmethod
     def getScoreXml(scoreverzeichnispfad:str, scoreName:str):
         """
         Gibt ein Score-Element zurück
@@ -102,3 +113,4 @@ class Score:
                 scoreElement = tempScoreElement
                 break
         return scoreElement
+

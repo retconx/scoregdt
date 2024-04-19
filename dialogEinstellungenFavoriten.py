@@ -21,7 +21,7 @@ class EinstellungenFavoriten(QDialog):
         self.configPfad = configPfad
         self.scoresPfad = scoresPfad
         self.root = class_score.Score.getGesamtRoot(scoresPfad)
-        self.favoritenNamen = class_score.Score.getFavoriten(configPfad)
+        self.favoritenNamen = class_score.Score.getFavoritenNamen(configPfad)
         self.gruppen = []
         self.namenInformationen = []
         self.scoreGruppen = {} # key: Gruppe, value: Liste von Namen

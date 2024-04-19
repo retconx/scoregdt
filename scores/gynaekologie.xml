@@ -1,0 +1,89 @@
+<root>
+	<score name="Bishop-Score" gruppe="Gynäkologie">
+        <information>Beurteilung der Reife des Muttermundes (Zervixreife) vor einer Geburt</information>
+        <quelle autor="Bishop et al.">Pelvic Scoring for elective induction</quelle>
+        <part typ="GroupBox" id="0" titel="Lage der Portio" zeile="0" spalte="0">
+            <widget id="100" typ="RadioButton" titel="Sakral" checked="True">
+                <wert>0</wert>
+            </widget>
+            <widget id="101" typ="RadioButton" titel="Mediosakral">
+                <wert>1</wert>
+            </widget>
+            <widget id="102" typ="RadioButton" titel="Zentral">
+                <wert>2</wert>
+            </widget>
+        </part>
+        <part typ="GroupBox" id="1" titel="Konsistenz der Portio" zeile="0" spalte="1">
+            <widget id="103" typ="RadioButton" titel="Derb" checked="True">
+                <wert>0</wert>
+            </widget>
+            <widget id="104" typ="RadioButton" titel="Mittel">
+                <wert>1</wert>
+            </widget>
+            <widget id="105" typ="RadioButton" titel="Weich">
+                <wert>2</wert>
+            </widget>
+        </part>
+        <part typ="GroupBox" id="2" titel="Länge der Portio" zeile="0" spalte="2">
+            <widget id="106" typ="RadioButton" titel="2 cm" checked="True">
+                <wert>0</wert>
+            </widget>
+            <widget id="107" typ="RadioButton" titel="1 cm">
+                <wert>1</wert>
+            </widget>
+            <widget id="108" typ="RadioButton" titel="0,5 cm">
+                <wert>2</wert>
+            </widget>
+            <widget id="109" typ="RadioButton" titel="0 cm">
+                <wert>3</wert>
+            </widget>
+        </part>
+        <part typ="GroupBox" id="3" titel="Weite des Muttermundes" zeile="1" spalte="0">
+            <widget id="110" typ="RadioButton" titel="Geschlossen" checked="True">
+                <wert>0</wert>
+            </widget>
+            <widget id="111" typ="RadioButton" titel="1 cm">
+                <wert>1</wert>
+            </widget>
+            <widget id="112" typ="RadioButton" titel="2 cm">
+                <wert>2</wert>
+            </widget>
+            <widget id="113" typ="RadioButton" titel="3 cm">
+                <wert>3</wert>
+            </widget>
+        </part>
+        <part typ="GroupBox" id="4" titel="Höhenstand der Leitstelle relativ zur Interspinalebene" zeile="1" spalte="1">
+            <widget id="114" typ="RadioButton" titel="2 cm oberhalb" checked="True">
+                <wert>0</wert>
+            </widget>
+            <widget id="115" typ="RadioButton" titel="1 cm oberhalb">
+                <wert>1</wert>
+            </widget>
+            <widget id="116" typ="RadioButton" titel="1 cm unterhalb">
+                <wert>2</wert>
+            </widget>
+        </part>
+        <berechnung>
+            <formel>
+                <operation>$id{100} PLUS $id{103}</operation>
+                <operation>PLUS $id{106}</operation>
+                <operation>PLUS $id{110}</operation>
+                <operation>PLUS $id{114}</operation>
+            </formel>
+            <ergebniseinheit>Punkte</ergebniseinheit>
+            <variablen />
+        </berechnung>
+		<auswertung>
+			<beurteilung>
+                <ergebnisbereich>&#x3e; 6 Punkt</ergebnisbereich>
+                <beschreibung>Zervix unreif</beschreibung>
+                <regel>KLEINERALS 6</regel>
+            </beurteilung>
+			<beurteilung>
+                <ergebnisbereich>&#x2265; 6 Punkte</ergebnisbereich>
+                <beschreibung>Zervix reif</beschreibung>
+                <regel>GROESSERGLEICHALS 6</regel>
+            </beurteilung>
+		</auswertung>
+    </score>
+</root>

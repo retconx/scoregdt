@@ -1,0 +1,71 @@
+<root>
+	<score name="APGAR-Score" gruppe="Pädiatrie">
+        <information>Beurteilung des klinischen Zustands von Neugeborenen</information>
+        <quelle autor="Apgar">A proposal for a new method of evaluation of the newborn infant</quelle>
+        <part typ="GroupBox" id="0" titel="Aussehen (Hautfarbe)" zeile="0" spalte="0">
+            <widget id="100" typ="RadioButton" titel="blau oder weiß">
+                <wert>0</wert>
+            </widget>
+            <widget id="101" typ="RadioButton" titel="Akrozyanose">
+                <wert>1</wert>
+            </widget>
+            <widget id="102" typ="RadioButton" titel="Rosig" checked="True">
+                <wert>2</wert>
+            </widget>
+        </part>
+        <part typ="GroupBox" id="1" titel="Puls (Herzaktion)" zeile="0" spalte="1">
+            <widget id="103" typ="RadioButton" titel="Keine">
+                <wert>0</wert>
+            </widget>
+            <widget id="104" typ="RadioButton" titel="Puls &#x3c; 100/min">
+                <wert>1</wert>
+            </widget>
+            <widget id="105" typ="RadioButton" titel="Puls &#x2265; 100 /min" checked="True">
+                <wert>2</wert>
+            </widget>
+        </part>
+        <part typ="GroupBox" id="2" titel="Grimmassieren (Gesichtsbewegungen)" zeile="0" spalte="2">
+            <widget id="106" typ="RadioButton" titel="Keine">
+                <wert>0</wert>
+            </widget>
+            <widget id="107" typ="RadioButton" titel="Grimassen">
+                <wert>1</wert>
+            </widget>
+            <widget id="108" typ="RadioButton" titel="Schreien" checked="True">
+                <wert>2</wert>
+            </widget>
+        </part>
+        <part typ="GroupBox" id="3" titel="Aktivität (Muskeltonus)" zeile="1" spalte="0">
+            <widget id="110" typ="RadioButton" titel="Schlaff">
+                <wert>0</wert>
+            </widget>
+            <widget id="111" typ="RadioButton" titel="Träge, leichte Flexion">
+                <wert>1</wert>
+            </widget>
+            <widget id="112" typ="RadioButton" titel="Aktive Bewegung" checked="True">
+                <wert>2</wert>
+            </widget>
+        </part>
+        <part typ="GroupBox" id="4" titel="Respiration" zeile="1" spalte="1">
+            <widget id="114" typ="RadioButton" titel="Keine">
+                <wert>0</wert>
+            </widget>
+            <widget id="115" typ="RadioButton" titel="Unregelmäßig, langsam">
+                <wert>1</wert>
+            </widget>
+            <widget id="116" typ="RadioButton" titel="Gut, regelmäßig" checked="True">
+                <wert>2</wert>
+            </widget>
+        </part>
+        <berechnung>
+            <formel>
+                <operation>$id{100} PLUS $id{103}</operation>
+                <operation>PLUS $id{106}</operation>
+                <operation>PLUS $id{110}</operation>
+                <operation>PLUS $id{114}</operation>
+            </formel>
+            <ergebniseinheit>Punkte</ergebniseinheit>
+            <variablen />
+        </berechnung>
+    </score>
+</root>

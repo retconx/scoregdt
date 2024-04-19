@@ -133,7 +133,7 @@ class MainWindow(QMainWindow):
             sys.exit()
         self.configIni.read(os.path.join(self.configPath, "config.ini"), encoding="utf-8")
         self.version = self.configIni["Allgemein"]["version"]
-        self.eulagelesen = self.configIni["Allgemein"]["eulagelesen"]
+        self.eulagelesen = self.configIni["Allgemein"]["eulagelesen"] == "True"
         self.bereichsgrenzenerzwingen = self.configIni["Allgemein"]["bereichsgrenzenerzwingen"] == "True"
         self.gdtImportVerzeichnis = self.configIni["GDT"]["gdtimportverzeichnis"]
         self.gdtExportVerzeichnis = self.configIni["GDT"]["gdtexportverzeichnis"]
@@ -149,6 +149,11 @@ class MainWindow(QMainWindow):
         self.standardscore = ""
         if self.configIni.has_option("Allgemein", "standardscore"):
             self.standardscore = self.configIni["Allgemein"]["standardscore"]
+        # 1.11.1
+        self.neueScores = False
+        self.scoreanzahl = 0
+        if self.configIni.has_option("Allgemein", "scoreanzahl"):
+            self.scoreanzahl = int(self.configIni["Allgemein"]["scoreanzahl"])
         ## /Nachträglich hinzufefügte Options
 
         z = self.configIni["GDT"]["zeichensatz"]
@@ -211,6 +216,13 @@ class MainWindow(QMainWindow):
             mb.exec()
         try:
             self.root = class_score.Score.getScoreFavoritenRoot(self.configPath, self.scoresPfad)
+            bisherigeScoreAnzahl = self.scoreanzahl
+            self.scoreanzahl = class_score.Score.getScoreAnzahl(self.scoresPfad)
+            if bisherigeScoreAnzahl < self.scoreanzahl:
+                self.neueScores = True
+                self.configIni["Allgemein"]["scoreanzahl"] = str(self.scoreanzahl)
+                with open(os.path.join(self.configPath, "config.ini"), "w", encoding="utf-8") as configfile:
+                    self.configIni.write(configfile)
         except Exception as e:
             logger.logger.error("Fehler beim Laden der Scores (Scorepfad: " + self.scoresPfad + ")")
             mb = QMessageBox(QMessageBox.Icon.Warning, "Hinweis von ScoreGDT", "Fehler beim Laden der Scores.\nScoreGDT wird beendet.", QMessageBox.StandardButton.Ok)
@@ -242,6 +254,9 @@ class MainWindow(QMainWindow):
                 # 1.0.4 -> 1.0.5: ["Allgemein"]["standardscore"] hinzufügen
                 if not self.configIni.has_option("Allgemein", "standardscore"):
                     self.configIni["Allgemein"]["standardscore"] = ""
+                # 1.11.0 -> 1.11.1
+                if not self.configIni.has_option("Allgemein", "scoreanzahl"):
+                    self.configIni["Allgemein"]["scoreanzahl"] = str(self.scoreanzahl)
                 ## /config.ini aktualisieren
                 ## scores.xml löschen (ab 1.8.0)
                 try:
@@ -316,6 +331,7 @@ class MainWindow(QMainWindow):
         self.geburtsdatum =  datetime.date.today().strftime("%d.%m.%Y")
         self.geschlecht = "1"
         mbErg = QMessageBox.StandardButton.Yes
+        gdtLadeFehler = False
         try:
             # Prüfen, ob PVS-GDT-ID eingetragen
             senderId = self.configIni["GDT"]["idpraxisedv"]
@@ -339,10 +355,10 @@ class MainWindow(QMainWindow):
             mb.button(QMessageBox.StandardButton.Yes).setText("Ja")
             mb.button(QMessageBox.StandardButton.No).setText("Nein")
             mb.setDefaultButton(QMessageBox.StandardButton.No)
+            gdtLadeFehler = True
             mbErg = mb.exec()
         if mbErg == QMessageBox.StandardButton.Yes:
             self.widget = QWidget()
-            self.widget.installEventFilter(self)
 
             # Updateprüfung auf Github
             try:
@@ -352,15 +368,25 @@ class MainWindow(QMainWindow):
                 mb.exec()
                 logger.logger.warning("Updateprüfung nicht möglich: " + str(e))
 
+            # Mitteilung, dass neue Scores
+            if self.neueScores:
+                mb = QMessageBox(QMessageBox.Icon.Question, "Hinweis von ScoreGDT", "Neue Scores stehen zur Verfügung. Zur Nutzung müssen diese Aktiviert werden.\nSoll die Score-Verwaltung angezeigt werden?", QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No)
+                mb.setDefaultButton(QMessageBox.StandardButton.Yes)
+                mb.button(QMessageBox.StandardButton.Yes).setText("Ja")
+                mb.button(QMessageBox.StandardButton.No).setText("Nein")
+                if mb.exec() == QMessageBox.StandardButton.Yes:
+                    self.scoreFavoritenVerwalten(False)
+
             if self.root != None:
                 self.scoreRoot = self.root.find("score")
-                ds = dialogScoreAuswahl.ScoreAuswahl(self.root, self.standardscore)
-                if ds.exec() == 1:
-                    self.scoreRoot = class_score.Score.getScoreXml(self.scoresPfad, ds.aktuellGewaehlterScore)
-                    logger.logger.info("Score " + ds.aktuellGewaehlterScore + " ausgewählt")
-                else:
-                    logger.logger.info("Kein Score ausgewählt")
-                    sys.exit()
+                if not gdtLadeFehler:
+                    ds = dialogScoreAuswahl.ScoreAuswahl(self.root, self.standardscore)
+                    if ds.exec() == 1:
+                        self.scoreRoot = class_score.Score.getScoreXml(self.scoresPfad, ds.aktuellGewaehlterScore)
+                        logger.logger.info("Score " + ds.aktuellGewaehlterScore + " ausgewählt")
+                    else:
+                        logger.logger.info("Kein Score ausgewählt")
+                        sys.exit()
                 if self.scoreRoot != None:
                     self.parts = []
                     self.widgets = []
