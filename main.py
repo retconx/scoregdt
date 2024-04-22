@@ -154,6 +154,10 @@ class MainWindow(QMainWindow):
         self.scoreanzahl = 0
         if self.configIni.has_option("Allgemein", "scoreanzahl"):
             self.scoreanzahl = int(self.configIni["Allgemein"]["scoreanzahl"])
+        # 1.12.0
+        self.autoupdate = True
+        if self.configIni.has_option("Allgemein", "autoupdate"):
+            self.autoupdate = self.configIni["Allgemein"]["autoupdate"] == "True"
         ## /Nachträglich hinzufefügte Options
 
         z = self.configIni["GDT"]["zeichensatz"]
@@ -257,6 +261,9 @@ class MainWindow(QMainWindow):
                 # 1.11.0 -> 1.11.1
                 if not self.configIni.has_option("Allgemein", "scoreanzahl"):
                     self.configIni["Allgemein"]["scoreanzahl"] = str(self.scoreanzahl)
+                # 1.11.0 -> 1.12.0
+                if not self.configIni.has_option("Allgemein", "autoupdate"):
+                    self.configIni["Allgemein"]["autoupdate"] = "True"
                 ## /config.ini aktualisieren
                 ## scores.xml löschen (ab 1.8.0)
                 try:
@@ -361,12 +368,13 @@ class MainWindow(QMainWindow):
             self.widget = QWidget()
 
             # Updateprüfung auf Github
-            try:
-                self.updatePruefung(meldungNurWennUpdateVerfuegbar=True)
-            except Exception as e:
-                mb = QMessageBox(QMessageBox.Icon.Warning, "Hinweis von ScoreGDT", "Updateprüfung nicht möglich.\nBitte überprüfen Sie Ihre Internetverbindung.", QMessageBox.StandardButton.Ok)
-                mb.exec()
-                logger.logger.warning("Updateprüfung nicht möglich: " + str(e))
+            if self.autoupdate:
+                try:
+                    self.updatePruefung(meldungNurWennUpdateVerfuegbar=True)
+                except Exception as e:
+                    mb = QMessageBox(QMessageBox.Icon.Warning, "Hinweis von ScoreGDT", "Updateprüfung nicht möglich.\nBitte überprüfen Sie Ihre Internetverbindung.", QMessageBox.StandardButton.Ok)
+                    mb.exec()
+                    logger.logger.warning("Updateprüfung nicht möglich: " + str(e))
 
             # Mitteilung, dass neue Scores
             if self.neueScores:
@@ -736,7 +744,6 @@ class MainWindow(QMainWindow):
             einstellungenGdtAction.triggered.connect(lambda checked=False, neustartfrage=True: self.einstellungenGdt(checked, True))
             einstellungenBenutzerAction = QAction("BenutzerInnen verwalten", self)
             einstellungenBenutzerAction.triggered.connect(lambda checked=False, neustartfrage=True: self.einstellungenBenutzer(checked, True)) 
-
             ## Nur mit Lizenz
             einstellungenErweiterungenAction = QAction("LANR/Lizenzschlüssel", self)
             einstellungenErweiterungenAction.triggered.connect(lambda checked=False, neustartfrage=True: self.einstellungenLanrLizenzschluessel(checked, True)) 
@@ -749,6 +756,10 @@ class MainWindow(QMainWindow):
             hilfeWikiAction.triggered.connect(self.scoregdtWiki)
             hilfeUpdateAction = QAction("Auf Update prüfen", self)
             hilfeUpdateAction.triggered.connect(self.updatePruefung)
+            hilfeAutoUpdateAction = QAction("Automatisch auf Update prüfen", self)
+            hilfeAutoUpdateAction.setCheckable(True)
+            hilfeAutoUpdateAction.setChecked(self.autoupdate)
+            hilfeAutoUpdateAction.triggered.connect(self.autoUpdatePruefung)
             hilfeUeberAction = QAction("Über ScoreGDT", self)
             hilfeUeberAction.setMenuRole(QAction.MenuRole.NoRole)
             hilfeUeberAction.triggered.connect(self.ueberScoreGdt)
@@ -771,6 +782,7 @@ class MainWindow(QMainWindow):
             hilfeMenu.addAction(hilfeWikiAction)
             hilfeMenu.addSeparator()
             hilfeMenu.addAction(hilfeUpdateAction)
+            hilfeMenu.addAction(hilfeAutoUpdateAction)
             hilfeMenu.addSeparator()
             hilfeMenu.addAction(hilfeUeberAction)
             hilfeMenu.addAction(hilfeEulaAction)
@@ -1366,6 +1378,12 @@ class MainWindow(QMainWindow):
         elif not meldungNurWennUpdateVerfuegbar:
             mb = QMessageBox(QMessageBox.Icon.Warning, "Hinweis von ScoreGDT", "Sie nutzen die aktuelle ScoreGDT-Version.", QMessageBox.StandardButton.Ok)
             mb.exec()
+
+    def autoUpdatePruefung(self, checked):
+        self.autoupdate = checked
+        self.configIni["Allgemein"]["autoupdate"] = str(checked)
+        with open(os.path.join(self.configPath, "config.ini"), "w") as configfile:
+            self.configIni.write(configfile)
 
     def ueberScoreGdt(self):
         de = dialogUeberScoreGdt.UeberScoreGdt()

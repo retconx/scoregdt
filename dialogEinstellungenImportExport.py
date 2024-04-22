@@ -1,4 +1,7 @@
-import configparser, os, sys, gdttoolsL, datetime
+import configparser, os, sys, datetime
+## Nur mit Lizenz
+import gdttoolsL
+## /Nur mit Lizenz
 from PySide6.QtWidgets import (
     QDialogButtonBox,
     QDialog,
