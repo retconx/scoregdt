@@ -614,8 +614,8 @@
             <beurteilung>
                 <ergebnisbereich>15-19 Punkte</ergebnisbereich>
                 <beschreibung>Mittelgradige depressive Symptomatik</beschreibung>
-                <regel>GROESSERGLEICHALS 10</regel>
-                <regel>KLEINERGLEICHALS 14</regel>
+                <regel>GROESSERGLEICHALS 15</regel>
+                <regel>KLEINERGLEICHALS 19</regel>
             </beurteilung>   
             <beurteilung>
                 <ergebnisbereich>20-27 Punkte</ergebnisbereich>

@@ -11,18 +11,29 @@ from PySide6.QtWidgets import (
     QLabel,
     QRadioButton,
     QButtonGroup, 
-    QFrame
+    QScrollArea,
+    QFrame,
+    QAbstractScrollArea
 )
 
 class ScoreAuswahl(QDialog):
+    # Mainwindow zentrieren
+    def resizeEvent(self, e):
+        ag = self.screen().availableGeometry()
+        screenHoehe = ag.size().height()
+        self.setMinimumHeight(screenHoehe - 100)
+
     def __init__(self, root:ElementTree.Element, standardScore:str):
         super().__init__()
+        self.screenHoehe = 0
         self.fontNormal = QFont()
         self.fontNormal.setBold(False)
         self.fontBold = QFont()
         self.fontBold.setBold(True)
         
         self.setWindowTitle("ScoreGDT - Score auswählen")
+        minimumWidth = 1000
+        self.setMinimumWidth(minimumWidth)
         self.buttonBox = QDialogButtonBox(QDialogButtonBox.StandardButton.Ok | QDialogButtonBox.StandardButton.Cancel)
         self.buttonBox.button(QDialogButtonBox.StandardButton.Cancel).setText("Abbrechen")
         self.buttonBox.accepted.connect(self.accept) # type:ignore
@@ -49,7 +60,12 @@ class ScoreAuswahl(QDialog):
                     scoreNamenUndInfos.append((name, information))
                     scoreNamenUndInfos = sorted(scoreNamenUndInfos, key=lambda name: name[0].casefold())
             scoreGruppen[scoreGruppenname] = scoreNamenUndInfos.copy()
-        # Formular aufbauen    
+        # Formular aufbauen   
+        frame = QFrame()
+        frameLayoutV = QVBoxLayout()
+        scrollArea = QScrollArea()
+        scrollArea.setWidgetResizable(True)
+
         dialogLayoutV = QVBoxLayout()
         buttonGroup = QButtonGroup()
         buttonGroup.setParent(self)
@@ -77,9 +93,15 @@ class ScoreAuswahl(QDialog):
                 radioButtonNr += 1
             groupBoxScoreGruppe.setLayout(groupBoxScoreGruppeLayoutG)
             dialogLayoutV.addWidget(groupBoxScoreGruppe)
-        dialogLayoutV.addWidget(self.buttonBox)
-        self.setLayout(dialogLayoutV)
 
+        frame.setLayout(dialogLayoutV)
+        scrollArea.setWidget(frame)
+        
+        
+        frameLayoutV.addWidget(scrollArea)
+        frameLayoutV.addWidget(self.buttonBox)
+        self.setLayout(frameLayoutV)
+        
         for rb in self.radioButtonsScore:
             rb.setFixedWidth(240)
         

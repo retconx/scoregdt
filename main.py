@@ -240,11 +240,14 @@ class MainWindow(QMainWindow):
             mb.setDefaultButton(QMessageBox.StandardButton.Yes)
             if mb.exec() == QMessageBox.StandardButton.Yes:
                 ## Nur mit Lizenz
-                self.einstellungenLanrLizenzschluessel(False)
+                self.einstellungenLanrLizenzschluessel(False, False)
                 ## /Nur mit Lizenz
-                self.einstellungenGdt(False)
-                self.einstellungenBenutzer(False)
-                self.einstellungenAllgmein(False, True)
+                self.einstellungenGdt(False, False)
+                self.einstellungenBenutzer(False, False)
+                self.einstellungenAllgemein(False, False)
+                mb = QMessageBox(QMessageBox.Icon.Warning, "Hinweis von ScoreGDT", "Die Ersteinrichtung ist abgeschlossen. ScoreGDT wird beendet.", QMessageBox.StandardButton.Ok)
+                mb.exec()
+                sys.exit()
 
         # Version vergleichen und gegebenenfalls aktualisieren
         configIniBase = configparser.ConfigParser()
@@ -358,7 +361,7 @@ class MainWindow(QMainWindow):
             logger.logger.info("Geschlecht aus PVS-GDT (3110): " + self.geschlecht)
         except (IOError, gdtzeile.GdtFehlerException) as e:
             logger.logger.warning("Fehler beim Laden der GDT-Datei: " + str(e))
-            mb = QMessageBox(QMessageBox.Icon.Information, "Hinweis von ScoreGDT", "Fehler beim Laden der GDT-Datei:\n" + str(e) + "\n\nSoll ScoreGDT dennoch geöffnet werden?", QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No)
+            mb = QMessageBox(QMessageBox.Icon.Information, "Hinweis von ScoreGDT", "Fehler beim Laden der GDT-Datei:\n" + str(e) + "\n\nDieser Fehler hat in der Regel eine der folgenden Ursachen:\n- Die im PVS und in ScoreGDT konfigurierten GDT-Austauschverzeichnisse stimmen nicht überein.\n- ScoreGDT wurde nicht aus dem PVS heraus gestartet, so dass keine vom PVS erzeugte GDT-Datei gefunden werden konnte.\n\nSoll ScoreGDT dennoch geöffnet werden?", QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No)
             mb.button(QMessageBox.StandardButton.Yes).setText("Ja")
             mb.button(QMessageBox.StandardButton.No).setText("Nein")
             mb.setDefaultButton(QMessageBox.StandardButton.No)
@@ -739,14 +742,14 @@ class MainWindow(QMainWindow):
             scoreMenuFavoritenVerwaltenAction.triggered.connect(self.scoreFavoritenVerwalten)
             einstellungenMenu = menubar.addMenu("Einstellungen")
             einstellungenAllgemeinAction = QAction("Allgemeine Einstellungen", self)
-            einstellungenAllgemeinAction.triggered.connect(lambda checked=False, neustartfrage=True: self.einstellungenAllgmein(checked, True))
+            einstellungenAllgemeinAction.triggered.connect(lambda checked = False, neustartfrage = True: self.einstellungenAllgemein(checked, neustartfrage))
             einstellungenGdtAction = QAction("GDT-Einstellungen", self)
-            einstellungenGdtAction.triggered.connect(lambda checked=False, neustartfrage=True: self.einstellungenGdt(checked, True))
+            einstellungenGdtAction.triggered.connect(lambda checked = False, neustartfrage = True: self.einstellungenGdt(checked, neustartfrage))
             einstellungenBenutzerAction = QAction("BenutzerInnen verwalten", self)
-            einstellungenBenutzerAction.triggered.connect(lambda checked=False, neustartfrage=True: self.einstellungenBenutzer(checked, True)) 
+            einstellungenBenutzerAction.triggered.connect(lambda checked = False, neustartfrage = True: self.einstellungenBenutzer(checked, neustartfrage)) 
             ## Nur mit Lizenz
             einstellungenErweiterungenAction = QAction("LANR/Lizenzschlüssel", self)
-            einstellungenErweiterungenAction.triggered.connect(lambda checked=False, neustartfrage=True: self.einstellungenLanrLizenzschluessel(checked, True)) 
+            einstellungenErweiterungenAction.triggered.connect(lambda checked = False, neustartfrage = True: self.einstellungenLanrLizenzschluessel(checked, neustartfrage)) 
             einstellungenImportExportAction = QAction("Im- /Exportieren", self)
             einstellungenImportExportAction.triggered.connect(self.einstellungenImportExport) 
             einstellungenImportExportAction.setMenuRole(QAction.MenuRole.NoRole)
@@ -1419,7 +1422,7 @@ class MainWindow(QMainWindow):
         df = dialogEinstellungenFavoriten.EinstellungenFavoriten(self.configPath, self.scoresPfad)
         df.exec()   
 
-    def einstellungenAllgmein(self, checked, neustartfrage=False):
+    def einstellungenAllgemein(self, checked, neustartfrage):
         de = dialogEinstellungenAllgemein.EinstellungenAllgemein(self.configPath, self.root, self.standardscore)
         if de.exec() == 1:
             self.configIni["Allgemein"]["bereichsgrenzenerzwingen"] = str(de.checkBoxZahlengrenzenpruefung.isChecked())
@@ -1434,7 +1437,7 @@ class MainWindow(QMainWindow):
                 if mb.exec() == QMessageBox.StandardButton.Yes:
                     os.execl(sys.executable, __file__, *sys.argv)
 
-    def einstellungenGdt(self, checked, neustartfrage=False):
+    def einstellungenGdt(self, checked, neustartfrage):
         de = dialogEinstellungenGdt.EinstellungenGdt(self.configPath)
         if de.exec() == 1:
             self.configIni["GDT"]["idscoregdt"] = de.lineEditScoreGdtId.text()
@@ -1454,7 +1457,7 @@ class MainWindow(QMainWindow):
                 if mb.exec() == QMessageBox.StandardButton.Yes:
                     os.execl(sys.executable, __file__, *sys.argv)
 
-    def einstellungenBenutzer(self, checked, neustartfrage = False):
+    def einstellungenBenutzer(self, checked, neustartfrage):
         de = dialogEinstellungenBenutzer.EinstellungenBenutzer(self.configPath)
         if de.exec() == 1:
             namen = []
@@ -1476,7 +1479,7 @@ class MainWindow(QMainWindow):
                     os.execl(sys.executable, __file__, *sys.argv)
 
     ## Nur mit Lizenz
-    def einstellungenLanrLizenzschluessel(self, checked, neustartfrage = False):
+    def einstellungenLanrLizenzschluessel(self, checked, neustartfrage):
         de = dialogEinstellungenLanrLizenzschluessel.EinstellungenProgrammerweiterungen(self.configPath)
         if de.exec() == 1:
             self.configIni["Erweiterungen"]["lanr"] = de.lineEditLanr.text()
