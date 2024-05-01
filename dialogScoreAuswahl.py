@@ -12,8 +12,7 @@ from PySide6.QtWidgets import (
     QRadioButton,
     QButtonGroup, 
     QScrollArea,
-    QFrame,
-    QAbstractScrollArea
+    QFrame
 )
 
 class ScoreAuswahl(QDialog):
@@ -25,7 +24,6 @@ class ScoreAuswahl(QDialog):
 
     def __init__(self, root:ElementTree.Element, standardScore:str):
         super().__init__()
-        self.screenHoehe = 0
         self.fontNormal = QFont()
         self.fontNormal.setBold(False)
         self.fontBold = QFont()

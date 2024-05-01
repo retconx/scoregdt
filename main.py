@@ -6,7 +6,7 @@ import gdttoolsL
 ## /Nur mit Lizenz
 import gdt, gdtzeile, class_part, class_widgets, class_score
 import dialogUeberScoreGdt, dialogEinstellungenAllgemein, dialogEinstellungenGdt, dialogEinstellungenBenutzer, dialogEinstellungenLanrLizenzschluessel, dialogEula, dialogEinstellungenImportExport, dialogScoreAuswahl, dialogEinstellungenFavoriten
-import class_enums, class_score
+import class_enums, class_score, class_Rechenoperation
 from PySide6.QtCore import Qt, QTranslator, QLibraryInfo, QDate, QTime
 from PySide6.QtGui import QFont, QAction, QIcon, QDesktopServices, QPixmap
 from PySide6.QtWidgets import (
@@ -520,6 +520,15 @@ class MainWindow(QMainWindow):
                 labelScoreName.setToolTip(quelle)
                 labelScoreName.setCursor(Qt.CursorShape.WhatsThisCursor)
             # Score
+            if self.scoreRoot.get("altersregel") != None: # type: ignore
+                alter = getAktuellesAlterInJahren(self.geburtsdatumAlsDate)
+                if not self.regelIstErfuellt(str(alter) + str(self.scoreRoot.get("altersregel"))): # type: ignore
+                    mb = QMessageBox(QMessageBox.Icon.Question, "Hinweis von ScoreGDT", "Das Alter von " + str(alter) + " Jahren liegt außerhalb der für \"" + str(self.scoreRoot.get("name")) + "\" zulässigen Grenzen.\nSoll ScoreGDT neu gestartet werden?", QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No) # type: ignore
+                    mb.setDefaultButton(QMessageBox.StandardButton.Yes)
+                    mb.button(QMessageBox.StandardButton.Yes).setText("Ja")
+                    mb.button(QMessageBox.StandardButton.No).setText("Nein")
+                    if mb.exec() == QMessageBox.StandardButton.Yes:
+                        os.execl(sys.executable, __file__, *sys.argv)
             buttonGroups = {}
             for part in self.parts:
                 buttonGroups.clear()
@@ -542,6 +551,12 @@ class MainWindow(QMainWindow):
                         partLayout.addWidget(labelTitel, partGridZeile, 0, alignment=Qt.AlignmentFlag.AlignTop)
                         widgetWidget = widget.getQt()
                         widgetWidget.setFont(self.fontNormal)
+                        if widget.getTyp() == class_widgets.WidgetTyp.CHECKBOX or widget.getTyp() == class_widgets.WidgetTyp.RADIOBUTTON:
+                            widgetWidget.clicked.connect(self.widgetChanged)
+                        elif widget.getTyp() == class_widgets.WidgetTyp.LINEEDIT:
+                            widgetWidget.textEdited.connect(self.widgetChanged)
+                        elif widget.getTyp() == class_widgets.WidgetTyp.COMBOBOX:
+                            widgetWidget.currentIndexChanged.connect(self.widgetChanged)
                         partLayout.addWidget(widgetWidget, partGridZeile, 1, alignment=Qt.AlignmentFlag.AlignTop)
                         einheitUndErklärung = ""
                         if widget.getEinheit() != "":
@@ -607,7 +622,6 @@ class MainWindow(QMainWindow):
                             elif ("weiblich" in widget.getTitel().lower() or "weiblich" in widget.getErklaerung().lower()) and self.geschlecht == "2":
                                 widget.getQt().setChecked(True)
                                 logger.logger.info("Checkbox " + widget.getId() + " als weiblich aktiviert")
-
                         partGridZeile += 1
                 if part.getTyp() == class_part.PartTyp.FRAME:
                     frame = QFrame()
@@ -794,6 +808,10 @@ class MainWindow(QMainWindow):
         else:
             sys.exit()
 
+    def widgetChanged(self):
+        self.lineEditScoreErgebnis.setText("")
+        self.auswertung("")
+
     def buttonGroupCheckBoxPressed(self, checkbox):
         checkbox.group().setExclusive(not checkbox.isChecked())
 
@@ -882,47 +900,21 @@ class MainWindow(QMainWindow):
                 break
         return gesuchterPart
     
-    def berechnung(self, formel:str):
+    def berechnung(self, formel:str, dezimalstellen:int):
         """
-        Berechnet das Ergebnis einer Formel im Format xPLUSy, xMINUSy...
+        Berechnet das Ergebnis einer Formel
         Parameter:
             formel:str
         Return:
-            Ergebnis der Berechnung: int oder float
+            Ergebnis der Berechnung: float
         """
-        regexZahl = r"^\d+([.,]\d)?$"
-        formel = formel.replace(" ", "")
-        ergebnis = formel
-        for rechenart in class_enums.Rechenarten._member_names_:
-            if rechenart in formel:
-                operanden = formel.split(rechenart)
-                operandenAlsZahl = []
-                sindZahlen = True
-                for operand in operanden:
-                    if re.match(regexZahl, operand) == "None":
-                        sindZahlen = False
-                    if "." in operand:
-                        operandenAlsZahl.append(float(operand))
-                    else:
-                        operandenAlsZahl.append(int(operand))
-                if sindZahlen:
-                    if rechenart == class_enums.Rechenarten.PLUS.value:
-                        ergebnis = operandenAlsZahl[0] + operandenAlsZahl[1]
-                    elif rechenart == class_enums.Rechenarten.MINUS.value:
-                        ergebnis = operandenAlsZahl[0] - operandenAlsZahl[1]
-                    elif rechenart == class_enums.Rechenarten.MAL.value:
-                        ergebnis = operandenAlsZahl[0] * operandenAlsZahl[1]
-                    elif rechenart == class_enums.Rechenarten.DURCH.value:
-                        ergebnis = operandenAlsZahl[0] / operandenAlsZahl[1]
-                    elif rechenart == class_enums.Rechenarten.HOCH.value:
-                        ergebnis = operandenAlsZahl[0] ** operandenAlsZahl[1]
-                    break
-                else:
-                    logger.logger.error("Fehler bei Berechung der Formel " + formel + ": nicht beide Operanden sind Zahlen")
-                    mb = QMessageBox(QMessageBox.Icon.Critical, "Hinweis von ScoreGDT", "Fehler bei Berechung der Formel " + formel + ": nicht beide Operanden sind Zahlen", QMessageBox.StandardButton.Ok)
-                    mb.exec()
-                    break
-        return ergebnis
+        try:
+            berechnung = class_Rechenoperation.Rechenoperation(formel)(dezimalstellen)
+            return berechnung
+        except class_Rechenoperation.RechenoperationException as e:
+            logger.logger.error("Fehler bei der Score-Berechnung: " + str(e))
+            mb = QMessageBox(QMessageBox.Icon.Critical, "Hinweis von ScoreGDT", "Fehler bei der Score-Berechnung " + str(e), QMessageBox.StandardButton.Ok)
+            mb.exec()
     
     def regelIstErfuellt(self, regel:str):
         """
@@ -998,7 +990,6 @@ class MainWindow(QMainWindow):
             if varName in variablen:
                 ersetzt = ersetzt.replace(varVariable, variablen[varName])
         return ersetzt
-
     
     def pushButtonBerechnenClicked(self):
         formularOk = True
@@ -1029,11 +1020,15 @@ class MainWindow(QMainWindow):
                 # $var{...}-Werte auslesen
                 berechnungElement = self.scoreRoot.find("berechnung") # type: ignore
                 formelElement = berechnungElement.find("formel") # type: ignore
+                dezimalstellen = 0
+                if formelElement.get("dezimalstellen") != None: # type: ignore 
+                    dezimalstellen = int(str(formelElement.get("dezimalstellen"))) # type: ignore 
                 self.erfuellteAuswertungsregel = -1
                 if str(formelElement.get("typ")) != "script": # type: ignore        
-                    operationen = []
-                    for operationElement in formelElement.findall("operation"): # type: ignore
-                        operationen.append(str(operationElement.text))
+                    # operationen = []
+                    # for operationElement in formelElement.findall("operation"): # type: ignore
+                    #     operationen.append(str(operationElement.text))
+                    formel = str(formelElement.text) # type: ignore 
                     variablenElement = berechnungElement.find("variablen") # type: ignore
                     variablen = {}
                     for variableElement in variablenElement.findall("variable"): # type: ignore
@@ -1043,7 +1038,7 @@ class MainWindow(QMainWindow):
                             text = str(variableElement.text)
                             textMitIdWertErsetzt = self.ersetzeIdVariablen(text)
                             textMitVarWertErsezt = self.ersetzeVariablen(variablen, textMitIdWertErsetzt)
-                            variablen[variablenname] = str(self.berechnung(textMitVarWertErsezt))
+                            variablen[variablenname] = str(self.berechnung(textMitVarWertErsezt, -1))
                         # Mit Bedinung(en)
                         else: 
                             for bedingungElement in variableElement.findall("bedingung"):
@@ -1060,56 +1055,27 @@ class MainWindow(QMainWindow):
                                     wertMitIdWertErsetzt = self.ersetzeIdVariablen(wert)
                                     wertMitVarWertErsetzt = self.ersetzeVariablen(variablen, wertMitIdWertErsetzt)
                                     variablen[variablenname] = wertMitVarWertErsetzt
-                    # $var{...}-Variablen durch Werte ersetzen
+                    
                     patternVar = r"\$var{[^{}]+}"
                     variablenMitNichtErfuelltenRegeln = []
-                    ersteOperation = True
                     tempErgebnis = 0
-                    for operation in operationen:
-                        operationMitZahl = operation
-                        if not ersteOperation:
-                            operationMitZahl = str(tempErgebnis) + " " + operationMitZahl
-                            ersteOperation = False
-                        varVariablen = re.findall(patternVar, operation)
-                        for varVariable in varVariablen:
-                            varName = varVariable[5:-1]
-                            if varName in variablen:
-                                operationMitZahl = operationMitZahl.replace(varVariable, variablen[varName])
-                            else:
-                                logger.logger.warning("Variablenname " + varName + " nicht ausgelesen")
-                                variablenMitNichtErfuelltenRegeln.append(varName)
-                        operationMitZahl = self.ersetzeIdVariablen(operationMitZahl)
-                        tempErgebnis = self.berechnung(operationMitZahl)
-                        ersteOperation = False
-                        logger.logger.info("Teilergebnis: " + str(self.berechnung(operationMitZahl)))
+                    formelMitZahlen = formel
+                    varVariablen = re.findall(patternVar, formel)
+                    for varVariable in varVariablen:
+                        varName = varVariable[5:-1]
+                        if varName in variablen:
+                            formelMitZahlen = formelMitZahlen.replace(varVariable, variablen[varName])
+                        else:
+                            logger.logger.warning("Variablenname " + varName + " nicht ausgelesen")
+                            variablenMitNichtErfuelltenRegeln.append(varName)
+                    formelMitZahlen = self.ersetzeIdVariablen(formelMitZahlen)
+                    tempErgebnis = self.berechnung(formelMitZahlen, dezimalstellen)
+                    logger.logger.info("Teilergebnis: " + str(self.berechnung(formelMitZahlen, dezimalstellen)))
                     if len(variablenMitNichtErfuelltenRegeln) == 0:
                         self.lineEditScoreErgebnis.setText(str(tempErgebnis).replace(".", ","))
                         logger.logger.info("Endergebnis: " + str(tempErgebnis).replace(".", ","))
                         # Auswertung
                         self.auswertung(tempErgebnis)
-                        # auswertungElement = self.scoreRoot.find("auswertung") # type: ignore
-                        # if auswertungElement != None:
-                        #     ergebnis = str(tempErgebnis)
-                        #     beurteilungNr = 0
-                        #     for beurteilungElement in auswertungElement.findall("beurteilung"):
-                        #         regelErfuellt = True
-                        #         for regelElement in beurteilungElement.findall("regel"):
-                        #             regel = ergebnis + str(regelElement.text)
-                        #             if not self.regelIstErfuellt(regel):
-                        #                 regelErfuellt = False
-                        #                 break
-                        #             if regelErfuellt:
-                        #                 self.erfuellteAuswertungsregel = beurteilungNr
-                        #                 break
-                        #         beurteilungNr += 1
-                        #     if self.erfuellteAuswertungsregel != -1:
-                        #         for i in range(len(self.labelErgebnisbereiche)):
-                        #             if self.erfuellteAuswertungsregel == i:
-                        #                 self.labelErgebnisbereiche[i].setStyleSheet("color:rgb(0,150,0)")
-                        #                 self.labelBeschreibungen[i].setStyleSheet("color:rgb(0,150,0)")
-                        #             else:
-                        #                 self.labelErgebnisbereiche[i].setStyleSheet("color:rgb(0,0,100)")
-                        #                 self.labelBeschreibungen[i].setStyleSheet("color:rgb(0,0,100)")
                     else:
                         mb = QMessageBox(QMessageBox.Icon.Warning, "Hinweis von ScoreGDT", "Der Score kann nicht berechnet werden, da für die folgenden Variablen keine Regel zutrifft:\n- " + str.join("\n- ", variablenMitNichtErfuelltenRegeln), QMessageBox.StandardButton.Ok)
                         mb.exec()
@@ -1254,8 +1220,12 @@ class MainWindow(QMainWindow):
             Parameter:
                 ergebnis
         """
+        # Alle Auswertungslabel blau
+        for i in range(len(self.labelErgebnisbereiche)):
+            self.labelErgebnisbereiche[i].setStyleSheet("color:rgb(0,0,100)")
+            self.labelBeschreibungen[i].setStyleSheet("color:rgb(0,0,100)")
         auswertungElement = self.scoreRoot.find("auswertung") # type: ignore
-        if auswertungElement != None:
+        if auswertungElement != None and ergebnis != "":
             ergebnis = str(ergebnis)
             beurteilungNr = 0
             for beurteilungElement in auswertungElement.findall("beurteilung"):
@@ -1274,9 +1244,6 @@ class MainWindow(QMainWindow):
                     if self.erfuellteAuswertungsregel == i:
                         self.labelErgebnisbereiche[i].setStyleSheet("color:rgb(0,150,0)")
                         self.labelBeschreibungen[i].setStyleSheet("color:rgb(0,150,0)")
-                    else:
-                        self.labelErgebnisbereiche[i].setStyleSheet("color:rgb(0,0,100)")
-                        self.labelBeschreibungen[i].setStyleSheet("color:rgb(0,0,100)")
 
     def dateEditUntersuchungsdatumChanged(self, datum):
         self.untersuchungsdatum = datum
@@ -1375,7 +1342,7 @@ class MainWindow(QMainWindow):
         githubRelaseTag = response.json()["tag_name"]
         latestVersion = githubRelaseTag[1:] # ohne v
         if versionVeraltet(self.version, latestVersion):
-            mb = QMessageBox(QMessageBox.Icon.Warning, "Hinweis von ScoreGDT", "Die aktuellere ScoreGDT-Version " + latestVersion + " ist auf <a href='https://www.github.com/retconx/scoregdt/releases'>Github</a> verfügbar.", QMessageBox.StandardButton.Ok)
+            mb = QMessageBox(QMessageBox.Icon.Warning, "Hinweis von ScoreGDT", "Die aktuellere ScoreGDT-Version " + latestVersion + " ist auf <a href='https://github.com/retconx/scoregdt/releases'>Github</a> verfügbar.", QMessageBox.StandardButton.Ok)
             mb.setTextFormat(Qt.TextFormat.RichText)
             mb.exec()
         elif not meldungNurWennUpdateVerfuegbar:

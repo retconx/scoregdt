@@ -115,15 +115,7 @@
             </widget>
         </part>
         <berechnung>
-            <formel>
-                <operation>$id{100} PLUS $id{104}</operation>
-                <operation>PLUS $id{108}</operation>
-                <operation>PLUS $id{112}</operation>
-                <operation>PLUS $id{116}</operation>
-                <operation>PLUS $id{120}</operation>
-                <operation>PLUS $id{124}</operation>
-                <operation>PLUS $id{128}</operation>
-            </formel>
+            <formel>$id{100} + $id{104} + $id{108} + $id{112} + $id{116} + $id{120} + $id{124} + $id{128}</formel>
             <ergebniseinheit>Punkte</ergebniseinheit>
             <variablen />
         </berechnung>
@@ -244,40 +236,9 @@
             </widget>  
         </part>
         <part id="11" typ="Frame" titel="Fünfecke" zeile="2" spalte="3" hintergrundbild="mmstFuenfecke.png">
-
         </part>
         <berechnung>
-            <formel>
-                <operation>$id{100} PLUS $id{101}</operation>
-                <operation>PLUS $id{102}</operation>
-                <operation>PLUS $id{103}</operation>
-                <operation>PLUS $id{104}</operation>
-                <operation>PLUS $id{105}</operation>
-                <operation>PLUS $id{106}</operation>
-                <operation>PLUS $id{107}</operation>
-                <operation>PLUS $id{108}</operation>
-                <operation>PLUS $id{109}</operation>
-                <operation>PLUS $id{110}</operation>
-                <operation>PLUS $id{111}</operation>
-                <operation>PLUS $id{112}</operation>
-                <operation>PLUS $id{113}</operation>
-                <operation>PLUS $id{114}</operation>
-                <operation>PLUS $id{115}</operation>
-                <operation>PLUS $id{116}</operation>
-                <operation>PLUS $id{117}</operation>
-                <operation>PLUS $id{118}</operation>
-                <operation>PLUS $id{119}</operation>
-                <operation>PLUS $id{120}</operation>
-                <operation>PLUS $id{121}</operation>
-                <operation>PLUS $id{122}</operation>
-                <operation>PLUS $id{123}</operation>
-                <operation>PLUS $id{124}</operation>
-                <operation>PLUS $id{125}</operation>
-                <operation>PLUS $id{126}</operation>
-                <operation>PLUS $id{127}</operation>
-                <operation>PLUS $id{128}</operation>
-                <operation>PLUS $id{129}</operation>
-            </formel>
+            <formel>$id{100} + $id{101} + $id{102} + $id{103} + $id{104} + $id{105} + $id{106} + $id{107} + $id{108} + $id{109} + $id{110} + $id{111} + $id{112} + $id{113} + $id{114} + $id{115} + $id{116} + $id{117} + $id{118} + $id{119} + $id{120} + $id{121} + $id{122} + $id{123} + $id{124} + $id{125} + $id{126} + $id{127} + $id{128} + $id{129}</formel>
             <ergebniseinheit>Punkte</ergebniseinheit>
             <variablen />
         </berechnung>
@@ -350,7 +311,7 @@
             </widget>
         </part>
         <part id="3" typ="Frame" zeile="3" spalte="0">
-            <widget id="103" typ="ComboBox" titel="Schlaflosigkti" titelbreite="200">
+            <widget id="103" typ="ComboBox" titel="Schlaflosigkeit" titelbreite="200">
                 <items>
                     <item wert="0">Keine</item>
                     <item wert="1">Kaum</item>
@@ -441,18 +402,8 @@
             </widget>
         </part>
         <berechnung>
-            <formel>
-                <operation>$id{100}PLUS$id{101}</operation>
-                <operation>PLUS$id{102}</operation>
-                <operation>PLUS$id{103}</operation>
-                <operation>PLUS$id{104}</operation>
-                <operation>PLUS$id{105}</operation>
-                <operation>PLUS$id{106}</operation>
-                <operation>PLUS$id{107}</operation>
-                <operation>PLUS$id{108}</operation>
-                <operation>PLUS$id{109}</operation>
-            </formel>
-            <ergebniseinheit />
+            <formel>$id{100} + $id{101} + $id{102} + $id{103} + $id{104} + $id{105} + $id{106} + $id{107} + $id{108} + $id{109}</formel>
+            <ergebniseinheit>Punkte</ergebniseinheit>
             <variablen>
             </variablen>
         </berechnung>
@@ -577,18 +528,8 @@
                     </items>
             </widget>
         </part>
-        
         <berechnung>
-            <formel>
-                <operation>$id{100}PLUS$id{101}</operation>
-                <operation>PLUS$id{102}</operation>
-                <operation>PLUS$id{103}</operation>
-                <operation>PLUS$id{104}</operation>
-                <operation>PLUS$id{105}</operation>
-                <operation>PLUS$id{106}</operation>
-                <operation>PLUS$id{107}</operation>
-                <operation>PLUS$id{108}</operation>
-            </formel>
+            <formel>$id{100} + $id{101} + $id{102} + $id{103} + $id{104} + $id{105} + $id{106} + $id{107} + $id{108}</formel>
             <ergebniseinheit>Punkte</ergebniseinheit>
             <variablen>
             </variablen>

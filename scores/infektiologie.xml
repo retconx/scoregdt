@@ -16,10 +16,7 @@
             </widget>
         </part>
         <berechnung>
-            <formel>
-                <operation>$id{100} PLUS $id{101}</operation>
-                <operation>PLUS $id{102}</operation>
-            </formel>
+            <formel>$id{100} + $id{101} + $id{102}</formel>
             <ergebniseinheit>Punkte</ergebniseinheit>
             <variablen />
         </berechnung>
@@ -43,11 +40,7 @@
             </widget>
         </part>
         <berechnung>
-            <formel>
-                <operation>$id{100} PLUS $id{101}</operation>
-                <operation>PLUS $id{102}</operation>
-                <operation>PLUS $id{103}</operation>
-            </formel>
+            <formel>$id{100} + $id{101} + $id{102} + $id{103}</formel>
             <ergebniseinheit>Punkte</ergebniseinheit>
             <variablen />
         </berechnung>
@@ -104,12 +97,7 @@
             </widget>
         </part>
         <berechnung>
-            <formel>
-                <operation>$id{100} PLUS $id{101}</operation>
-                <operation>PLUS $id{102}</operation>
-                <operation>PLUS $id{103}</operation>
-                <operation>PLUS $var{alterspunkt}</operation>
-            </formel>
+            <formel>$id{100} + $id{101} + $id{102} + $id{103} + $var{alterspunkt}</formel>
             <ergebniseinheit>Punkte</ergebniseinheit>
             <variablen>
                 <variable name="alterspunkt">

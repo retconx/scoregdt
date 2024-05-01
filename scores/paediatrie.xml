@@ -58,12 +58,7 @@
             </widget>
         </part>
         <berechnung>
-            <formel>
-                <operation>$id{100} PLUS $id{103}</operation>
-                <operation>PLUS $id{106}</operation>
-                <operation>PLUS $id{110}</operation>
-                <operation>PLUS $id{114}</operation>
-            </formel>
+            <formel>$id{100} + $id{103} + $id{106} + $id{110} + $id{114}</formel>
             <ergebniseinheit>Punkte</ergebniseinheit>
             <variablen />
         </berechnung>

@@ -1,0 +1,194 @@
+<root>
+	<score name="Child-Pugh-Score" gruppe="Gastroenterologie">
+        <information>Beurteilung des Schweregrads einer Leberzirrhose</information>
+        <quelle autor="Child et al.">Surgery and portal hypertension</quelle>
+        <part typ="GroupBox" id="0" titel="Serum-Albumin" zeile="0" spalte="0">
+            <widget id="100" typ="RadioButton" titel="&#x3e; 3,5 g/dl" checked="True">
+                <wert>1</wert>
+            </widget>
+            <widget id="101" typ="RadioButton" titel="2,8 - 3,5 g/dl">
+                <wert>2</wert>
+            </widget>
+            <widget id="102" typ="RadioButton" titel="&#x3c; 2,6 g/dl">
+                <wert>3</wert>
+            </widget>
+        </part>
+        <part typ="GroupBox" id="1" titel="Serum-Bilirubin gesamt" zeile="0" spalte="1">
+            <widget id="103" typ="RadioButton" titel="&#x3e; 2,0 mg/dl" checked="True">
+                <wert>1</wert>
+            </widget>
+            <widget id="104" typ="RadioButton" titel="2,0 - 3,0 mg/dl">
+                <wert>2</wert>
+            </widget>
+            <widget id="105" typ="RadioButton" titel="&#x3c; 3,0 mg/dl">
+                <wert>3</wert>
+            </widget>
+        </part>
+        <part typ="GroupBox" id="2" titel="INR" zeile="0" spalte="2">
+            <widget id="106" typ="RadioButton" titel="&#x3c; 1,7 mg/dl" checked="True">
+                <wert>1</wert>
+            </widget>
+            <widget id="107" typ="RadioButton" titel="1,7 - 2,2 mg/dl">
+                <wert>2</wert>
+            </widget>
+            <widget id="108" typ="RadioButton" titel="&#x3e; 2,2 mg/dl">
+                <wert>3</wert>
+            </widget>
+        </part>
+        <part typ="GroupBox" id="3" titel="Sonographisch Aszites" zeile="1" spalte="0">
+            <widget id="109" typ="RadioButton" titel="Kein" checked="True">
+                <wert>1</wert>
+            </widget>
+            <widget id="110" typ="RadioButton" titel="Mittelgradig">
+                <wert>2</wert>
+            </widget>
+            <widget id="111" typ="RadioButton" titel="Massiv">
+                <wert>3</wert>
+            </widget>
+        </part>
+        <part typ="GroupBox" id="4" titel="Enzephalopathie" zeile="1" spalte="1">
+            <widget id="112" typ="RadioButton" titel="Keine" checked="True">
+                <wert>1</wert>
+            </widget>
+            <widget id="113" typ="RadioButton" titel="Grad I - II">
+                <wert>2</wert>
+            </widget>
+            <widget id="114" typ="RadioButton" titel="Grad III - IV">
+                <wert>3</wert>
+            </widget>
+        </part>
+        <berechnung>
+            <formel>$id{100} + $id{103} + $id{106} + $id{109} + $id{112}</formel>
+            <ergebniseinheit>Punkte</ergebniseinheit>
+            <variablen />
+        </berechnung>
+        <auswertung>
+			<beurteilung>
+                <ergebnisbereich>5 - 6 Punkte</ergebnisbereich>
+                <beschreibung>Child A (1-Jahres-Überlebensrate 100%)</beschreibung>
+                <regel>KLEINERGLEICHALS 6</regel>
+            </beurteilung>
+			<beurteilung>
+                <ergebnisbereich>7 - 9 Punkte</ergebnisbereich>
+                <beschreibung>Child B (1-Jahres-Überlebensrate ca. 80%)</beschreibung>
+                <regel>GROESSERGLEICHALS 7</regel>
+                <regel>KLEINERGLEICHALS 9</regel>
+            </beurteilung>
+			<beurteilung>
+                <ergebnisbereich>10 - 15 Punkte</ergebnisbereich>
+                <beschreibung>Child C (1-Jahres-Überlebensrate ca. 35%)</beschreibung>
+                <regel>GROESSERGLEICHALS 10</regel>
+            </beurteilung>
+		</auswertung>
+    </score>
+	<score name="MELD 2016" gruppe="Gastroenterologie" altersregel="GROESSERGLEICHALS12">
+        <information>Beurteilung des Schweregrads einer Leberekrankung (Mindestalter 12 Jahre)</information>
+        <quelle autor="Wiesner et al.">The model for end-stage liver disease (MELD) and allocation of donor livers</quelle>
+        <part typ="Frame" id="0" titel="" zeile="0" spalte="0">
+            <widget id="100" typ="LineEdit" titel="Serum-Bilirubin gesamt">
+                <regex>^\d+([,.]\d+)?$</regex>
+                <einheit>mg/dl</einheit>
+            </widget>
+        </part>
+        <part typ="Frame" id="1" titel="" zeile="0" spalte="1">
+            <widget id="101" typ="LineEdit" titel="INR">
+                <regex>^\d+([,.]\d+)?$</regex>
+            </widget>
+        </part>
+        <part typ="Frame" id="2" titel="" zeile="1" spalte="0">
+            <widget id="102" typ="LineEdit" titel="Serum-Kreatinin">
+                <regex>^\d+([,.]\d+)?$</regex>
+                <einheit>mg/dl</einheit>
+            </widget>
+        </part>
+        <part typ="Frame" id="3" titel="" zeile="1" spalte="1">
+            <widget id="103" typ="LineEdit" titel="Natrium">
+                <regex>^\d+$</regex>
+                <einheit>mmol/l</einheit>
+            </widget>
+        </part>
+        <part typ="GroupBox" id="4" titel="Dialyse innerhalb der letzten sieben Tage" zeile="2" spalte="0">
+            <widget id="104" typ="RadioButton" titel="Keine" checked="True">
+                <wert>0</wert>
+            </widget>
+            <widget id="105" typ="RadioButton" titel="&#x2265;1 24 Stunden kontinuierlich veno-venös (CVVHD)">
+                <wert>1</wert>
+            </widget>
+            <widget id="106" typ="RadioButton" titel="&#x2265;2 intermittierend (IHD)">
+                <wert>1</wert>
+            </widget>
+        </part>
+        <berechnung>
+            <formel>$var{meld2}</formel>
+            <ergebniseinheit>Punkte</ergebniseinheit>
+            <variablen>
+                <variable name="crea">
+                    <bedingung>
+                        <regel>$id{102}GROESSERALS4</regel>
+                        <wert>4</wert>
+                    </bedingung>    
+                    <bedingung>
+                        <regel>$id{104}ISTGLEICH0</regel>
+                        <wert>$id{102}</wert>
+                    </bedingung>    
+                    <bedingung>
+                        <regel>$id{104}ISTGLEICH1</regel>
+                        <wert>4</wert>
+                    </bedingung>    
+                </variable>
+                <variable name="meld1">10 * (0,957 * ln$var{crea} + 0,378 * ln$id{100} + 1,12 * ln$id{101} + 0,643)</variable>
+                <variable name="natrium">
+                    <bedingung>
+                        <regel>$id{103}KLEINERALS125</regel>
+                        <wert>125</wert>
+                    </bedingung>
+                    <bedingung>
+                        <regel>$id{103}GROESSERALS125</regel>
+                        <wert>137</wert>
+                    </bedingung>
+                </variable>
+                <variable name="meld2">$var{meld1} + 1,32 * (137 - $var{natrium}) - (0,033 * $var{meld1} * (137-$var{natrium}))</variable>
+                <variable name="MELD">
+                    <bedingung>
+                        <regel>$var{meld1}KLEINERGLEICHALS11</regel>
+                        <wert>$var{meld1}</wert>
+                    </bedingung>
+                    <bedingung>
+                        <regel>$var{meld1}GROESSERALS11</regel>
+                        <wert>$var{meld2}</wert>
+                    </bedingung>
+                </variable>
+            </variablen>
+        </berechnung>
+        <auswertung>
+            <beurteilung>
+                <ergebnisbereich>&#x2264; 9 Punkte</ergebnisbereich>
+                <beschreibung>3-Monats-Mortalität 1,9%</beschreibung>
+                <regel>KLEINERGLEICHALS 9</regel>
+            </beurteilung>
+            <beurteilung>
+                <ergebnisbereich>10 - 19 Punkte</ergebnisbereich>
+                <beschreibung>3-Monats-Mortalität 6%</beschreibung>
+                <regel>GROESSERGLEICHALS10</regel>
+                <regel>KLEINERGLEICHALS19</regel>
+            </beurteilung>
+            <beurteilung>
+                <ergebnisbereich>20 - 29 Punkte</ergebnisbereich>
+                <beschreibung>3-Monats-Mortalität 19,6%</beschreibung>
+                <regel>GROESSERGLEICHALS20</regel>
+                <regel>KLEINERGLEICHALS29</regel>
+            </beurteilung>
+            <beurteilung>
+                <ergebnisbereich>30 - 39 Punkte</ergebnisbereich>
+                <beschreibung>3-Monats-Mortalität 52,6%</beschreibung>
+                <regel>GROESSERGLEICHALS30</regel>
+                <regel>KLEINERGLEICHALS39</regel>
+            </beurteilung>
+            <beurteilung>
+                <ergebnisbereich>40 Punkte</ergebnisbereich>
+                <beschreibung>3-Monats-Mortalität 71,3%</beschreibung>
+                <regel>ISTGLEICH40</regel>
+            </beurteilung>
+        </auswertung>
+    </score>
+</root>

@@ -6,10 +6,3 @@ class Regelarten(Enum):
     ISTGLEICH = "ISTGLEICH"
     GROESSERALS = "GROESSERALS"
     GROESSERGLEICHALS = "GROESSERGLEICHALS"
-
-class Rechenarten(Enum):
-    PLUS = "PLUS"
-    MINUS = "MINUS"
-    MAL = "MAL"
-    DURCH = "DURCH"
-    HOCH = "HOCH"

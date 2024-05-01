@@ -21,11 +21,7 @@
             </widget>
         </part>
         <berechnung>
-            <formel>
-                <operation>$id{100} PLUS $id{101}</operation>
-                <operation>PLUS $id{102}</operation>
-                <operation>PLUS $id{103}</operation>
-            </formel>
+            <formel>$id{100} + $id{101} + $id{102} + $id{103}</formel>
             <ergebniseinheit>Punkte</ergebniseinheit>
             <variablen />
         </berechnung>
@@ -75,14 +71,7 @@
             </widget>
         </part>
         <berechnung>
-            <formel>
-                <operation>$id{100} PLUS $id{101}</operation>
-                <operation>PLUS $id{102}</operation>
-                <operation>PLUS $id{103}</operation>
-                <operation>PLUS $id{104}</operation>
-                <operation>PLUS $id{105}</operation>
-                <operation>PLUS $id{106}</operation>
-            </formel>
+            <formel>$id{100} + $id{101} + $id{102} + $id{103} + $id{104} + $id{105} + $id{106}</formel>
             <ergebniseinheit>Punkte</ergebniseinheit>
             <variablen />
         </berechnung>
@@ -203,19 +192,7 @@
             </widget>
         </part>
         <berechnung>
-            <formel>
-                <operation>$var{alterspunkt}PLUS$id{101}</operation>
-                <operation>PLUS$id{103}</operation>
-                <operation>PLUS$id{105}</operation>
-                <operation>PLUS$id{107}</operation>
-                <operation>PLUS$id{109}</operation>
-                <operation>PLUS$id{111}</operation>
-                <operation>PLUS$id{113}</operation>
-                <operation>PLUS$id{115}</operation>
-                <operation>PLUS$id{117}</operation>
-                <operation>PLUS$id{119}</operation>
-                <operation>PLUS$id{121}</operation>
-            </formel>
+            <formel>$var{alterspunkt} + $id{101} + $id{103} + $id{105} + $id{107} + $id{109} + $id{111} + $id{113} + $id{115} + $id{117} + $id{119} + $id{121}</formel>
             <ergebniseinheit>Punkte</ergebniseinheit>
             <variablen>
                 <variable name="alterspunkt">

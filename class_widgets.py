@@ -123,7 +123,7 @@ class CheckBox(Widget):
         return self.checkbox.isChecked()
     
     def getAltersregeln(self):
-        # UND entfernrn
+        # UND entfernen
         regeln = self.altersregel.split("UND")
         return regeln
     
