@@ -18,7 +18,14 @@ class Rechenoperation:
         self.operanden = []
         self.operationen = []
 
-    def operationInMoeglicheOperationen(self, operation:str): 
+    def operationInMoeglicheOperationen(self, operation:str):
+        """
+        Prüft, ob sich eine Operation unter den möglichen Operationen befindet
+        Parameter:
+            operation:str
+        Return:
+            True oder False
+        """ 
         moeglicheOperation = False
         for moeglicheOperationsGruppe in self.moeglicheOperationen:
             if operation in moeglicheOperationsGruppe:
@@ -27,6 +34,13 @@ class Rechenoperation:
         return moeglicheOperation
     
     def getInnersteKlammerninhalte(self, formel:str):
+        """
+        Gibt die Klammerinhalte der untersten Ebene einer mathematischen Formel zurück z. B. (2+3) * (7 + (2 * sqrt5)) -> ['2 + 3', '2 * sqrt5']
+        Paramater:
+            formel:str 
+        Return:
+            Liste von Klammerinhalten
+        """
         positionInFormel = 0
         tempInhalt = ""
         klammerInhalte = []
@@ -55,7 +69,16 @@ class Rechenoperation:
             raise RechenoperationException("Mehr schließende (" + str(schliessendeKlammern) + ") als öffnende Klammern(" + str(oeffnendeKlammern) + ") im Ausdruck " + formel)
         return klammerInhalte
     
-    def aktualisiereFormel(self, formel:str):
+    def __aktualisiereFormel(self, formel:str):
+        """
+        Aktualisiert eine mathematische Formel in zwei Schritten:
+        1. Ausführung von Einoperand-Operationen (sqrt, log...)
+        2: Schrittweises Ausführen von Operationen in der Reihenfolge der Liste möglicher Operationen (Einhaltung der Punkt vor Strich-Regel)
+        Parameter: 
+            formel:str
+        Return:
+            formel mit entsprechenden Ergebnisersetzungen der jeweils durchgeführten Operationen
+        """
         # Einoperand-Operationen ausführen
         operationDurchgefuehrt = True
         while operationDurchgefuehrt:
@@ -106,6 +129,14 @@ class Rechenoperation:
         return formel
 
     def __getErgebnis(self, formel:str, dezimalstellen:int=-1):
+        """
+        Gibt das Ergebnis einer mathematischen Formel zurück
+        Parameter:
+            formel:str
+            dezimalstellen:int (-1: keine programmatische Begrenzung der Dezimmalstellen)
+        Return:
+            Ergebnis:str (String einer Float-Zahl)
+        """
         for moeglicheOperationsGruppe in self.moeglicheOperationen:
             moeglicheOperationInFormel = True
             while moeglicheOperationInFormel:
@@ -135,7 +166,7 @@ class Rechenoperation:
                         formel = formel[:ersetzungStartPos] + str(tempErgebnis) + formel[ersetzungStartPos + ersetzungLaenge:]
                         break
                     operationszaehler += 1   
-                formel = self.aktualisiereFormel(formel)  
+                formel = self.__aktualisiereFormel(formel)  
                 moeglicheOperationInFormel = False
                 for moeglicheOperation in moeglicheOperationsGruppe:
                     if moeglicheOperation in formel and formel.index(moeglicheOperation) > 0:
@@ -151,5 +182,5 @@ class Rechenoperation:
             for innerstenKlammerinhalt in self.getInnersteKlammerninhalte(self.tempFormel):
                 ergebnis = self.__getErgebnis(innerstenKlammerinhalt, -1)
                 self.tempFormel = self.tempFormel.replace("(" + innerstenKlammerinhalt + ")", str(ergebnis))
-        self.tempFormel = self.aktualisiereFormel(self.tempFormel)
+        self.tempFormel = self.__aktualisiereFormel(self.tempFormel)
         return self.__getErgebnis(self.tempFormel, dezimalstellen)
