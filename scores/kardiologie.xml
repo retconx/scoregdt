@@ -7369,4 +7369,592 @@
             </beurteilung>   
         </auswertung>
     </score>
+    <score name="ASCVD-Score" gruppe="Kardiologie">
+        <information>Abschätzung des Risikos für ein kardiovaskuläres Ereignis in den nächsten 10 Jahren&#xa;(Alter 40 - 79 Jahre, LDL-Choelsterin 70-189 mg/dl, keine atherosklerotische kardiovaskuläre Erkrankung)</information>
+        <quelle autor="Goff et al.">2013 ACC/AHA Guideline on the Assessment of Cardiovascular Risk</quelle>
+        <part id="0" typ="Frame" titel="" zeile="0" spalte="0">
+            <widget id="100" typ="LineEdit" titel="Alter" alterspruefung="True">
+                <regex>^\d+$</regex>
+                <zahlengrenze regelart="GROESSERGLEICHALS">40</zahlengrenze>
+                <zahlengrenze regelart="KLEINERGLEICHALS">79</zahlengrenze>
+                <einheit>Jahre</einheit>
+            </widget>
+        </part>
+        <part id="1" typ="GroupBox" titel="Geschlecht" zeile="0" spalte="1" geschlechtpruefung="True">
+            <widget id="101" typ="RadioButton" titel="Weiblich" checked="True">
+                <wert>0</wert>
+            </widget>
+            <widget id="102" typ="RadioButton" titel="Männlich">
+                <wert>1</wert>
+            </widget>
+        </part>
+        <part id="2" typ="GroupBox" titel="Hautfarbe" zeile="0" spalte="2">
+            <widget id="103" typ="RadioButton" titel="Weiß" checked="True">
+                <wert>0</wert>
+            </widget>
+            <widget id="104" typ="RadioButton" titel="Andere">
+                <wert>1</wert>
+            </widget>
+        </part>
+        <part id="3" typ="GroupBox" titel="Cholesterin" zeile="1" spalte="0">
+            <widget id="105" typ="LineEdit" titel="Gesamt">
+                <regex>^\d{2,3}$</regex>
+                <einheit>mg/dl</einheit>
+            </widget>
+            <widget id="106" typ="LineEdit" titel="HDL">
+                <regex>^\d{2,3}$</regex>
+                <einheit>mg/dl</einheit>
+            </widget>
+        </part>
+        <part id="4" typ="GroupBox" titel=" Blutdruck" zeile="1" spalte="1">
+            <widget id="107" typ="LineEdit" titel="Systolisch">
+                <regex>^\d+$</regex>
+                <einheit>mmHg</einheit>
+            </widget>
+            <widget id="108" typ="CheckBox" titel="Medikamentös behandelt">
+                <wert>1</wert>
+            </widget>
+        </part>
+        <part id="5" typ="Frame" titel="1" zeile="1" spalte="2">
+            <widget id="109" typ="CheckBox" titel="Aktuell rauchend">
+                <wert>1</wert>
+            </widget>
+            <widget id="110" typ="CheckBox" titel="Diabetes mellitus">
+                <wert>1</wert>
+            </widget>
+        </part>     
+         <berechnung>
+            <formel dezimalstellen="1">100*(1 - $var{bs} ^ (e ^ ($var{cxvIndSum} - $var{cxvMean})))</formel>
+            <ergebniseinheit>%</ergebniseinheit>
+            <variablen>
+                <variable name="cxvAge">
+                    <bedingung>
+                        <regel>$id{101} ISTGLEICH 0</regel>
+                        <regel>$id{103} ISTGLEICH 0</regel>
+                        <wert>-29.799*ln$id{100}</wert>
+                    </bedingung>
+                    <bedingung>
+                        <regel>$id{101} ISTGLEICH 1</regel>
+                        <regel>$id{103} ISTGLEICH 0</regel>
+                        <wert>12.344*ln$id{100}</wert>
+                    </bedingung>
+                    <bedingung>
+                        <regel>$id{101} ISTGLEICH 0</regel>
+                        <regel>$id{103} ISTGLEICH 1</regel>
+                        <wert>17.114*ln$id{100}</wert>
+                    </bedingung>
+                    <bedingung>
+                        <regel>$id{101} ISTGLEICH 1</regel>
+                        <regel>$id{103} ISTGLEICH 1</regel>
+                        <wert>2.469*ln$id{100}</wert>
+                    </bedingung>
+                </variable>
+                <variable name="cxvAgeSquared">
+                    <bedingung>
+                        <regel>$id{101} ISTGLEICH 0</regel>
+                        <regel>$id{103} ISTGLEICH 0</regel>
+                        <wert>4.884*ln$id{100}*ln$id{100}</wert>
+                    </bedingung>
+                    <bedingung>
+                        <regel>$id{101} ISTGLEICH 1</regel>
+                        <regel>$id{103} ISTGLEICH 0</regel>
+                        <wert>0</wert>
+                    </bedingung>
+                    <bedingung>
+                        <regel>$id{101} ISTGLEICH 0</regel>
+                        <regel>$id{103} ISTGLEICH 1</regel>
+                        <wert>0</wert>
+                    </bedingung>
+                    <bedingung>
+                        <regel>$id{101} ISTGLEICH 1</regel>
+                        <regel>$id{103} ISTGLEICH 1</regel>
+                        <wert>0</wert>
+                    </bedingung>
+                </variable>
+                <variable name="cxvChol">
+                    <bedingung>
+                        <regel>$id{101} ISTGLEICH 0</regel>
+                        <regel>$id{103} ISTGLEICH 0</regel>
+                        <wert>13.540*ln$id{105}</wert>
+                    </bedingung>
+                    <bedingung>
+                        <regel>$id{101} ISTGLEICH 1</regel>
+                        <regel>$id{103} ISTGLEICH 0</regel>
+                        <wert>11.853*ln$id{105}</wert>
+                    </bedingung>
+                    <bedingung>
+                        <regel>$id{101} ISTGLEICH 0</regel>
+                        <regel>$id{103} ISTGLEICH 1</regel>
+                        <wert>0.940*ln$id{105}</wert>
+                    </bedingung>
+                    <bedingung>
+                        <regel>$id{101} ISTGLEICH 1</regel>
+                        <regel>$id{103} ISTGLEICH 1</regel>
+                        <wert>0.302*ln$id{105}</wert>
+                    </bedingung>
+                </variable>
+                <variable name="cxvCholAge">
+                    <bedingung>
+                        <regel>$id{101} ISTGLEICH 0</regel>
+                        <regel>$id{103} ISTGLEICH 0</regel>
+                        <wert>-3.114*ln$id{105}*ln$id{100}</wert>
+                    </bedingung>
+                    <bedingung>
+                        <regel>$id{101} ISTGLEICH 1</regel>
+                        <regel>$id{103} ISTGLEICH 0</regel>
+                        <wert>-2.664*ln$id{105}*ln$id{100}</wert>
+                    </bedingung>
+                    <bedingung>
+                        <regel>$id{101} ISTGLEICH 0</regel>
+                        <regel>$id{103} ISTGLEICH 1</regel>
+                        <wert>0</wert>
+                    </bedingung>
+                    <bedingung>
+                        <regel>$id{101} ISTGLEICH 1</regel>
+                        <regel>$id{103} ISTGLEICH 1</regel>
+                        <wert>0</wert>
+                    </bedingung>
+                </variable>
+                <variable name="cxvHdl">
+                    <bedingung>
+                        <regel>$id{101} ISTGLEICH 0</regel>
+                        <regel>$id{103} ISTGLEICH 0</regel>
+                        <wert>-13.578*ln$id{106}</wert>
+                    </bedingung>
+                    <bedingung>
+                        <regel>$id{101} ISTGLEICH 1</regel>
+                        <regel>$id{103} ISTGLEICH 0</regel>
+                        <wert>-7.990*ln$id{106}</wert>
+                    </bedingung>
+                    <bedingung>
+                        <regel>$id{101} ISTGLEICH 0</regel>
+                        <regel>$id{103} ISTGLEICH 1</regel>
+                        <wert>-18.920*ln$id{106}</wert>
+                    </bedingung>
+                    <bedingung>
+                        <regel>$id{101} ISTGLEICH 1</regel>
+                        <regel>$id{103} ISTGLEICH 1</regel>
+                        <wert>-0.307*ln$id{106}</wert>
+                    </bedingung>
+                </variable>
+                <variable name="cxvHdlAge">
+                    <bedingung>
+                        <regel>$id{101} ISTGLEICH 0</regel>
+                        <regel>$id{103} ISTGLEICH 0</regel>
+                        <wert>3.149*ln$id{106}*ln$id{100}</wert>
+                    </bedingung>
+                    <bedingung>
+                        <regel>$id{101} ISTGLEICH 1</regel>
+                        <regel>$id{103} ISTGLEICH 0</regel>
+                        <wert>1.769*ln$id{106}*ln$id{100}</wert>
+                    </bedingung>
+                    <bedingung>
+                        <regel>$id{101} ISTGLEICH 0</regel>
+                        <regel>$id{103} ISTGLEICH 1</regel>
+                        <wert>4.475*ln$id{106}*ln$id{100}</wert>
+                    </bedingung>
+                    <bedingung>
+                        <regel>$id{101} ISTGLEICH 1</regel>
+                        <regel>$id{103} ISTGLEICH 1</regel>
+                        <wert>0</wert>
+                    </bedingung>
+                </variable>
+                <variable name="cxvBpTreated">
+                    <bedingung>
+                        <regel>$id{101} ISTGLEICH 0</regel>
+                        <regel>$id{103} ISTGLEICH 0</regel>
+                        <regel>$id{108} ISTGLEICH 1</regel>
+                        <wert>2.019*ln$id{107}</wert>
+                    </bedingung>
+                    <bedingung>
+                        <regel>$id{101} ISTGLEICH 1</regel>
+                        <regel>$id{103} ISTGLEICH 0</regel>
+                        <regel>$id{108} ISTGLEICH 1</regel>
+                        <wert>1.797*ln$id{107}</wert>
+                    </bedingung>
+                    <bedingung>
+                        <regel>$id{101} ISTGLEICH 0</regel>
+                        <regel>$id{103} ISTGLEICH 1</regel>
+                        <regel>$id{108} ISTGLEICH 1</regel>
+                        <wert>29.291*ln$id{107}</wert>
+                    </bedingung>
+                    <bedingung>
+                        <regel>$id{101} ISTGLEICH 1</regel>
+                        <regel>$id{103} ISTGLEICH 1</regel>
+                        <regel>$id{108} ISTGLEICH 1</regel>
+                        <wert>1.916*ln$id{107}</wert>
+                    </bedingung>
+                    <bedingung>
+                        <regel>$id{101} ISTGLEICH 0</regel>
+                        <regel>$id{103} ISTGLEICH 0</regel>
+                        <regel>$id{108} ISTGLEICH 0</regel>
+                        <wert>0</wert>
+                    </bedingung>
+                    <bedingung>
+                        <regel>$id{101} ISTGLEICH 1</regel>
+                        <regel>$id{103} ISTGLEICH 0</regel>
+                        <regel>$id{108} ISTGLEICH 0</regel>
+                        <wert>0</wert>
+                    </bedingung>
+                    <bedingung>
+                        <regel>$id{101} ISTGLEICH 0</regel>
+                        <regel>$id{103} ISTGLEICH 1</regel>
+                        <regel>$id{108} ISTGLEICH 0</regel>
+                        <wert>0</wert>
+                    </bedingung>
+                    <bedingung>
+                        <regel>$id{101} ISTGLEICH 1</regel>
+                        <regel>$id{103} ISTGLEICH 1</regel>
+                        <regel>$id{108} ISTGLEICH 0</regel>
+                        <wert>0</wert>
+                    </bedingung>
+                </variable>
+                <variable name="cxvBpTreatedAge">
+                    <bedingung>
+                        <regel>$id{101} ISTGLEICH 0</regel>
+                        <regel>$id{103} ISTGLEICH 0</regel>
+                        <regel>$id{108} ISTGLEICH 1</regel>
+                        <wert>0</wert>
+                    </bedingung>
+                    <bedingung>
+                        <regel>$id{101} ISTGLEICH 1</regel>
+                        <regel>$id{103} ISTGLEICH 0</regel>
+                        <regel>$id{108} ISTGLEICH 1</regel>
+                        <wert>0</wert>
+                    </bedingung>
+                    <bedingung>
+                        <regel>$id{101} ISTGLEICH 0</regel>
+                        <regel>$id{103} ISTGLEICH 1</regel>
+                        <regel>$id{108} ISTGLEICH 1</regel>
+                        <wert>-6.432*ln$id{107}*ln$id{100}</wert>
+                    </bedingung>
+                    <bedingung>
+                        <regel>$id{101} ISTGLEICH 1</regel>
+                        <regel>$id{103} ISTGLEICH 1</regel>
+                        <regel>$id{108} ISTGLEICH 1</regel>
+                        <wert>0</wert>
+                    </bedingung>
+                    <bedingung>
+                        <regel>$id{101} ISTGLEICH 0</regel>
+                        <regel>$id{103} ISTGLEICH 0</regel>
+                        <regel>$id{108} ISTGLEICH 0</regel>
+                        <wert>0</wert>
+                    </bedingung>
+                    <bedingung>
+                        <regel>$id{101} ISTGLEICH 1</regel>
+                        <regel>$id{103} ISTGLEICH 0</regel>
+                        <regel>$id{108} ISTGLEICH 0</regel>
+                        <wert>0</wert>
+                    </bedingung>
+                    <bedingung>
+                        <regel>$id{101} ISTGLEICH 0</regel>
+                        <regel>$id{103} ISTGLEICH 1</regel>
+                        <regel>$id{108} ISTGLEICH 0</regel>
+                        <wert>0</wert>
+                    </bedingung>
+                    <bedingung>
+                        <regel>$id{101} ISTGLEICH 1</regel>
+                        <regel>$id{103} ISTGLEICH 1</regel>
+                        <regel>$id{108} ISTGLEICH 0</regel>
+                        <wert>0</wert>
+                    </bedingung>
+                </variable>
+                <variable name="cxvBpUntreated">
+                    <bedingung>
+                        <regel>$id{101} ISTGLEICH 0</regel>
+                        <regel>$id{103} ISTGLEICH 0</regel>
+                        <regel>$id{108} ISTGLEICH 0</regel>
+                        <wert>1.957*ln$id{107}</wert>
+                    </bedingung>
+                    <bedingung>
+                        <regel>$id{101} ISTGLEICH 1</regel>
+                        <regel>$id{103} ISTGLEICH 0</regel>
+                        <regel>$id{108} ISTGLEICH 0</regel>
+                        <wert>1.764*ln$id{107}</wert>
+                    </bedingung>
+                    <bedingung>
+                        <regel>$id{101} ISTGLEICH 0</regel>
+                        <regel>$id{103} ISTGLEICH 1</regel>
+                        <regel>$id{108} ISTGLEICH 0</regel>
+                        <wert>27.820*ln$id{107}</wert>
+                    </bedingung>
+                    <bedingung>
+                        <regel>$id{101} ISTGLEICH 1</regel>
+                        <regel>$id{103} ISTGLEICH 1</regel>
+                        <regel>$id{108} ISTGLEICH 0</regel>
+                        <wert>1.809*ln$id{107}</wert>
+                    </bedingung>
+                    <bedingung>
+                        <regel>$id{101} ISTGLEICH 0</regel>
+                        <regel>$id{103} ISTGLEICH 0</regel>
+                        <regel>$id{108} ISTGLEICH 1</regel>
+                        <wert>0</wert>
+                    </bedingung>
+                    <bedingung>
+                        <regel>$id{101} ISTGLEICH 1</regel>
+                        <regel>$id{103} ISTGLEICH 0</regel>
+                        <regel>$id{108} ISTGLEICH 1</regel>
+                        <wert>0</wert>
+                    </bedingung>
+                    <bedingung>
+                        <regel>$id{101} ISTGLEICH 0</regel>
+                        <regel>$id{103} ISTGLEICH 1</regel>
+                        <regel>$id{108} ISTGLEICH 1</regel>
+                        <wert>0</wert>
+                    </bedingung>
+                    <bedingung>
+                        <regel>$id{101} ISTGLEICH 1</regel>
+                        <regel>$id{103} ISTGLEICH 1</regel>
+                        <regel>$id{108} ISTGLEICH 1</regel>
+                        <wert>0</wert>
+                    </bedingung>
+                </variable>
+                <variable name="cxvBpUntreatedAge">
+                    <bedingung>
+                        <regel>$id{101} ISTGLEICH 0</regel>
+                        <regel>$id{103} ISTGLEICH 0</regel>
+                        <regel>$id{108} ISTGLEICH 0</regel>
+                        <wert>0</wert>
+                    </bedingung>
+                    <bedingung>
+                        <regel>$id{101} ISTGLEICH 1</regel>
+                        <regel>$id{103} ISTGLEICH 0</regel>
+                        <regel>$id{108} ISTGLEICH 0</regel>
+                        <wert>0</wert>
+                    </bedingung>
+                    <bedingung>
+                        <regel>$id{101} ISTGLEICH 0</regel>
+                        <regel>$id{103} ISTGLEICH 1</regel>
+                        <regel>$id{108} ISTGLEICH 0</regel>
+                        <wert>-6.087*ln$id{107}*ln$id{100}</wert>
+                    </bedingung>
+                    <bedingung>
+                        <regel>$id{101} ISTGLEICH 1</regel>
+                        <regel>$id{103} ISTGLEICH 1</regel>
+                        <regel>$id{108} ISTGLEICH 0</regel>
+                        <wert>0</wert>
+                    </bedingung>
+                    <bedingung>
+                        <regel>$id{101} ISTGLEICH 0</regel>
+                        <regel>$id{103} ISTGLEICH 0</regel>
+                        <regel>$id{108} ISTGLEICH 1</regel>
+                        <wert>0</wert>
+                    </bedingung>
+                    <bedingung>
+                        <regel>$id{101} ISTGLEICH 1</regel>
+                        <regel>$id{103} ISTGLEICH 0</regel>
+                        <regel>$id{108} ISTGLEICH 1</regel>
+                        <wert>0</wert>
+                    </bedingung>
+                    <bedingung>
+                        <regel>$id{101} ISTGLEICH 0</regel>
+                        <regel>$id{103} ISTGLEICH 1</regel>
+                        <regel>$id{108} ISTGLEICH 1</regel>
+                        <wert>0</wert>
+                    </bedingung>
+                    <bedingung>
+                        <regel>$id{101} ISTGLEICH 1</regel>
+                        <regel>$id{103} ISTGLEICH 1</regel>
+                        <regel>$id{108} ISTGLEICH 1</regel>
+                        <wert>0</wert>
+                    </bedingung>
+                </variable>
+                <variable name="cxvSmoker">
+                    <bedingung>
+                        <regel>$id{101} ISTGLEICH 0</regel>
+                        <regel>$id{103} ISTGLEICH 0</regel>
+                        <regel>$id{109} ISTGLEICH 1</regel>
+                        <wert>7.574</wert>
+                    </bedingung>
+                    <bedingung>
+                        <regel>$id{101} ISTGLEICH 1</regel>
+                        <regel>$id{103} ISTGLEICH 0</regel>
+                        <regel>$id{109} ISTGLEICH 1</regel>
+                        <wert>7.837</wert>
+                    </bedingung>
+                    <bedingung>
+                        <regel>$id{101} ISTGLEICH 0</regel>
+                        <regel>$id{103} ISTGLEICH 1</regel>
+                        <regel>$id{109} ISTGLEICH 1</regel>
+                        <wert>0.691</wert>
+                    </bedingung>
+                    <bedingung>
+                        <regel>$id{101} ISTGLEICH 1</regel>
+                        <regel>$id{103} ISTGLEICH 1</regel>
+                        <regel>$id{109} ISTGLEICH 1</regel>
+                        <wert>0.549</wert>
+                    </bedingung>
+                    <bedingung>
+                        <regel>$id{101} ISTGLEICH 0</regel>
+                        <regel>$id{103} ISTGLEICH 0</regel>
+                        <regel>$id{109} ISTGLEICH 0</regel>
+                        <wert>0</wert>
+                    </bedingung>
+                    <bedingung>
+                        <regel>$id{101} ISTGLEICH 0</regel>
+                        <regel>$id{103} ISTGLEICH 1</regel>
+                        <regel>$id{109} ISTGLEICH 0</regel>
+                        <wert>0</wert>
+                    </bedingung>
+                    <bedingung>
+                        <regel>$id{101} ISTGLEICH 1</regel>
+                        <regel>$id{103} ISTGLEICH 0</regel>
+                        <regel>$id{109} ISTGLEICH 0</regel>
+                        <wert>0</wert>
+                    </bedingung>
+                    <bedingung>
+                        <regel>$id{101} ISTGLEICH 1</regel>
+                        <regel>$id{103} ISTGLEICH 1</regel>
+                        <regel>$id{109} ISTGLEICH 0</regel>
+                        <wert>0</wert>
+                    </bedingung>
+                </variable>
+                <variable name="cxvSmokerAge">
+                    <bedingung>
+                        <regel>$id{101} ISTGLEICH 0</regel>
+                        <regel>$id{103} ISTGLEICH 0</regel>
+                        <regel>$id{109} ISTGLEICH 1</regel>
+                        <wert>-1.665*ln$id{100}</wert>
+                    </bedingung>
+                    <bedingung>
+                        <regel>$id{101} ISTGLEICH 1</regel>
+                        <regel>$id{103} ISTGLEICH 0</regel>
+                        <regel>$id{109} ISTGLEICH 1</regel>
+                        <wert>-1.795*ln$id{100}</wert>
+                    </bedingung>
+                    <bedingung>
+                        <regel>$id{101} ISTGLEICH 0</regel>
+                        <regel>$id{103} ISTGLEICH 1</regel>
+                        <regel>$id{109} ISTGLEICH 1</regel>
+                        <wert>0</wert>
+                    </bedingung>
+                    <bedingung>
+                        <regel>$id{101} ISTGLEICH 1</regel>
+                        <regel>$id{103} ISTGLEICH 1</regel>
+                        <regel>$id{109} ISTGLEICH 1</regel>
+                        <wert>0</wert>
+                    </bedingung>
+                    <bedingung>
+                        <regel>$id{101} ISTGLEICH 0</regel>
+                        <regel>$id{103} ISTGLEICH 0</regel>
+                        <regel>$id{109} ISTGLEICH 0</regel>
+                        <wert>0</wert>
+                    </bedingung>
+                    <bedingung>
+                        <regel>$id{101} ISTGLEICH 0</regel>
+                        <regel>$id{103} ISTGLEICH 1</regel>
+                        <regel>$id{109} ISTGLEICH 0</regel>
+                        <wert>0</wert>
+                    </bedingung>
+                    <bedingung>
+                        <regel>$id{101} ISTGLEICH 1</regel>
+                        <regel>$id{103} ISTGLEICH 0</regel>
+                        <regel>$id{109} ISTGLEICH 0</regel>
+                        <wert>0</wert>
+                    </bedingung>
+                    <bedingung>
+                        <regel>$id{101} ISTGLEICH 1</regel>
+                        <regel>$id{103} ISTGLEICH 1</regel>
+                        <regel>$id{109} ISTGLEICH 0</regel>
+                        <wert>0</wert>
+                    </bedingung>
+                </variable>
+                <variable name="cxvDiabetes">
+                    <bedingung>
+                        <regel>$id{101} ISTGLEICH 0</regel>
+                        <regel>$id{103} ISTGLEICH 0</regel>
+                        <regel>$id{110} ISTGLEICH 1</regel>
+                        <wert>0.661</wert>
+                    </bedingung>
+                    <bedingung>
+                        <regel>$id{101} ISTGLEICH 1</regel>
+                        <regel>$id{103} ISTGLEICH 0</regel>
+                        <regel>$id{110} ISTGLEICH 1</regel>
+                        <wert>0.658</wert>
+                    </bedingung>
+                    <bedingung>
+                        <regel>$id{101} ISTGLEICH 0</regel>
+                        <regel>$id{103} ISTGLEICH 1</regel>
+                        <regel>$id{110} ISTGLEICH 1</regel>
+                        <wert>0.874</wert>
+                    </bedingung>
+                    <bedingung>
+                        <regel>$id{101} ISTGLEICH 1</regel>
+                        <regel>$id{103} ISTGLEICH 1</regel>
+                        <regel>$id{110} ISTGLEICH 1</regel>
+                        <wert>0.645</wert>
+                    </bedingung>
+                    <bedingung>
+                        <regel>$id{101} ISTGLEICH 0</regel>
+                        <regel>$id{103} ISTGLEICH 0</regel>
+                        <regel>$id{110} ISTGLEICH 0</regel>
+                        <wert>0</wert>
+                    </bedingung>
+                    <bedingung>
+                        <regel>$id{101} ISTGLEICH 1</regel>
+                        <regel>$id{103} ISTGLEICH 0</regel>
+                        <regel>$id{110} ISTGLEICH 0</regel>
+                        <wert>0</wert>
+                    </bedingung>
+                    <bedingung>
+                        <regel>$id{101} ISTGLEICH 0</regel>
+                        <regel>$id{103} ISTGLEICH 1</regel>
+                        <regel>$id{110} ISTGLEICH 0</regel>
+                        <wert>0</wert>
+                    </bedingung>
+                    <bedingung>
+                        <regel>$id{101} ISTGLEICH 1</regel>
+                        <regel>$id{103} ISTGLEICH 1</regel>
+                        <regel>$id{110} ISTGLEICH 0</regel>
+                        <wert>0</wert>
+                    </bedingung>
+                </variable>
+                <variable name="cxvMean">
+                    <bedingung>
+                        <regel>$id{101} ISTGLEICH 0</regel>
+                        <regel>$id{103} ISTGLEICH 0</regel>
+                        <wert>-29.18</wert>
+                    </bedingung>
+                    <bedingung>
+                        <regel>$id{101} ISTGLEICH 1</regel>
+                        <regel>$id{103} ISTGLEICH 0</regel>
+                        <wert>61.18</wert>
+                    </bedingung>
+                    <bedingung>
+                        <regel>$id{101} ISTGLEICH 0</regel>
+                        <regel>$id{103} ISTGLEICH 1</regel>
+                        <wert>86.61</wert>
+                    </bedingung>
+                    <bedingung>
+                        <regel>$id{101} ISTGLEICH 1</regel>
+                        <regel>$id{103} ISTGLEICH 1</regel>
+                        <wert>19.54</wert>
+                    </bedingung>
+                </variable>
+                <variable name="bs">
+                    <bedingung>
+                        <regel>$id{101} ISTGLEICH 0</regel>
+                        <regel>$id{103} ISTGLEICH 0</regel>
+                        <wert>0.9665</wert>
+                    </bedingung>
+                    <bedingung>
+                        <regel>$id{101} ISTGLEICH 1</regel>
+                        <regel>$id{103} ISTGLEICH 0</regel>
+                        <wert>0.9144</wert>
+                    </bedingung>
+                    <bedingung>
+                        <regel>$id{101} ISTGLEICH 0</regel>
+                        <regel>$id{103} ISTGLEICH 1</regel>
+                        <wert>0.9533</wert>
+                    </bedingung>
+                    <bedingung>
+                        <regel>$id{101} ISTGLEICH 1</regel>
+                        <regel>$id{103} ISTGLEICH 1</regel>
+                        <wert>0.8954</wert>
+                    </bedingung>
+                </variable>
+                <variable name="cxvIndSum">$var{cxvAge} + $var{cxvAgeSquared} + $var{cxvChol} + $var{cxvCholAge} + $var{cxvHdl} + $var{cxvHdlAge} + $var{cxvBpTreated} + $var{cxvBpTreatedAge} + $var{cxvBpUntreated} + $var{cxvBpUntreatedAge} + $var{cxvSmoker} + $var{cxvSmokerAge} + $var{cxvDiabetes}</variable>
+            </variablen>
+        </berechnung>
+    </score>
 </root>

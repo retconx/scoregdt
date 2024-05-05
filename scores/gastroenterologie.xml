@@ -119,7 +119,7 @@
             </widget>
         </part>
         <berechnung>
-            <formel>$var{meld2}</formel>
+            <formel>$var{MELD}</formel>
             <ergebniseinheit>Punkte</ergebniseinheit>
             <variablen>
                 <variable name="crea">
