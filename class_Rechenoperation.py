@@ -9,7 +9,8 @@ class Rechenoperation:
     moeglicheEinoperandenOperationen = {
         "sqrt" : math.sqrt,
         "ln" : math.log,
-        "log10" : math.log10
+        "log10" : math.log10,
+        "e" : math.e
     }
     patternZahl = r"^-?\d+([.,]\d+)?$"
     def __init__(self, formel:str):
@@ -69,13 +70,14 @@ class Rechenoperation:
             raise RechenoperationException("Mehr schließende (" + str(schliessendeKlammern) + ") als öffnende Klammern(" + str(oeffnendeKlammern) + ") im Ausdruck " + formel)
         return klammerInhalte
     
-    def __aktualisiereFormel(self, formel:str):
+    def __aktualisiereFormel(self, formel:str, dezimalstellenIntern:int):
         """
         Aktualisiert eine mathematische Formel in zwei Schritten:
         1. Ausführung von Einoperand-Operationen (sqrt, log...)
         2: Schrittweises Ausführen von Operationen in der Reihenfolge der Liste möglicher Operationen (Einhaltung der Punkt vor Strich-Regel)
         Parameter: 
             formel:str
+            dezimalstellenIntern:int Anzahl der Dezimalstellen, mit denen intern gerechnet werden soll, -1 = unbegrenzt
         Return:
             formel mit entsprechenden Ergebnisersetzungen der jeweils durchgeführten Operationen
         """
@@ -98,7 +100,17 @@ class Rechenoperation:
                     while positionInFormel < len(formel) and (re.match(r"^\d+([.,]?|[.,]\d+?)$", einoperand + formel[positionInFormel]) != None):
                         einoperand += formel[positionInFormel]
                         positionInFormel += 1
-                    einoperandErgebnis = str(self.moeglicheEinoperandenOperationen[einoperandOperation](float(einoperand)))
+                    ergebnisformatierung = "{:." + str(dezimalstellenIntern) + "f}"
+                    if einoperand != "":
+                        if dezimalstellenIntern == -1:
+                            einoperandErgebnis = str(self.moeglicheEinoperandenOperationen[einoperandOperation](float(einoperand)))
+                        else:
+                            einoperandErgebnis = ergebnisformatierung.format(self.moeglicheEinoperandenOperationen[einoperandOperation](float(einoperand)))
+                    else:
+                        if dezimalstellenIntern == -1:
+                            einoperandErgebnis = str(self.moeglicheEinoperandenOperationen[einoperandOperation])  
+                        else:
+                            einoperandErgebnis = ergebnisformatierung.format(self.moeglicheEinoperandenOperationen[einoperandOperation])  
                     formel = formel[:startposEinoperandOperation] + einoperandErgebnis + formel[endposEinoperandOperation + len(einoperand):]
                     operationDurchgefuehrt = True
                 positionInFormel += 1
@@ -128,12 +140,13 @@ class Rechenoperation:
                 raise RechenoperationException("Operand " + tempOperand + " ist keine Zahl")
         return formel
 
-    def __getErgebnis(self, formel:str, dezimalstellen:int=-1):
+    def __getErgebnis(self, formel:str, dezimalstellenErgebnis:int, dezimalstellenIntern:int):
         """
         Gibt das Ergebnis einer mathematischen Formel zurück
         Parameter:
             formel:str
-            dezimalstellen:int (-1: keine programmatische Begrenzung der Dezimmalstellen)
+            dezimalstellenErgebnis:int Anzahl der Dezimalstellen, mit denen das Ergebnis ausgegeben werden soll, -1 = unbegrenzt
+            dezimalstellenIntern:int Anzahl der Dezimalstellen, mit denen intern gerechnet werden soll, -1 = unbegrenzt
         Return:
             Ergebnis:str (String einer Float-Zahl)
         """
@@ -163,24 +176,28 @@ class Rechenoperation:
                         for i in range(operationszaehler):
                             ersetzungStartPos += len(self.operanden[i]) + len(self.operationen[i])
                         ersetzungLaenge = len(self.operanden[operationszaehler]) + len(self.operationen[operationszaehler]) + len(self.operanden[operationszaehler + 1])
-                        formel = formel[:ersetzungStartPos] + str(tempErgebnis) + formel[ersetzungStartPos + ersetzungLaenge:]
+                        if dezimalstellenIntern == -1:
+                            formel = formel[:ersetzungStartPos] + str(tempErgebnis) + formel[ersetzungStartPos + ersetzungLaenge:]
+                        else:
+                            ergebnisformatierung = "{:." + str(dezimalstellenIntern) + "f}"
+                            formel = formel[:ersetzungStartPos] + ergebnisformatierung.format(tempErgebnis) + formel[ersetzungStartPos + ersetzungLaenge:]
                         break
                     operationszaehler += 1   
-                formel = self.__aktualisiereFormel(formel)  
+                formel = self.__aktualisiereFormel(formel, dezimalstellenIntern)  
                 moeglicheOperationInFormel = False
                 for moeglicheOperation in moeglicheOperationsGruppe:
                     if moeglicheOperation in formel and formel.index(moeglicheOperation) > 0:
                         moeglicheOperationInFormel = True
                         break
-        if dezimalstellen > -1:
-            ergebnisformatierung = "{:." + str(dezimalstellen) + "f}"
+        if dezimalstellenErgebnis != -1:
+            ergebnisformatierung = "{:." + str(dezimalstellenErgebnis) + "f}"
             return ergebnisformatierung.format(float(formel))
         return formel
     
-    def __call__(self, dezimalstellen:int):
+    def __call__(self, dezimalstellenErgebnis:int, dezimalstellenIntern:int):
         while "(" in self.tempFormel:
             for innerstenKlammerinhalt in self.getInnersteKlammerninhalte(self.tempFormel):
-                ergebnis = self.__getErgebnis(innerstenKlammerinhalt, -1)
+                ergebnis = self.__getErgebnis(innerstenKlammerinhalt, dezimalstellenIntern, dezimalstellenIntern)
                 self.tempFormel = self.tempFormel.replace("(" + innerstenKlammerinhalt + ")", str(ergebnis))
-        self.tempFormel = self.__aktualisiereFormel(self.tempFormel)
-        return self.__getErgebnis(self.tempFormel, dezimalstellen)
+        self.tempFormel = self.__aktualisiereFormel(self.tempFormel, dezimalstellenIntern)
+        return self.__getErgebnis(self.tempFormel, dezimalstellenErgebnis, dezimalstellenIntern)
