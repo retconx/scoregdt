@@ -1,11 +1,12 @@
-import sys, configparser, os, datetime, shutil, logger, re
-from enum import Enum
+import sys, configparser, os, datetime, shutil, logger, re, subprocess
 import xml.etree.ElementTree as ElementTree
+import requests
+from urllib.request import urlretrieve
 ## Nur mit Lizenz
 import gdttoolsL
 ## /Nur mit Lizenz
 import gdt, gdtzeile, class_part, class_widgets, class_score
-import dialogUeberScoreGdt, dialogEinstellungenAllgemein, dialogEinstellungenGdt, dialogEinstellungenBenutzer, dialogEinstellungenLanrLizenzschluessel, dialogEula, dialogEinstellungenImportExport, dialogScoreAuswahl, dialogEinstellungenFavoriten
+import dialogUeberScoreGdt, dialogEinstellungenAllgemein, dialogEinstellungenGdt, dialogEinstellungenBenutzer, dialogEinstellungenLanrLizenzschluessel, dialogEula, dialogEinstellungenImportExport, dialogScoreAuswahl, dialogEinstellungenFavoriten, dialogNeueVersion
 import class_enums, class_score, class_Rechenoperation
 from PySide6.QtCore import Qt, QTranslator, QLibraryInfo, QDate, QTime
 from PySide6.QtGui import QFont, QAction, QIcon, QDesktopServices, QPixmap
@@ -41,8 +42,6 @@ class ScoreGdtException(Exception):
         self.meldung = meldung
     def __str__(self):
         return "ScoreGDT-Fehler: " + self.meldung
-
-import requests
 
 basedir = os.path.dirname(__file__)
 
@@ -375,7 +374,7 @@ class MainWindow(QMainWindow):
                 try:
                     self.updatePruefung(meldungNurWennUpdateVerfuegbar=True)
                 except Exception as e:
-                    mb = QMessageBox(QMessageBox.Icon.Warning, "Hinweis von ScoreGDT", "Updateprüfung nicht möglich.\nBitte überprüfen Sie Ihre Internetverbindung.", QMessageBox.StandardButton.Ok)
+                    mb = QMessageBox(QMessageBox.Icon.Warning, "Hinweis von ScoreGDT", "Updateprüfung nicht möglich.\nBitte überprüfen Sie Ihre Internetverbindung." + str(e), QMessageBox.StandardButton.Ok)
                     mb.exec()
                     logger.logger.warning("Updateprüfung nicht möglich: " + str(e))
 
@@ -522,7 +521,13 @@ class MainWindow(QMainWindow):
             # Score
             if self.scoreRoot.get("altersregel") != None: # type: ignore
                 alter = getAktuellesAlterInJahren(self.geburtsdatumAlsDate)
-                if not self.regelIstErfuellt(str(alter) + str(self.scoreRoot.get("altersregel"))): # type: ignore
+                altersregeln = str(scoreElement.get("altersregel")).split("_")
+                altersregelErfuellt = True
+                for altersregel in altersregeln:
+                    if not self.regelIstErfuellt(str(alter) + altersregel):
+                        altersregelErfuellt = False
+                        break
+                if not altersregelErfuellt: # type: ignore
                     mb = QMessageBox(QMessageBox.Icon.Question, "Hinweis von ScoreGDT", "Das Alter von " + str(alter) + " Jahren liegt außerhalb der für \"" + str(self.scoreRoot.get("name")) + "\" zulässigen Grenzen.\nSoll ScoreGDT neu gestartet werden?", QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No) # type: ignore
                     mb.setDefaultButton(QMessageBox.StandardButton.Yes)
                     mb.button(QMessageBox.StandardButton.Yes).setText("Ja")
@@ -651,7 +656,7 @@ class MainWindow(QMainWindow):
             self.lineEditScoreErgebnis.setReadOnly(True)
             self.lineEditScoreErgebnis.setFont(self.fontBoldGross)
             ergebnisEinheit = ""
-            if self.scoreRoot.find("berechnung").find("ergebniseinheit").text != None: # type: ignore
+            if self.scoreRoot.find("berechnung").find("ergebniseinheit") != None: # type: ignore
                 ergebnisEinheit = str(self.scoreRoot.find("berechnung").find("ergebniseinheit").text) # type: ignore
             self.labelScoreErgebnisEinheit = QLabel(ergebnisEinheit) # type: ignore
             self.labelScoreErgebnisEinheit.setFont(self.fontBold)
@@ -909,7 +914,7 @@ class MainWindow(QMainWindow):
             Ergebnis der Berechnung: float
         """
         try:
-            berechnung = class_Rechenoperation.Rechenoperation(formel)(dezimalstellen)
+            berechnung = class_Rechenoperation.Rechenoperation(formel)(dezimalstellen, -1)
             return berechnung
         except class_Rechenoperation.RechenoperationException as e:
             logger.logger.error("Fehler bei der Score-Berechnung: " + str(e))
@@ -1024,10 +1029,7 @@ class MainWindow(QMainWindow):
                 if formelElement.get("dezimalstellen") != None: # type: ignore 
                     dezimalstellen = int(str(formelElement.get("dezimalstellen"))) # type: ignore 
                 self.erfuellteAuswertungsregel = -1
-                if str(formelElement.get("typ")) != "script": # type: ignore        
-                    # operationen = []
-                    # for operationElement in formelElement.findall("operation"): # type: ignore
-                    #     operationen.append(str(operationElement.text))
+                if str(formelElement.get("typ")) != "script": # type: ignore  
                     formel = str(formelElement.text) # type: ignore 
                     variablenElement = berechnungElement.find("variablen") # type: ignore
                     variablen = {}
@@ -1058,7 +1060,7 @@ class MainWindow(QMainWindow):
                     
                     patternVar = r"\$var{[^{}]+}"
                     variablenMitNichtErfuelltenRegeln = []
-                    tempErgebnis = 0
+                    ergebnis = 0
                     formelMitZahlen = formel
                     varVariablen = re.findall(patternVar, formel)
                     for varVariable in varVariablen:
@@ -1069,13 +1071,13 @@ class MainWindow(QMainWindow):
                             logger.logger.warning("Variablenname " + varName + " nicht ausgelesen")
                             variablenMitNichtErfuelltenRegeln.append(varName)
                     formelMitZahlen = self.ersetzeIdVariablen(formelMitZahlen)
-                    tempErgebnis = self.berechnung(formelMitZahlen, dezimalstellen)
+                    ergebnis = self.berechnung(formelMitZahlen, dezimalstellen)
                     logger.logger.info("Teilergebnis: " + str(self.berechnung(formelMitZahlen, dezimalstellen)))
                     if len(variablenMitNichtErfuelltenRegeln) == 0:
-                        self.lineEditScoreErgebnis.setText(str(tempErgebnis).replace(".", ","))
-                        logger.logger.info("Endergebnis: " + str(tempErgebnis).replace(".", ","))
+                        self.lineEditScoreErgebnis.setText(str(ergebnis).replace(".", ","))
+                        logger.logger.info("Endergebnis: " + str(ergebnis).replace(".", ","))
                         # Auswertung
-                        self.auswertung(tempErgebnis)
+                        self.auswertung(ergebnis)
                     else:
                         mb = QMessageBox(QMessageBox.Icon.Warning, "Hinweis von ScoreGDT", "Der Score kann nicht berechnet werden, da für die folgenden Variablen keine Regel zutrifft:\n- " + str.join("\n- ", variablenMitNichtErfuelltenRegeln), QMessageBox.StandardButton.Ok)
                         mb.exec()
@@ -1220,11 +1222,12 @@ class MainWindow(QMainWindow):
             Parameter:
                 ergebnis
         """
-        # Alle Auswertungslabel blau
-        for i in range(len(self.labelErgebnisbereiche)):
-            self.labelErgebnisbereiche[i].setStyleSheet("color:rgb(0,0,100)")
-            self.labelBeschreibungen[i].setStyleSheet("color:rgb(0,0,100)")
         auswertungElement = self.scoreRoot.find("auswertung") # type: ignore
+        if auswertungElement != None:
+            # Alle Auswertungslabel blau
+            for i in range(len(self.labelErgebnisbereiche)):
+                self.labelErgebnisbereiche[i].setStyleSheet("color:rgb(0,0,100)")
+                self.labelBeschreibungen[i].setStyleSheet("color:rgb(0,0,100)")
         if auswertungElement != None and ergebnis != "":
             ergebnis = str(ergebnis)
             beurteilungNr = 0
@@ -1348,6 +1351,32 @@ class MainWindow(QMainWindow):
         elif not meldungNurWennUpdateVerfuegbar:
             mb = QMessageBox(QMessageBox.Icon.Warning, "Hinweis von ScoreGDT", "Sie nutzen die aktuelle ScoreGDT-Version.", QMessageBox.StandardButton.Ok)
             mb.exec()
+
+    # def updatePruefung(self, meldungNurWennUpdateVerfuegbar = False):
+    #     response = requests.get("https://api.github.com/repos/retconx/scoregdt/releases/latest")
+    #     githubRelaseTag = response.json()["tag_name"]
+    #     latestVersion = githubRelaseTag[1:] # ohne v
+    #     if not versionVeraltet(self.version, latestVersion):
+    #         mb = QMessageBox(QMessageBox.Icon.Question, "Hinweis von ScoreGDT", "Die aktuellere ScoreGDT-Version " + latestVersion + " ist auf Github verfügbar.\nSoll diese jetzt installiert werden?", QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No)
+    #         mb.setDefaultButton(QMessageBox.StandardButton.Yes)
+    #         mb.button(QMessageBox.StandardButton.Yes).setText("Ja")
+    #         mb.button(QMessageBox.StandardButton.No).setText("Nein")
+    #         if mb.exec() == QMessageBox.StandardButton.Yes:
+    #             dnv = dialogNeueVersion.NeueVersion(latestVersion, basedir)
+    #             if dnv.exec() == 1: 
+    #                 import atexit
+    #                 atexit.register(self.update, dnv.lineEditVerzeichnis.text(), latestVersion)
+    #                 sys.exit()
+    #     elif not meldungNurWennUpdateVerfuegbar:
+    #         mb = QMessageBox(QMessageBox.Icon.Warning, "Hinweis von ScoreGDT", "Sie nutzen die aktuelle ScoreGDT-Version.", QMessageBox.StandardButton.Ok)
+    #         mb.exec()
+    
+    # def update(self, speicherverzeichnis:str, latestVersion:str):
+    #     platform = sys.platform
+    #     if "win32" in platform:
+    #         subprocess.call([os.path.join(speicherverzeichnis, "scoregdtUpdate.exe"), speicherverzeichnis, latestVersion])
+    #     elif "darwin" in platform:
+    #         subprocess.call(["python3", os.path.join(basedir, "update.py"), speicherverzeichnis, latestVersion])
 
     def autoUpdatePruefung(self, checked):
         self.autoupdate = checked
