@@ -237,4 +237,221 @@
             </beurteilung>
 		</auswertung>
     </score>
+    <score name="CAT-Fragebogen für PatientInnen" gruppe="Pneumologie">
+        <information>Beurteilung der Symptomatik einer COPD</information>
+        <quelle autor="Jones et al.">Improving the process and outcome of care in COPD: development of a standardised assessment tool</quelle>
+        <part id="0" typ="Frame" titel="" zeile="0" spalte="0">
+            <widget id="100" typ="ComboBox" titel="Husten" titelbreite="180">
+                <items>
+                    <item wert="0">0 (Ich huste überhaupt nicht.)</item>
+                    <item wert="1">1</item>
+                    <item wert="2">2</item>
+                    <item wert="3">3</item>
+                    <item wert="4">4</item>
+                    <item wert="5">5 (Ich huste ständig.)</item>
+                </items>
+            </widget>
+        </part>
+        <part id="1" typ="Frame" titel="" zeile="1" spalte="0">
+            <widget id="101" typ="ComboBox" titel="Schleim" titelbreite="180">
+                <items>
+                    <item wert="0">0 (Ich bin überhaupt nicht verschleimt.)</item>
+                    <item wert="1">1</item>
+                    <item wert="2">2</item>
+                    <item wert="3">3</item>
+                    <item wert="4">4</item>
+                    <item wert="5">5 (Ich bin völlig verschleimt.)</item>
+                </items>
+            </widget>
+        </part>
+        <part id="2" typ="Frame" titel="" zeile="2" spalte="0">
+            <widget id="102" typ="ComboBox" titel="Engegefühl in der Brust" titelbreite="180">
+                <items>
+                    <item wert="0">0 (Ich spüre keinerlei Engegefühl.)</item>
+                    <item wert="1">1</item>
+                    <item wert="2">2</item>
+                    <item wert="3">3</item>
+                    <item wert="4">4</item>
+                    <item wert="5">5 (Ich spüre ein sehr starkes Engegefühl.)</item>
+                </items>
+            </widget>
+        </part>
+        <part id="3" typ="Frame" titel="" zeile="3" spalte="0">
+            <widget id="103" typ="ComboBox" titel="Atemnot beim Berg/Treppe&#13;&#10;Hinaufgehen" titelbreite="180">
+                <items>
+                    <item wert="0">0 (Ich komme nicht außer Atem.)</item>
+                    <item wert="1">1</item>
+                    <item wert="2">2</item>
+                    <item wert="3">3</item>
+                    <item wert="4">4</item>
+                    <item wert="5">5 (Ich komme sehr außer Atem.)</item>
+                </items>
+            </widget>
+        </part>
+        <part id="4" typ="Frame" titel="" zeile="0" spalte="1">
+            <widget id="104" typ="ComboBox" titel="Einschränkung bei häuslichen Aktivitäten" titelbreite="270">
+                <items>
+                    <item wert="0">0 (Ich bin nicht eingeschränkt.)</item>
+                    <item wert="1">1</item>
+                    <item wert="2">2</item>
+                    <item wert="3">3</item>
+                    <item wert="4">4</item>
+                    <item wert="5">5 (Ich bin sehr stark eingeschränkt.)</item>
+                </items>
+            </widget>
+        </part>
+        <part id="5" typ="Frame" titel="" zeile="1" spalte="1">
+            <widget id="105" typ="ComboBox" titel="Bedenken, wegen der Lungenerkrankung&#13;&#10;das Haus zu verlassen" titelbreite="270">
+                <items>
+                    <item wert="0">0 (Ich habe keine Bedenken.)</item>
+                    <item wert="1">1</item>
+                    <item wert="2">2</item>
+                    <item wert="3">3</item>
+                    <item wert="4">4</item>
+                    <item wert="5">5 (Ich habe große Bedenken.)</item>
+                </items>
+            </widget>
+        </part>
+        <part id="6" typ="Frame" titel="" zeile="2" spalte="1">
+            <widget id="106" typ="ComboBox" titel="Schlafqualität wegen der Lungenerkrankung" titelbreite="270">
+                <items>
+                    <item wert="0">0 (Ich schlafe tief und fest.)</item>
+                    <item wert="1">1</item>
+                    <item wert="2">2</item>
+                    <item wert="3">3</item>
+                    <item wert="4">4</item>
+                    <item wert="5">5 (Ich schlafe nicht tief und fest.)</item>
+                </items>
+            </widget>
+        </part>
+        <part id="7" typ="Frame" titel="" zeile="3" spalte="1">
+            <widget id="107" typ="ComboBox" titel="Energie" titelbreite="270">
+                <items>
+                    <item wert="0">0 (Ich bin voller Energie.)</item>
+                    <item wert="1">1</item>
+                    <item wert="2">2</item>
+                    <item wert="3">3</item>
+                    <item wert="4">4</item>
+                    <item wert="5">5 (Ich habe überhaupt keine Energie.)</item>
+                </items>
+            </widget>
+        </part>
+        <berechnung>
+            <formel>$id{100} + $id{101} + $id{102} + $id{103} + $id{104} + $id{105} + $id{106} + $id{107}</formel>
+            <ergebniseinheit>Punkte</ergebniseinheit>
+            <variablen></variablen>
+        </berechnung>
+        <auswertung>
+            <beurteilung>
+                <ergebnisbereich>&#x2264; 5 Punkte</ergebnisbereich>
+                <beschreibung>Keine gesundheitliche Auswirkung</beschreibung>
+                <regel>KLEINERGLEICHALS 5</regel>
+            </beurteilung>
+            <beurteilung>
+                <ergebnisbereich>6 - 9 Punkte</ergebnisbereich>
+                <beschreibung>Geringe gesundheitliche Auswirkung</beschreibung>
+                <regel>GROESSERGLEICHALS 6</regel>
+                <regel>KLEINERGLEICHALS 9</regel>
+            </beurteilung>
+            <beurteilung>
+                <ergebnisbereich>10 - 20 Punkte</ergebnisbereich>
+                <beschreibung>Mäßige gesundheitliche Auswirkung</beschreibung>
+                <regel>GROESSERGLEICHALS 10</regel>
+                <regel>KLEINERGLEICHALS 20</regel>
+            </beurteilung>
+            <beurteilung>
+                <ergebnisbereich>21 - 30 Punkte</ergebnisbereich>
+                <beschreibung>Starke gesundheitliche Auswirkung</beschreibung>
+                <regel>GROESSERGLEICHALS 21</regel>
+                <regel>KLEINERGLEICHALS 30</regel>
+            </beurteilung>
+            <beurteilung>
+                <ergebnisbereich>&#x3e; 30 Punkte</ergebnisbereich>
+                <beschreibung>Sehr starke gesundheitliche Auswirkung</beschreibung>
+                <regel>GROESSERALS 30</regel>
+            </beurteilung>
+        </auswertung>   
+    </score>
+    <score name="ACT-Fragebogen für PatientInnen" gruppe="Pneumologie">
+        <information>Verlaufskontrolle zur Beurteilung der Asthmatherapiequalität</information>
+        <quelle autor="Schatz et al.">Asthma Control Test: reliability, validity, and responsiveness in patients not previously followed by asthma specialists</quelle>
+        <part id="0" typ="Frame" titel="" zeile="0" spalte="0" erklaerung="Wie oft hat Ihr Asthma Sie in den letzten vier Wochen daran gehindert, bei der Arbeit,&#13;&#10;in der Schule/im Studium oder zu Hause so viel zu erledigen wie sonst?">
+            <widget id="100" typ="ComboBox" titel="Häufigkeit" titelbreite="260">
+                <items>
+                    <item wert="1">Immer</item>
+                    <item wert="2">Meistens</item>
+                    <item wert="3">Manchmal</item>
+                    <item wert="4">Selten</item>
+                    <item wert="5" defaultindex="True">Nie</item>
+                </items>
+            </widget>
+        </part>
+        <part id="1" typ="Frame" titel="" zeile="0" spalte="1" erklaerung="Wie oft haben Sie in den letzten vier Wochen&#13;&#10;unter Kurzatmigkeit gelitten?">
+            <widget id="101" typ="ComboBox" titel="Häufigkeit" titelbreite="260">
+                <items>
+                    <item wert="1">&#x3e; 1x täglich</item>
+                    <item wert="2">1x täglich</item>
+                    <item wert="3">3-6x wöchentlich</item>
+                    <item wert="4">1-2x wöchentlich</item>
+                    <item wert="5" defaultindex="True">Überhaupt nicht</item>
+                </items>
+            </widget>
+        </part>
+        <part id="2" typ="Frame" titel="" zeile="1" spalte="0" erklaerung="Wie oft sind Sie in den letzten vier Wochen wgen Ihrer Asthmabeschwerden&#13;&#10;nachts wach geworden oder morgens früher als gewöhnlich aufgewacht?">
+            <widget id="102" typ="ComboBox" titel="Häufigkeit" titelbreite="260">
+                <items>
+                    <item wert="1">&#x3e; 4x wöchentlich</item>
+                    <item wert="2">2-3x wöchentlich</item>
+                    <item wert="3">1x wöchentlich</item>
+                    <item wert="4">1-2x</item>
+                    <item wert="5" defaultindex="True">Überhaupt nicht</item>
+                </items>
+            </widget>
+        </part>
+        <part id="3" typ="Frame" titel="" zeile="1" spalte="1" erklaerung="Wie oft haben Sie in den letzten vier Wochen&#13;&#10;Ihr Notfallmedikament zur Inhalation eingesetzt?">
+            <widget id="103" typ="ComboBox" titel="Häufigkeit" titelbreite="260">
+                <items>
+                    <item wert="1">&#x3e; 3x täglich</item>
+                    <item wert="2">1-2x täglich</item>
+                    <item wert="3">2-3x wöchentlich</item>
+                    <item wert="4">1&#x2264; 1x wöchentlich</item>
+                    <item wert="5" defaultindex="True">Überhaupt nicht</item>
+                </items>
+            </widget>
+        </part>
+        <part id="4" typ="Frame" titel="" zeile="2" spalte="0" erklaerung="Wie gut hatten Sie in den letzten vier Wochen Ihr Asthma unter Kontrolle?">
+            <widget id="104" typ="ComboBox" titel="Güte" titelbreite="260">
+                <items>
+                    <item wert="1">Überhaupt nicht</item>
+                    <item wert="2">Schlecht</item>
+                    <item wert="3">Etwas</item>
+                    <item wert="4">Gut</item>
+                    <item wert="5" defaultindex="True">Völlig</item>
+                </items>
+            </widget>
+        </part>
+        <berechnung>
+            <formel>$id{100} + $id{101} + $id{102} + $id{103} + $id{104}</formel>
+            <ergebniseinheit>Punkte</ergebniseinheit>
+            <variablen></variablen>
+        </berechnung>
+        <auswertung>
+            <beurteilung>
+                <ergebnisbereich>25 Punkte</ergebnisbereich>
+                <beschreibung>Vollständige Asthmakontrolle</beschreibung>
+                <regel>ISTGLEICH 25</regel>
+            </beurteilung>
+            <beurteilung>
+                <ergebnisbereich>20 - 24 Punkte</ergebnisbereich>
+                <beschreibung>Gute Asthmakontrolle (Zielbereich)</beschreibung>
+                <regel>GROESSERGLEICHALS 20</regel>
+                <regel>KLEINERGLEICHALS 24</regel>
+            </beurteilung>
+            <beurteilung>
+                <ergebnisbereich>&#x3c; 20 Punkte</ergebnisbereich>
+                <beschreibung>Schlechte Asthmakontrolle</beschreibung>
+                <regel>KLEINERALS 20</regel>
+            </beurteilung>
+        </auswertung>   
+    </score>
 </root>

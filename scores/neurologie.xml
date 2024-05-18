@@ -432,7 +432,7 @@
             </beurteilung>
         </auswertung>
     </score>
-    <score name="PHQ-9-Fragebogen für Patienten" gruppe="Neurologie">
+    <score name="PHQ-9-Fragebogen für PatientInnen" gruppe="Neurologie">
         <information>Erfassung depressiver Störungen</information>
         <quelle autor="Kroenke et al.">The PHQ-9: Validity of a brief depression severity measure</quelle>
         <part id="0" typ="Frame" titel="" erklaerung="Wie oft fühlten Sie sich im Verlauf der letzten 2 Wochen&#13;&#10;durch die folgenden Beschwerden beeinträchtigt?" zeile="0" spalte="0">

@@ -1,12 +1,11 @@
-import sys, configparser, os, datetime, shutil, logger, re, subprocess
+import sys, configparser, os, datetime, shutil, logger, re, atexit, subprocess
 import xml.etree.ElementTree as ElementTree
 import requests
-from urllib.request import urlretrieve
 ## Nur mit Lizenz
 import gdttoolsL
 ## /Nur mit Lizenz
 import gdt, gdtzeile, class_part, class_widgets, class_score
-import dialogUeberScoreGdt, dialogEinstellungenAllgemein, dialogEinstellungenGdt, dialogEinstellungenBenutzer, dialogEinstellungenLanrLizenzschluessel, dialogEula, dialogEinstellungenImportExport, dialogScoreAuswahl, dialogEinstellungenFavoriten, dialogNeueVersion
+import dialogUeberScoreGdt, dialogEinstellungenAllgemein, dialogEinstellungenGdt, dialogEinstellungenBenutzer, dialogEinstellungenLanrLizenzschluessel, dialogEula, dialogEinstellungenImportExport, dialogScoreAuswahl, dialogEinstellungenFavoriten
 import class_enums, class_score, class_Rechenoperation
 from PySide6.QtCore import Qt, QTranslator, QLibraryInfo, QDate, QTime
 from PySide6.QtGui import QFont, QAction, QIcon, QDesktopServices, QPixmap
@@ -157,6 +156,10 @@ class MainWindow(QMainWindow):
         self.autoupdate = True
         if self.configIni.has_option("Allgemein", "autoupdate"):
             self.autoupdate = self.configIni["Allgemein"]["autoupdate"] == "True"
+        # 1.14.1
+        self.updaterpfad = ""
+        if self.configIni.has_option("Allgemein", "updaterpfad"):
+            self.updaterpfad = self.configIni["Allgemein"]["updaterpfad"]
         ## /Nachträglich hinzufefügte Options
 
         z = self.configIni["GDT"]["zeichensatz"]
@@ -266,6 +269,9 @@ class MainWindow(QMainWindow):
                 # 1.11.0 -> 1.12.0
                 if not self.configIni.has_option("Allgemein", "autoupdate"):
                     self.configIni["Allgemein"]["autoupdate"] = "True"
+                # 1.14.0 -> 1.14.1
+                if not self.configIni.has_option("Allgemeines", "updaterpfad"):
+                    self.configIni["Allgemein"]["updaterpfad"] = ""
                 ## /config.ini aktualisieren
                 ## scores.xml löschen (ab 1.8.0)
                 try:
@@ -429,11 +435,17 @@ class MainWindow(QMainWindow):
                             if widgetTyp == class_widgets.WidgetTyp.COMBOBOX.value:
                                 itemsElement = widgetElement.find("items")
                                 itemsUndWerte.clear()
+                                i = 0
                                 for itemElement in itemsElement.findall("item"): # type: ignore
                                     itemWert = str(itemElement.get("wert"))
                                     itemText = str(itemElement.text)
                                     itemsUndWerte.append((itemText, itemWert))
-                                self.widgets.append(class_widgets.ComboBox(widgetId, partId, widgetTitel, widgetErklaerung, widgetEinheit, itemsUndWerte.copy(), alterspruefung))
+                                    defaultindex = 0
+                                    if itemElement.get("defaultindex") != None:
+                                        if str(itemElement.get("defaultindex")) == "True":
+                                            defaultindex = i
+                                    i += 1
+                                self.widgets.append(class_widgets.ComboBox(widgetId, partId, widgetTitel, widgetErklaerung, widgetEinheit, itemsUndWerte.copy(), defaultindex, alterspruefung))
                                 logger.logger.info("Combobox angelegt (Part-ID: " + partId + ", Widget-ID: " + widgetId + ") angelegt")
                             elif widgetTyp == class_widgets.WidgetTyp.CHECKBOX.value:
                                 buttongroup = ""
@@ -1238,9 +1250,9 @@ class MainWindow(QMainWindow):
                     if not self.regelIstErfuellt(regel):
                         regelErfuellt = False
                         break
-                    if regelErfuellt:
-                        self.erfuellteAuswertungsregel = beurteilungNr
-                        break
+                if regelErfuellt:
+                    self.erfuellteAuswertungsregel = beurteilungNr
+                    break
                 beurteilungNr += 1
             if self.erfuellteAuswertungsregel != -1:
                 for i in range(len(self.labelErgebnisbereiche)):
@@ -1341,42 +1353,51 @@ class MainWindow(QMainWindow):
             mb.exec()
 
     def updatePruefung(self, meldungNurWennUpdateVerfuegbar = False):
+        logger.logger.info("Updateprüfung")
         response = requests.get("https://api.github.com/repos/retconx/scoregdt/releases/latest")
         githubRelaseTag = response.json()["tag_name"]
         latestVersion = githubRelaseTag[1:] # ohne v
         if versionVeraltet(self.version, latestVersion):
-            mb = QMessageBox(QMessageBox.Icon.Warning, "Hinweis von ScoreGDT", "Die aktuellere ScoreGDT-Version " + latestVersion + " ist auf <a href='https://github.com/retconx/scoregdt/releases'>Github</a> verfügbar.", QMessageBox.StandardButton.Ok)
-            mb.setTextFormat(Qt.TextFormat.RichText)
-            mb.exec()
+            logger.logger.info("Bisher: " + self.version + ", neu: " + latestVersion)
+            if os.path.exists(self.updaterpfad):
+                mb = QMessageBox(QMessageBox.Icon.Question, "Hinweis von ScoreGDT", "Die aktuellere ScoreGDT-Version " + latestVersion + " ist auf Github verfügbar.\nSoll der GDT-Tools Updater geladen werden?", QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No)
+                mb.setDefaultButton(QMessageBox.StandardButton.Yes)
+                mb.button(QMessageBox.StandardButton.Yes).setText("Ja")
+                mb.button(QMessageBox.StandardButton.No).setText("Nein")
+                if mb.exec() == QMessageBox.StandardButton.Yes:
+                    logger.logger.info("Updater wird geladen")
+                    atexit.register(self.updaterLaden)
+                    sys.exit()
+            else:
+                mb = QMessageBox(QMessageBox.Icon.Warning, "Hinweis von ScoreGDT", "Die aktuellere ScoreGDT-Version " + latestVersion + " ist auf <a href='https://github.com/retconx/scoregdt/releases'>Github</a> verfügbar.", QMessageBox.StandardButton.Ok)
+                mb.setTextFormat(Qt.TextFormat.RichText)
+                mb.exec()
         elif not meldungNurWennUpdateVerfuegbar:
             mb = QMessageBox(QMessageBox.Icon.Warning, "Hinweis von ScoreGDT", "Sie nutzen die aktuelle ScoreGDT-Version.", QMessageBox.StandardButton.Ok)
             mb.exec()
 
-    # def updatePruefung(self, meldungNurWennUpdateVerfuegbar = False):
-    #     response = requests.get("https://api.github.com/repos/retconx/scoregdt/releases/latest")
-    #     githubRelaseTag = response.json()["tag_name"]
-    #     latestVersion = githubRelaseTag[1:] # ohne v
-    #     if not versionVeraltet(self.version, latestVersion):
-    #         mb = QMessageBox(QMessageBox.Icon.Question, "Hinweis von ScoreGDT", "Die aktuellere ScoreGDT-Version " + latestVersion + " ist auf Github verfügbar.\nSoll diese jetzt installiert werden?", QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No)
-    #         mb.setDefaultButton(QMessageBox.StandardButton.Yes)
-    #         mb.button(QMessageBox.StandardButton.Yes).setText("Ja")
-    #         mb.button(QMessageBox.StandardButton.No).setText("Nein")
-    #         if mb.exec() == QMessageBox.StandardButton.Yes:
-    #             dnv = dialogNeueVersion.NeueVersion(latestVersion, basedir)
-    #             if dnv.exec() == 1: 
-    #                 import atexit
-    #                 atexit.register(self.update, dnv.lineEditVerzeichnis.text(), latestVersion)
-    #                 sys.exit()
-    #     elif not meldungNurWennUpdateVerfuegbar:
-    #         mb = QMessageBox(QMessageBox.Icon.Warning, "Hinweis von ScoreGDT", "Sie nutzen die aktuelle ScoreGDT-Version.", QMessageBox.StandardButton.Ok)
-    #         mb.exec()
-    
-    # def update(self, speicherverzeichnis:str, latestVersion:str):
-    #     platform = sys.platform
-    #     if "win32" in platform:
-    #         subprocess.call([os.path.join(speicherverzeichnis, "scoregdtUpdate.exe"), speicherverzeichnis, latestVersion])
-    #     elif "darwin" in platform:
-    #         subprocess.call(["python3", os.path.join(basedir, "update.py"), speicherverzeichnis, latestVersion])
+    def updaterLaden(self):
+        sex = sys.executable
+        programmverzeichnis = ""
+        logger.logger.info("sys.executable: " + sex)
+        if "win32" in sys.platform:
+            programmverzeichnis = sex[:sex.rfind("scoregdt.exe")]
+        elif "darwin" in sys.platform:
+            programmverzeichnis = sex[:sex.find("ScoreGDT.app")]
+        elif "win32" in sys.platform:
+            programmverzeichnis = sex[:sex.rfind("scoregdt")]
+        logger.logger.info("Programmverzeichnis: " + programmverzeichnis)
+        try:
+            if "win32" in sys.platform:
+                subprocess.Popen([self.updaterpfad, "scoregdt", self.version, programmverzeichnis], creationflags=subprocess.DETACHED_PROCESS) # type: ignore
+            elif "darwin" in sys.platform:
+                subprocess.Popen(["open", "-a", self.updaterpfad, "--args", "scoregdt", self.version, programmverzeichnis])
+            elif "linux" in sys.platform:
+                subprocess.Popen([self.updaterpfad, "scoregdt", self.version, programmverzeichnis])
+        except Exception as e:
+            mb = QMessageBox(QMessageBox.Icon.Warning, "Hinweis von ScoreGDT", "Der GDT-Tools Updater konnte nicht gestartet werden", QMessageBox.StandardButton.Ok)
+            logger.logger.error("Fehler beim Starten des GDT-Tools Updaters: " + str(e))
+            mb.exec()
 
     def autoUpdatePruefung(self, checked):
         self.autoupdate = checked
@@ -1423,6 +1444,7 @@ class MainWindow(QMainWindow):
         if de.exec() == 1:
             self.configIni["Allgemein"]["bereichsgrenzenerzwingen"] = str(de.checkBoxZahlengrenzenpruefung.isChecked())
             self.configIni["Allgemein"]["standardscore"] = de.comboBoxScoreAuswahl.currentText()
+            self.configIni["Allgemein"]["updaterpfad"] = de.lineEditUpdaterPfad.text()
             with open(os.path.join(self.configPath, "config.ini"), "w", encoding="utf-8") as configfile:
                 self.configIni.write(configfile)
             if neustartfrage:

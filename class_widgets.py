@@ -73,7 +73,7 @@ class Widget():
 
 
 class ComboBox(Widget):
-    def __init__(self, id:str, partId:str, titel:str, erklaerung:str, einheit:str, itemsUndWerte:list, alterspruefung:bool):
+    def __init__(self, id:str, partId:str, titel:str, erklaerung:str, einheit:str, itemsUndWerte:list, defaultIndex:int, alterspruefung:bool):
         super().__init__(id, partId, titel, erklaerung, einheit, alterspruefung)
         # itemsUndWerte: Liste mit (item, wert)-Tuples
         self.itemsUndWerte = itemsUndWerte
@@ -81,6 +81,8 @@ class ComboBox(Widget):
         for itemUndWert in self.itemsUndWerte:
             itemText = itemUndWert[0]
             self.combobox.addItem(itemText)
+        self.defaultIndex = defaultIndex
+        self.combobox.setCurrentIndex(defaultIndex)
         self.typ = WidgetTyp.COMBOBOX
     
     def getQt(self):
