@@ -1369,7 +1369,7 @@ class MainWindow(QMainWindow):
                     atexit.register(self.updaterLaden)
                     sys.exit()
             else:
-                mb = QMessageBox(QMessageBox.Icon.Warning, "Hinweis von ScoreGDT", "Die aktuellere ScoreGDT-Version " + latestVersion + " ist auf <a href='https://github.com/retconx/scoregdt/releases'>Github</a> verfügbar.", QMessageBox.StandardButton.Ok)
+                mb = QMessageBox(QMessageBox.Icon.Information, "Hinweis von ScoreGDT", "Die aktuellere ScoreGDT-Version " + latestVersion + " ist auf <a href='https://github.com/retconx/scoregdt/releases'>Github</a> verfügbar.<br />Bitte beachten Sie auch die Möglichkeit, den Updateprozess mit dem <a href='https://github.com/retconx/gdttoolsupdater/wiki'>GDT-Tools Updater</a> zu automatisieren.", QMessageBox.StandardButton.Ok)
                 mb.setTextFormat(Qt.TextFormat.RichText)
                 mb.exec()
         elif not meldungNurWennUpdateVerfuegbar:
