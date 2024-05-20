@@ -376,7 +376,7 @@
         <information>Verlaufskontrolle zur Beurteilung der Asthmatherapiequalität</information>
         <quelle autor="Schatz et al.">Asthma Control Test: reliability, validity, and responsiveness in patients not previously followed by asthma specialists</quelle>
         <part id="0" typ="Frame" titel="" zeile="0" spalte="0" erklaerung="Wie oft hat Ihr Asthma Sie in den letzten vier Wochen daran gehindert, bei der Arbeit,&#13;&#10;in der Schule/im Studium oder zu Hause so viel zu erledigen wie sonst?">
-            <widget id="100" typ="ComboBox" titel="Häufigkeit" titelbreite="260">
+            <widget id="100" typ="ComboBox" titel="Alltagsbehinderung" titelbreite="260">
                 <items>
                     <item wert="1">Immer</item>
                     <item wert="2">Meistens</item>
@@ -387,7 +387,7 @@
             </widget>
         </part>
         <part id="1" typ="Frame" titel="" zeile="0" spalte="1" erklaerung="Wie oft haben Sie in den letzten vier Wochen&#13;&#10;unter Kurzatmigkeit gelitten?">
-            <widget id="101" typ="ComboBox" titel="Häufigkeit" titelbreite="260">
+            <widget id="101" typ="ComboBox" titel="Kurzatmigkeit" titelbreite="260">
                 <items>
                     <item wert="1">&#x3e; 1x täglich</item>
                     <item wert="2">1x täglich</item>
@@ -397,8 +397,8 @@
                 </items>
             </widget>
         </part>
-        <part id="2" typ="Frame" titel="" zeile="1" spalte="0" erklaerung="Wie oft sind Sie in den letzten vier Wochen wgen Ihrer Asthmabeschwerden&#13;&#10;nachts wach geworden oder morgens früher als gewöhnlich aufgewacht?">
-            <widget id="102" typ="ComboBox" titel="Häufigkeit" titelbreite="260">
+        <part id="2" typ="Frame" titel="" zeile="1" spalte="0" erklaerung="Wie oft sind Sie in den letzten vier Wochen wegen Ihrer Asthmabeschwerden&#13;&#10;nachts wach geworden oder morgens früher als gewöhnlich aufgewacht?">
+            <widget id="102" typ="ComboBox" titel="Aufgewacht" titelbreite="260">
                 <items>
                     <item wert="1">&#x3e; 4x wöchentlich</item>
                     <item wert="2">2-3x wöchentlich</item>
@@ -409,7 +409,7 @@
             </widget>
         </part>
         <part id="3" typ="Frame" titel="" zeile="1" spalte="1" erklaerung="Wie oft haben Sie in den letzten vier Wochen&#13;&#10;Ihr Notfallmedikament zur Inhalation eingesetzt?">
-            <widget id="103" typ="ComboBox" titel="Häufigkeit" titelbreite="260">
+            <widget id="103" typ="ComboBox" titel="Notfallinhalation" titelbreite="260">
                 <items>
                     <item wert="1">&#x3e; 3x täglich</item>
                     <item wert="2">1-2x täglich</item>
@@ -420,7 +420,7 @@
             </widget>
         </part>
         <part id="4" typ="Frame" titel="" zeile="2" spalte="0" erklaerung="Wie gut hatten Sie in den letzten vier Wochen Ihr Asthma unter Kontrolle?">
-            <widget id="104" typ="ComboBox" titel="Güte" titelbreite="260">
+            <widget id="104" typ="ComboBox" titel="Asthmakontrolle" titelbreite="260">
                 <items>
                     <item wert="1">Überhaupt nicht</item>
                     <item wert="2">Schlecht</item>
