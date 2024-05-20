@@ -1445,6 +1445,7 @@ class MainWindow(QMainWindow):
             self.configIni["Allgemein"]["bereichsgrenzenerzwingen"] = str(de.checkBoxZahlengrenzenpruefung.isChecked())
             self.configIni["Allgemein"]["standardscore"] = de.comboBoxScoreAuswahl.currentText()
             self.configIni["Allgemein"]["updaterpfad"] = de.lineEditUpdaterPfad.text()
+            self.configIni["Allgemein"]["autoupdate"] = str(de.checkBoxAutoUpdate.isChecked())
             with open(os.path.join(self.configPath, "config.ini"), "w", encoding="utf-8") as configfile:
                 self.configIni.write(configfile)
             if neustartfrage:

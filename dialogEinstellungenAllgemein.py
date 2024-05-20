@@ -32,6 +32,7 @@ class EinstellungenAllgemein(QDialog):
         configIni.read(os.path.join(configPath, "config.ini"))
         self.bereichsgrenzenerzwingen = configIni["Allgemein"]["bereichsgrenzenerzwingen"] == "True"
         self.updaterpfad = configIni["Allgemein"]["updaterpfad"]
+        self.autoupdate = configIni["Allgemein"]["autoupdate"] == "True"
 
         self.setWindowTitle("Allgemeine Einstellungen")
         self.buttonBox = QDialogButtonBox(QDialogButtonBox.StandardButton.Ok | QDialogButtonBox.StandardButton.Cancel)
@@ -77,6 +78,14 @@ class EinstellungenAllgemein(QDialog):
         self.pushButtonUpdaterPfad.setFont(self.fontNormal)
         self.pushButtonUpdaterPfad.setToolTip("Pfad zum GDT-Tools Updater auswählen")
         self.pushButtonUpdaterPfad.clicked.connect(self.pushButtonUpdaterPfadClicked)
+        self.checkBoxAutoUpdate = QCheckBox("Automatisch auf Update prüfen")
+        self.checkBoxAutoUpdate.setFont(self.fontNormal)
+        self.checkBoxAutoUpdate.setChecked(self.autoupdate)
+        groupBoxUpdatesLayoutG.addWidget(labelUpdaterPfad, 0, 0)
+        groupBoxUpdatesLayoutG.addWidget(self.lineEditUpdaterPfad, 0, 1)
+        groupBoxUpdatesLayoutG.addWidget(self.pushButtonUpdaterPfad, 0, 2)
+        groupBoxUpdatesLayoutG.addWidget(self.checkBoxAutoUpdate, 1, 0)
+        groupBoxUpdates.setLayout(groupBoxUpdatesLayoutG)
 
         groupBoxUpdatesLayoutG.addWidget(labelUpdaterPfad, 0, 0)
         groupBoxUpdatesLayoutG.addWidget(self.lineEditUpdaterPfad, 0, 1)
