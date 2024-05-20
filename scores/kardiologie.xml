@@ -7370,7 +7370,7 @@
         </auswertung>
     </score>
     <score name="ASCVD-Score" gruppe="Kardiologie">
-        <information>Abschätzung des Risikos für ein kardiovaskuläres Ereignis in den nächsten 10 Jahren&#xa;(Alter 40 - 79 Jahre, LDL-Choelsterin 70-189 mg/dl, keine atherosklerotische kardiovaskuläre Erkrankung)</information>
+        <information>Abschätzung des Risikos für ein kardiovaskuläres Ereignis in den nächsten 10 Jahren&#xa;(Alter 40 - 79 Jahre, LDL-Cholesterin 70-189 mg/dl, keine atherosklerotische kardiovaskuläre Erkrankung)</information>
         <quelle autor="Goff et al.">2013 ACC/AHA Guideline on the Assessment of Cardiovascular Risk</quelle>
         <part id="0" typ="Frame" titel="" zeile="0" spalte="0">
             <widget id="100" typ="LineEdit" titel="Alter" alterspruefung="True">
@@ -7956,5 +7956,29 @@
                 <variable name="cxvIndSum">$var{cxvAge} + $var{cxvAgeSquared} + $var{cxvChol} + $var{cxvCholAge} + $var{cxvHdl} + $var{cxvHdlAge} + $var{cxvBpTreated} + $var{cxvBpTreatedAge} + $var{cxvBpUntreated} + $var{cxvBpUntreatedAge} + $var{cxvSmoker} + $var{cxvSmokerAge} + $var{cxvDiabetes}</variable>
             </variablen>
         </berechnung>
+        <auswertung>
+            <beurteilung>
+                <ergebnisbereich>&#x3c; 5%</ergebnisbereich>
+                <beschreibung>Geringes Risiko</beschreibung>
+                <regel>KLEINERALS 5</regel>
+            </beurteilung>  
+            <beurteilung>
+                <ergebnisbereich>5 - &#x3c; 7,5%</ergebnisbereich>
+                <beschreibung>Grenzwertiges Risiko</beschreibung>
+                <regel>GROESSERGLEICHALS 5</regel>
+                <regel>KLEINERALS 7.5</regel>
+            </beurteilung>  
+            <beurteilung>
+                <ergebnisbereich>7,5 - 20%</ergebnisbereich>
+                <beschreibung>Intermediäres Risiko</beschreibung>
+                <regel>GROESSERGLEICHALS 7.5</regel>
+                <regel>KLEINERGLEICHALS 20</regel>
+            </beurteilung>  
+            <beurteilung>
+                <ergebnisbereich>&#x3e; 20%</ergebnisbereich>
+                <beschreibung>Hohes Risiko</beschreibung>
+                <regel>GROESSERALS 20</regel>
+            </beurteilung>  
+        </auswertung>
     </score>
 </root>

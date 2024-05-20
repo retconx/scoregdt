@@ -533,7 +533,7 @@ class MainWindow(QMainWindow):
             # Score
             if self.scoreRoot.get("altersregel") != None: # type: ignore
                 alter = getAktuellesAlterInJahren(self.geburtsdatumAlsDate)
-                altersregeln = str(scoreElement.get("altersregel")).split("_")
+                altersregeln = str(self.scoreRoot.get("altersregel")).split("_") # type: ignore
                 altersregelErfuellt = True
                 for altersregel in altersregeln:
                     if not self.regelIstErfuellt(str(alter) + altersregel):
@@ -1276,10 +1276,11 @@ class MainWindow(QMainWindow):
         """
         ersetzt = string
         zuErsetzendeStrings = {
-            "\u2082": "2",
-            "\u00b2": "2",
-            "\u2264": "<=",
-            "\u2265": ">="
+            "\u2082" : "2",
+            "\u00b2" : "2",
+            "\u2264" : "<=",
+            "\u2265" : ">=",
+            "\r\n": " "
         }
         for zuErsetzen in zuErsetzendeStrings:
             ersetzt = ersetzt.replace(zuErsetzen, zuErsetzendeStrings[zuErsetzen])
@@ -1384,7 +1385,7 @@ class MainWindow(QMainWindow):
             programmverzeichnis = sex[:sex.rfind("scoregdt.exe")]
         elif "darwin" in sys.platform:
             programmverzeichnis = sex[:sex.find("ScoreGDT.app")]
-        elif "win32" in sys.platform:
+        elif "linux" in sys.platform:
             programmverzeichnis = sex[:sex.rfind("scoregdt")]
         logger.logger.info("Programmverzeichnis: " + programmverzeichnis)
         try:
