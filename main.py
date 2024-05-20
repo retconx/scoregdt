@@ -270,7 +270,7 @@ class MainWindow(QMainWindow):
                 if not self.configIni.has_option("Allgemein", "autoupdate"):
                     self.configIni["Allgemein"]["autoupdate"] = "True"
                 # 1.14.0 -> 1.14.1
-                if not self.configIni.has_option("Allgemeines", "updaterpfad"):
+                if not self.configIni.has_option("Allgemein", "updaterpfad"):
                     self.configIni["Allgemein"]["updaterpfad"] = ""
                 ## /config.ini aktualisieren
                 ## scores.xml löschen (ab 1.8.0)
