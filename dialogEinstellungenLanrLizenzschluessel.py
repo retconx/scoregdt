@@ -46,6 +46,7 @@ class EinstellungenProgrammerweiterungen(QDialog):
         groupboxLizenzschluessel.setStyleSheet("font-weight:bold")
         self.lineEditLizenzschluessel = QLineEdit(self.lizenzschluessel)
         self.lineEditLizenzschluessel.setStyleSheet("font-weight:normal")
+        self.lineEditLizenzschluessel.textEdited.connect(self.lineEditLizenzschluesselTextEdited)
         groupboxLayoutLizenzschluessel.addWidget(self.lineEditLizenzschluessel)
         groupboxLizenzschluessel.setLayout(groupboxLayoutLizenzschluessel)
         dialogLayoutV.addWidget(groupboxLanr)
@@ -54,19 +55,29 @@ class EinstellungenProgrammerweiterungen(QDialog):
         dialogLayoutV.setContentsMargins(10, 10, 10, 10)
         dialogLayoutV.setSpacing(20)
         self.setLayout(dialogLayoutV)
-        self.lineEditLanr.setFocus()
-        self.lineEditLanr.selectAll()
+        if re.match(reLizenzschluessel, self.lineEditLizenzschluessel.text()) != None and gdttoolsL.GdtToolsLizenzschluessel.nochTageGueltig(self.lizenzschluessel) <= 0:
+            mb = QMessageBox(QMessageBox.Icon.Information, "Hinweis von ScoreGDT", "Der eingetragene Lizenzschlüssel ist abgelaufen.", QMessageBox.StandardButton.Ok)
+            mb.exec()  
+            self.lineEditLizenzschluessel.setStyleSheet("font-weight:normal;background:rgb(255,220,220)")
+            self.lineEditLizenzschluessel.setFocus()
+            self.lineEditLizenzschluessel.selectAll()
+        else:
+            self.lineEditLanr.setFocus()
+            self.lineEditLanr.selectAll()
+
+    def lineEditLizenzschluesselTextEdited(self):
+        self.lineEditLizenzschluessel.setStyleSheet("font-weight:normal;background:rgb(255,255,255)")
 
     def accept(self):
         if self.lineEditLanr.text() == "" and self.lineEditLizenzschluessel.text() == "":
             self.done(1)
         elif not re.match(reLanr, self.lineEditLanr.text()) or not gdttoolsL.GdtToolsLizenzschluessel.checksummeLanrKorrekt(self.lineEditLanr.text()):
-            mb = QMessageBox(QMessageBox.Icon.Information, "Hinweis", "Die LANR ist ungültig.", QMessageBox.StandardButton.Ok)
+            mb = QMessageBox(QMessageBox.Icon.Information, "Hinweis von ScoreGDT", "Die LANR ist ungültig.", QMessageBox.StandardButton.Ok)
             mb.exec()
             self.lineEditLanr.setFocus()
             self.lineEditLanr.selectAll()
         elif re.match(reLizenzschluessel, self.lineEditLizenzschluessel.text()) == None or (not gdttoolsL.GdtToolsLizenzschluessel.lizenzErteilt(self.lineEditLizenzschluessel.text().upper(), self.lineEditLanr.text(), gdttoolsL.SoftwareId.SCOREGDT) and not gdttoolsL.GdtToolsLizenzschluessel.lizenzErteilt(self.lineEditLizenzschluessel.text().upper(), self.lineEditLanr.text(), gdttoolsL.SoftwareId.SCOREGDTPSEUDO)):
-            mb = QMessageBox(QMessageBox.Icon.Information, "Hinweis", "Die LANR/Lizenzschlüssel-Kombination ist ungültig.", QMessageBox.StandardButton.Ok)
+            mb = QMessageBox(QMessageBox.Icon.Information, "Hinweis von ScoreGDT", "Die LANR/Lizenzschlüssel-Kombination ist ungültig.", QMessageBox.StandardButton.Ok)
             mb.exec()
             self.lineEditLizenzschluessel.setFocus()
             self.lineEditLizenzschluessel.selectAll()

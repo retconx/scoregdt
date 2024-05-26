@@ -4,7 +4,7 @@ import requests
 ## Nur mit Lizenz
 import gdttoolsL
 ## /Nur mit Lizenz
-import gdt, gdtzeile, class_part, class_widgets, class_score
+import gdt, gdtzeile, class_part, class_widgets, class_score, farbe
 import dialogUeberScoreGdt, dialogEinstellungenAllgemein, dialogEinstellungenGdt, dialogEinstellungenBenutzer, dialogEinstellungenLanrLizenzschluessel, dialogEula, dialogEinstellungenImportExport, dialogScoreAuswahl, dialogEinstellungenFavoriten
 import class_enums, class_score, class_Rechenoperation
 from PySide6.QtCore import Qt, QTranslator, QLibraryInfo, QDate, QTime
@@ -491,6 +491,7 @@ class MainWindow(QMainWindow):
             # Formularaufbau
             mainLayoutV = QVBoxLayout()
             mainLayoutG = QGridLayout()
+            groupBoxBegriffsdefinitionenLayoutG = QGridLayout()
             # Patientendaten
             patient = "Patient"
             if self.geschlecht == "2":
@@ -498,7 +499,8 @@ class MainWindow(QMainWindow):
             groupboxPatientendaten = QGroupBox(patient)
             groupboxPatientendatenLayoutG = QGridLayout()
             self.labelPseudolizenz = QLabel("+++ Pseudolizenz für Test-/ Präsentationszwecke +++")
-            self.labelPseudolizenz.setStyleSheet("color:rgb(200,0,0);font-style:italic")
+            self.labelPseudolizenz.setStyleSheet("font-style:italic")
+            self.labelPseudolizenz.setPalette(farbe.getTextPalette(farbe.farben.ROT, self.palette()))
             labelName = QLabel("Name: " + self.name)
             labelPatId = QLabel("ID: " + self.patId)
             self.geburtsdatumAlsDate = datetime.date(int(self.geburtsdatum[6:]), int(self.geburtsdatum[3:5]), int(self.geburtsdatum[:2]))
@@ -512,12 +514,12 @@ class MainWindow(QMainWindow):
             # Titel
             labelScoreName = QLabel(str(self.scoreRoot.get("name"))) # type: ignore
             labelScoreName.setFont(self.fontBoldGross)
-            labelScoreName.setStyleSheet("color:rgb(0,0,200)")
+            labelScoreName.setPalette(farbe.getTextPalette(farbe.farben.BLAU, self.palette()))
             if self.scoreRoot.find("information") != None: #type: ignore
                 labelScoreInformation = QLabel(str(self.scoreRoot.find("information").text)) #type: ignore
                 labelScoreInformation.setFont(self.fontNormal)
-                labelScoreInformation.setStyleSheet("color:rgb(0,0,200)")
-            if self.scoreRoot.find("quelle") != None: #type: ignore
+                labelScoreInformation.setPalette(farbe.getTextPalette(farbe.farben.BLAU, self.palette()))
+            if self.scoreRoot.find("quelle") != None: # type: ignore
                 autor = str(self.scoreRoot.find("quelle").get("autor")) # type: ignore
                 quelle = "Quelle: " + str(self.scoreRoot.find("quelle").text) + " (" + autor + ")" # type: ignore
                 maxQuellenLaenge = 100
@@ -530,6 +532,21 @@ class MainWindow(QMainWindow):
                         pos += int(maxQuellenLaenge / 2)
                 labelScoreName.setToolTip(quelle)
                 labelScoreName.setCursor(Qt.CursorShape.WhatsThisCursor)
+            # Definitionen
+            if self.scoreRoot.find("begriffsdefinitionen") != None: # type: ignore
+                groupBoxBegriffsdefinitionen = QGroupBox("Begriffsdefinitionen")
+                groupBoxBegriffsdefinitionen.setFont(self.fontBold)
+                begriffsdefinitionenElement = self.scoreRoot.find("begriffsdefinitionen") # type: ignore
+                zeile = 0
+                for definitionElement in begriffsdefinitionenElement.findall("definition"): # type: ignore
+                    bezeichnungLabel = QLabel(str(definitionElement.get("bezeichnung")))
+                    bezeichnungLabel.setFont(self.fontNormal)
+                    groupBoxBegriffsdefinitionenLayoutG.addWidget(bezeichnungLabel, zeile, 0, alignment=Qt.AlignmentFlag.AlignLeft) # type: ignore
+                    definitionLabel = QLabel(definitionElement.text)
+                    definitionLabel.setFont(self.fontNormal)
+                    groupBoxBegriffsdefinitionenLayoutG.addWidget(definitionLabel, zeile, 1, alignment=Qt.AlignmentFlag.AlignLeft)
+                    zeile += 1
+                groupBoxBegriffsdefinitionen.setLayout(groupBoxBegriffsdefinitionenLayoutG)
             # Score
             if self.scoreRoot.get("altersregel") != None: # type: ignore
                 alter = getAktuellesAlterInJahren(self.geburtsdatumAlsDate)
@@ -656,8 +673,7 @@ class MainWindow(QMainWindow):
                     mainLayoutG.addWidget(groupBox, part.getZeile(), part.getSpalte())
 
             self.pushButtonBerechnen = QPushButton("Score berechnen")
-            self.pushButtonBerechnen.setStyleSheet("color:rgb(0,0,200)")
-            self.pushButtonBerechnen.setFixedHeight(40)
+            self.pushButtonBerechnen.setFixedHeight(60)
             self.pushButtonBerechnen.setFont(self.fontBold)
             self.pushButtonBerechnen.clicked.connect(self.pushButtonBerechnenClicked)
 
@@ -688,10 +704,10 @@ class MainWindow(QMainWindow):
                 i = 0
                 for ergebnisbereich in ergebnisbereiche:
                     tempLabelErgebnis = QLabel(ergebnisbereich)
-                    tempLabelErgebnis.setStyleSheet("color:rgb(0,0,100)")
+                    # tempLabelErgebnis.setPalette(farbe.getTextPalette(farbe.farben.BLAU, self.palette()))
                     tempLabelErgebnis.setFont(self.fontNormal)
                     tempLabelBeschreibung= QLabel(beschreibungen[i])
-                    tempLabelBeschreibung.setStyleSheet("color:rgb(0,0,100)")
+                    # tempLabelBeschreibung.setPalette(farbe.getTextPalette(farbe.farben.BLAU, self.palette()))
                     tempLabelBeschreibung.setFont(self.fontNormal)
                     self.labelErgebnisbereiche.append(tempLabelErgebnis)
                     self.labelBeschreibungen.append(tempLabelBeschreibung)
@@ -720,7 +736,6 @@ class MainWindow(QMainWindow):
             self.pushButtonSenden = QPushButton("Daten senden")
             self.pushButtonSenden.setFont(self.fontBold)
             self.pushButtonSenden.setFixedHeight(60)
-            self.pushButtonSenden.setEnabled(self.addOnsFreigeschaltet)
             self.pushButtonSenden.clicked.connect(self.pushButtonSendenClicked)
             datumBenutzerLayoutG.addWidget(labelDokumentiertAm, 0, 0)
             datumBenutzerLayoutG.addWidget(labelDokumentiertVon, 0, 1)
@@ -736,6 +751,8 @@ class MainWindow(QMainWindow):
             if self.scoreRoot.find("information") != None: #type: ignore
                 mainLayoutV.addWidget(labelScoreInformation, alignment=Qt.AlignmentFlag.AlignCenter)
             mainLayoutV.addLayout(mainLayoutG)
+            if self.scoreRoot.find("begriffsdefinitionen") != None: # type: ignore
+                mainLayoutV.addWidget(groupBoxBegriffsdefinitionen, alignment=Qt.AlignmentFlag.AlignCenter)
             mainLayoutV.addWidget(self.pushButtonBerechnen)
             ergebnisLayoutH.addWidget(labelScoreErgebnis)
             ergebnisLayoutH.addWidget(self.lineEditScoreErgebnis)
@@ -743,16 +760,19 @@ class MainWindow(QMainWindow):
             mainLayoutV.addLayout(ergebnisLayoutH)
             mainLayoutV.addSpacing(20)
             if auswertungElement != None:
-                mainLayoutV.addWidget(groupBoxAuswertung)
+                mainLayoutV.addWidget(groupBoxAuswertung, alignment=Qt.AlignmentFlag.AlignCenter)
             mainLayoutV.addLayout(datumBenutzerLayoutG)
             mainLayoutV.addWidget(self.pushButtonSenden)
             ## Nur mit Lizenz
             if self.addOnsFreigeschaltet:
                 gueltigeLizenztage = gdttoolsL.GdtToolsLizenzschluessel.nochTageGueltig(self.lizenzschluessel)
-                if gdttoolsL.GdtToolsLizenzschluessel.getGueltigkeitsdauer(self.lizenzschluessel) == gdttoolsL.Gueltigkeit.EINJAHR and gueltigeLizenztage  > 0 and gueltigeLizenztage <= 30:
+                if gueltigeLizenztage  > 0 and gueltigeLizenztage <= 30:
                     labelLizenzLaeuftAus = QLabel("Die genutzte Lizenz ist noch " + str(gueltigeLizenztage) + " Tage gültig.")
-                    labelLizenzLaeuftAus.setStyleSheet("color:rgb(200,0,0)")
+                    labelLizenzLaeuftAus.setPalette(farbe.getTextPalette(farbe.farben.ROT, self.palette()))
                     mainLayoutV.addWidget(labelLizenzLaeuftAus, alignment=Qt.AlignmentFlag.AlignCenter)
+            else:
+                self.pushButtonSenden.setEnabled(False)
+                self.pushButtonSenden.setText("Keine gültige Lizenz")
             ## /Nur mit Lizenz
             self.widget.setLayout(mainLayoutV)
             self.setCentralWidget(self.widget)
@@ -1236,10 +1256,10 @@ class MainWindow(QMainWindow):
         """
         auswertungElement = self.scoreRoot.find("auswertung") # type: ignore
         if auswertungElement != None:
-            # Alle Auswertungslabel blau
+            # Alle Auswertungslabel Normalfarbe
             for i in range(len(self.labelErgebnisbereiche)):
-                self.labelErgebnisbereiche[i].setStyleSheet("color:rgb(0,0,100)")
-                self.labelBeschreibungen[i].setStyleSheet("color:rgb(0,0,100)")
+                self.labelErgebnisbereiche[i].setPalette(farbe.getTextPalette(farbe.farben.NORMAL, self.palette()))
+                self.labelBeschreibungen[i].setPalette(farbe.getTextPalette(farbe.farben.NORMAL, self.palette()))
         if auswertungElement != None and ergebnis != "":
             ergebnis = str(ergebnis)
             beurteilungNr = 0
@@ -1257,8 +1277,8 @@ class MainWindow(QMainWindow):
             if self.erfuellteAuswertungsregel != -1:
                 for i in range(len(self.labelErgebnisbereiche)):
                     if self.erfuellteAuswertungsregel == i:
-                        self.labelErgebnisbereiche[i].setStyleSheet("color:rgb(0,150,0)")
-                        self.labelBeschreibungen[i].setStyleSheet("color:rgb(0,150,0)")
+                        self.labelErgebnisbereiche[i].setPalette(farbe.getTextPalette(farbe.farben.GRUEN, self.palette()))
+                        self.labelBeschreibungen[i].setPalette(farbe.getTextPalette(farbe.farben.GRUEN, self.palette()))
 
     def dateEditUntersuchungsdatumChanged(self, datum):
         self.untersuchungsdatum = datum

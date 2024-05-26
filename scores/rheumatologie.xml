@@ -1,0 +1,65 @@
+<root>
+	<score name="ACR/EULAR RA" gruppe="Rheumatologie">
+        <information>Klassifikation der rheumatoiden Arthritis</information>
+        <quelle autor="">American College of Rheumatology, European Allicance of Associations for Rheumatology</quelle>
+        <begriffsdefinitionen>
+            <definition bezeichnung="Große Gelenke">Schulter, Ellenbogen, Hüftgelenk, Knie, Sprunggelenk</definition>
+            <definition bezeichnung="Kleine Gelenke">Handgelenk, Fingergrundgelenke (MCP), Fingermittelgelenke (PIP),&#13;&#10;Interphalagealgelenk des Daumens, Zehengrundgelenke II-IV</definition>
+            <definition bezeichnung="Niedrigtitrig positiv">&#x3c; 3-fach des Normwertes</definition>
+            <definition bezeichnung="Hochtitrig positiv">&#x2265; 3-fach des Normwertes</definition>
+        </begriffsdefinitionen>
+        <part typ="Frame" id="0" titel="" zeile="0" spalte="0">
+            <widget id="100" typ="ComboBox" titel="Gelenkschwellung/Synovialitis" titelbreite="200">
+                <items>
+                    <item wert="0">&#x2264; 1 großes Gelenk</item>
+                    <item wert="1">2-10 große Gelenke</item>
+                    <item wert="2">1-3 kleine Gelenke</item>
+                    <item wert="3">4-10 kleine Gelenke</item>
+                    <item wert="5">&#x3e; 10 kleine Gelenke (mind. 1 kleines)</item>
+                </items>
+            </widget>
+        </part>
+        <part typ="Frame" id="1" titel="" zeile="0" spalte="1">
+            <widget id="101" typ="ComboBox" titel="Serologie" titelbreite="80">
+                <items>
+                    <item wert="0">Rheumafaktor und CCP negativ</item>
+                    <item wert="2">Rheumafaktor oder CCP niedertitrig positiv</item>
+                    <item wert="3">Rheumafaktor oder CCP hochtitrig positiv</item>
+                </items>
+            </widget>
+        </part>
+        <part typ="Frame" id="2" titel="" zeile="1" spalte="0">
+            <widget id="102" typ="ComboBox" titel="Akute Phase" titelbreite="200">
+                <items>
+                    <item wert="0">CRP und BSG normal</item>
+                    <item wert="1">CRP oder BSG erhöht</item>
+                </items>
+            </widget>
+        </part>
+        <part typ="Frame" id="3" titel="" zeile="1" spalte="1">
+            <widget id="103" typ="ComboBox" titel="Dauer" titelbreite="80">
+                <items>
+                    <item wert="0">&#x3c; 6 Wochen</item>
+                    <item wert="1">&#x2265; 6 Wochen</item>
+                </items>
+            </widget>
+        </part>
+        <berechnung>
+            <formel>$id{100} + $id{101} + $id{102} + $id{103}</formel>
+            <ergebniseinheit>Punkte</ergebniseinheit>
+            <variablen />
+        </berechnung>
+        <auswertung>
+            <beurteilung>
+                <ergebnisbereich>&#x3c; 6 Punkte</ergebnisbereich>
+                <beschreibung>Keine definitive rheumatoide Arthritis</beschreibung>
+                <regel>KLEINERALS 6</regel>
+            </beurteilung>  
+            <beurteilung>
+                <ergebnisbereich>6 - 10 Punkte</ergebnisbereich>
+                <beschreibung>Definitive rheumatoide Arthritis</beschreibung>
+                <regel>GROESSERGLEICHALS 6</regel>
+            </beurteilung>  
+        </auswertung>
+    </score>
+</root>
