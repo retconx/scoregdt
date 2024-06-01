@@ -95,7 +95,6 @@ class ScoreAuswahl(QDialog):
         frame.setLayout(dialogLayoutV)
         scrollArea.setWidget(frame)
         
-        
         frameLayoutV.addWidget(scrollArea)
         frameLayoutV.addWidget(self.buttonBox)
         self.setLayout(frameLayoutV)

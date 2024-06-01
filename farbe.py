@@ -14,7 +14,7 @@ def getTextPalette(farbe:farben, aktuellePalette:QPalette):
     modus = "hell"
     if aktuellePalette.color(QPalette.Base).value() < 150:
         modus = "dunkel"
-    palette = QPalette()
     r, g, b = farbe.value[modus]
+    palette = QPalette()
     palette.setColor(QPalette.WindowText, QColor(r, g, b))
     return palette

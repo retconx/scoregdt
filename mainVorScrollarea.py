@@ -11,8 +11,6 @@ from PySide6.QtCore import Qt, QTranslator, QLibraryInfo, QDate, QTime
 from PySide6.QtGui import QFont, QAction, QIcon, QDesktopServices, QPixmap
 from PySide6.QtWidgets import (
     QApplication,
-    QSizePolicy,
-    QLayout,
     QMainWindow,
     QVBoxLayout,
     QGroupBox,
@@ -26,8 +24,7 @@ from PySide6.QtWidgets import (
     QMessageBox,
     QPushButton,
     QComboBox,
-    QButtonGroup,
-    QScrollArea
+    QButtonGroup
 )
 
 @staticmethod
@@ -83,20 +80,16 @@ except ImportError:
 
 class MainWindow(QMainWindow):
 
-    resizeVollzogen = False
-
     # Mainwindow zentrieren
     def resizeEvent(self, e):
-        if not self.resizeVollzogen:
-            ag = self.screen().availableGeometry()
-            screenBreite = ag.size().width()
-            screenHoehe = ag.size().height()
-            mainwindowBreite = e.size().width()
-            mainwindowHoehe = e.size().height()
-            left = int(screenBreite / 2 - mainwindowBreite / 2)
-            top = int(screenHoehe / 2 - mainwindowHoehe / 2)
-            self.setGeometry(left, top, mainwindowBreite, mainwindowHoehe)
-            self.resizeVollzogen = True
+        mainwindowBreite = e.size().width()
+        mainwindowHoehe = e.size().height()
+        ag = self.screen().availableGeometry()
+        screenBreite = ag.size().width()
+        screenHoehe = ag.size().height()
+        left = screenBreite / 2 - mainwindowBreite / 2
+        top = screenHoehe / 2 - mainwindowHoehe / 2
+        self.setGeometry(left, top, mainwindowBreite, mainwindowHoehe)
 
     def __init__(self):
         super().__init__()
@@ -497,8 +490,6 @@ class MainWindow(QMainWindow):
 
             # Formularaufbau
             mainLayoutV = QVBoxLayout()
-            scrollArea = QScrollArea()
-            scrollWidget = QWidget()
             mainLayoutG = QGridLayout()
             groupBoxBegriffsdefinitionenLayoutG = QGridLayout()
             # Patientendaten
@@ -682,7 +673,7 @@ class MainWindow(QMainWindow):
                     mainLayoutG.addWidget(groupBox, part.getZeile(), part.getSpalte())
 
             self.pushButtonBerechnen = QPushButton("Score berechnen")
-            self.pushButtonBerechnen.setFixedHeight(40)
+            self.pushButtonBerechnen.setFixedHeight(60)
             self.pushButtonBerechnen.setFont(self.fontBold)
             self.pushButtonBerechnen.clicked.connect(self.pushButtonBerechnenClicked)
 
@@ -714,8 +705,10 @@ class MainWindow(QMainWindow):
                 i = 0
                 for ergebnisbereich in ergebnisbereiche:
                     tempLabelErgebnis = QLabel(ergebnisbereich + ":")
+                    # tempLabelErgebnis.setPalette(farbe.getTextPalette(farbe.farben.BLAU, self.palette()))
                     tempLabelErgebnis.setFont(self.fontNormal)
                     tempLabelBeschreibung= QLabel(beschreibungen[i])
+                    # tempLabelBeschreibung.setPalette(farbe.getTextPalette(farbe.farben.BLAU, self.palette()))
                     tempLabelBeschreibung.setFont(self.fontNormal)
                     self.labelErgebnisbereiche.append(tempLabelErgebnis)
                     self.labelBeschreibungen.append(tempLabelBeschreibung)
@@ -743,7 +736,7 @@ class MainWindow(QMainWindow):
             self.comboBoxBenutzer.setCurrentIndex(aktBenNum)
             self.pushButtonSenden = QPushButton("Daten senden")
             self.pushButtonSenden.setFont(self.fontBold)
-            self.pushButtonSenden.setFixedHeight(40)
+            self.pushButtonSenden.setFixedHeight(60)
             self.pushButtonSenden.clicked.connect(self.pushButtonSendenClicked)
             datumBenutzerLayoutG.addWidget(labelDokumentiertAm, 0, 0)
             datumBenutzerLayoutG.addWidget(labelDokumentiertVon, 0, 1)
@@ -758,23 +751,11 @@ class MainWindow(QMainWindow):
             mainLayoutV.addWidget(labelScoreName, alignment=Qt.AlignmentFlag.AlignCenter)
             if self.scoreRoot.find("information") != None: #type: ignore
                 mainLayoutV.addWidget(labelScoreInformation, alignment=Qt.AlignmentFlag.AlignCenter)
+            mainLayoutV.addLayout(mainLayoutG)
+            
             if self.scoreRoot.find("begriffsdefinitionen") != None: # type: ignore
-                mainLayoutG.addWidget(groupBoxBegriffsdefinitionen, mainLayoutG.rowCount(), 0, 1, mainLayoutG.columnCount(), alignment=Qt.AlignmentFlag.AlignCenter)
-            scrollWidget.setLayout(mainLayoutG)
-            mainLayoutGBreite = mainLayoutG.sizeHint().width()
-            screenBreite = self.screen().availableGeometry().width()
-            if mainLayoutGBreite > screenBreite * 0.95:
-                mainLayoutGBreite = int(screenBreite * 0.95)
-            scrollArea.setFixedWidth(mainLayoutGBreite + 20)
-            mainLayoutGHoehe = mainLayoutG.sizeHint().height()
-            screenHoehe = self.screen().availableGeometry().height()
-            if mainLayoutGHoehe + self.height() < screenHoehe * 0.95:
-                scrollArea.setFixedHeight(mainLayoutGHoehe + 20)
-            scrollArea.setSizePolicy(QSizePolicy.Policy.Minimum, QSizePolicy.Policy.MinimumExpanding)
-            scrollArea.setWidget(scrollWidget)
-            scrollArea.setWidgetResizable(True)
-            mainLayoutV.addWidget(scrollArea)
-            mainLayoutV.addWidget(self.pushButtonBerechnen) 
+                mainLayoutV.addWidget(groupBoxBegriffsdefinitionen, alignment=Qt.AlignmentFlag.AlignCenter)
+            mainLayoutV.addWidget(self.pushButtonBerechnen)
             ergebnisLayoutH.addWidget(labelScoreErgebnis)
             ergebnisLayoutH.addWidget(self.lineEditScoreErgebnis)
             ergebnisLayoutH.addWidget(self.labelScoreErgebnisEinheit)
