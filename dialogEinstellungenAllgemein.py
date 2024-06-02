@@ -30,6 +30,8 @@ class EinstellungenAllgemein(QDialog):
         #config.ini lesen
         configIni = configparser.ConfigParser()
         configIni.read(os.path.join(configPath, "config.ini"))
+        self.einrichtungsname = configIni["Allgemein"]["einrichtungsname"]
+        self.einrichtunguebernehmen = configIni["Allgemein"]["einrichtunguebernehmen"] == "True"
         self.bereichsgrenzenerzwingen = configIni["Allgemein"]["bereichsgrenzenerzwingen"] == "True"
         self.updaterpfad = configIni["Allgemein"]["updaterpfad"]
         self.autoupdate = configIni["Allgemein"]["autoupdate"] == "True"
@@ -41,6 +43,22 @@ class EinstellungenAllgemein(QDialog):
         self.buttonBox.rejected.connect(self.reject) # type:ignore
 
         dialogLayoutV = QVBoxLayout()
+        # Groupbox Einrichtung
+        groupBoxEinrichtungLayoutG = QGridLayout()
+        groupBoxEinrichtung = QGroupBox("Einrichtung/Praxis")
+        groupBoxEinrichtung.setFont(self.fontBold)
+        labelEinrichtungsname = QLabel("Name")
+        labelEinrichtungsname.setFont(self.fontNormal)
+        self.lineEditEinrichtungsname = QLineEdit(self.einrichtungsname)
+        self.lineEditEinrichtungsname.setFont(self.fontNormal)
+        self.lineEditEinrichtungsname.setPlaceholderText("Hausarztpraxis XY")
+        self.checkBoxEinrichtungUebernehmen = QCheckBox("Auf PDF übernehmen")
+        self.checkBoxEinrichtungUebernehmen.setFont(self.fontNormal)
+        self.checkBoxEinrichtungUebernehmen.setChecked(self.einrichtunguebernehmen)
+        groupBoxEinrichtungLayoutG.addWidget(labelEinrichtungsname, 0, 0)
+        groupBoxEinrichtungLayoutG.addWidget(self.lineEditEinrichtungsname, 0, 1)
+        groupBoxEinrichtungLayoutG.addWidget(self.checkBoxEinrichtungUebernehmen, 1, 0, 1, 2)
+        groupBoxEinrichtung.setLayout(groupBoxEinrichtungLayoutG)
         # Groupbox Scores
         groupBoxScoresLayoutG = QGridLayout()
         groupBoxScores = QGroupBox("Scores")
@@ -92,6 +110,7 @@ class EinstellungenAllgemein(QDialog):
         groupBoxUpdatesLayoutG.addWidget(self.pushButtonUpdaterPfad, 0, 2)
         groupBoxUpdates.setLayout(groupBoxUpdatesLayoutG)
     
+        dialogLayoutV.addWidget(groupBoxEinrichtung)
         dialogLayoutV.addWidget(groupBoxScores)
         dialogLayoutV.addWidget(groupBoxUpdates)
         dialogLayoutV.addWidget(self.buttonBox)

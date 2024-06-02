@@ -21,13 +21,11 @@
             <widget id="105" typ="CheckBox" titel="Labile INR-Einstellung">
                 <wert>1</wert>
             </widget>
-            <widget id="106" typ="CheckBox" titel="Elderly" alterspruefung="True" altersregel="GROESSERGLEICHALS65">
+            <widget id="106" typ="CheckBox" titel="Alter &#x2265; 65 Jahre" alterspruefung="True" altersregel="GROESSERGLEICHALS65">
                 <wert>1</wert>
-                <erklaerung>Alter &#x2265; 65 Jahre</erklaerung>
             </widget>
-            <widget id="107" typ="CheckBox" titel="Drugs">
+            <widget id="107" typ="CheckBox" titel="Thrombozytenaggregationshemmer oder NSAR">
                 <wert>1</wert>
-                <erklaerung>Thrombozytenaggregationshemmer oder NSAR</erklaerung>
             </widget>
             <widget id="108" typ="CheckBox" titel="Drugs">
                 <wert>1</wert>

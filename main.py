@@ -6,17 +6,17 @@ import gdttoolsL
 ## /Nur mit Lizenz
 import gdt, gdtzeile, class_part, class_widgets, class_score, farbe
 import dialogUeberScoreGdt, dialogEinstellungenAllgemein, dialogEinstellungenGdt, dialogEinstellungenBenutzer, dialogEinstellungenLanrLizenzschluessel, dialogEula, dialogEinstellungenImportExport, dialogScoreAuswahl, dialogEinstellungenFavoriten
-import class_enums, class_score, class_Rechenoperation
+import class_enums, class_score, class_Rechenoperation, scorepdf
 from PySide6.QtCore import Qt, QTranslator, QLibraryInfo, QDate, QTime
 from PySide6.QtGui import QFont, QAction, QIcon, QDesktopServices, QPixmap
 from PySide6.QtWidgets import (
     QApplication,
     QSizePolicy,
-    QLayout,
     QMainWindow,
     QVBoxLayout,
     QGroupBox,
     QFrame,
+    QCheckBox,
     QHBoxLayout,
     QGridLayout,
     QWidget,
@@ -167,6 +167,16 @@ class MainWindow(QMainWindow):
         self.updaterpfad = ""
         if self.configIni.has_option("Allgemein", "updaterpfad"):
             self.updaterpfad = self.configIni["Allgemein"]["updaterpfad"]
+        # 1.16.0
+        self.pdferzeugen = False
+        if self.configIni.has_option("Allgemein", "pdferzeugen"):
+            self.pdferzeugen = self.configIni["Allgemein"]["pdferzeugen"] == "True"
+        self.einrichtunguebernehmen = False
+        if self.configIni.has_option("Allgemein", "einrichtunguebernehmen"):
+            self.einrichtunguebernehmen = self.configIni["Allgemein"]["einrichtunguebernehmen"] == "True"
+        self.einrichtungsname = ""
+        if self.configIni.has_option("Allgemein", "einrichtungsname"):
+            self.einrichtungsname = self.configIni["Allgemein"]["einrichtungsname"]
         ## /Nachträglich hinzufefügte Options
 
         z = self.configIni["GDT"]["zeichensatz"]
@@ -279,6 +289,13 @@ class MainWindow(QMainWindow):
                 # 1.14.0 -> 1.14.1
                 if not self.configIni.has_option("Allgemein", "updaterpfad"):
                     self.configIni["Allgemein"]["updaterpfad"] = ""
+                # 1.15.2 -> 1.16.0
+                if not self.configIni.has_option("Allgemein", "pdferzeugen"):
+                    self.configIni["Allgemein"]["pdferzeugen"] = "False"
+                if not self.configIni.has_option("Allgemein", "einrichtungsname"):
+                    self.configIni["Allgemein"]["einrichtungsname"] = ""
+                if not self.configIni.has_option("Allgemein", "einrichtunguebernehmen"):
+                    self.configIni["Allgemein"]["einrichtunguebernehmen"] = "False"
                 ## /config.ini aktualisieren
                 ## scores.xml löschen (ab 1.8.0)
                 try:
@@ -741,6 +758,10 @@ class MainWindow(QMainWindow):
             if self.aktuelleBenuztzernummer < len(self.benutzernamenListe):
                 aktBenNum = self.aktuelleBenuztzernummer
             self.comboBoxBenutzer.setCurrentIndex(aktBenNum)
+            layoutPdfErstellenDatenSendenH = QHBoxLayout()
+            self.checkBoxPdfErzeugen = QCheckBox("PDF erzeugen")
+            self.checkBoxPdfErzeugen.setChecked(self.pdferzeugen)
+            self.checkBoxPdfErzeugen.setFixedWidth(150)
             self.pushButtonSenden = QPushButton("Daten senden")
             self.pushButtonSenden.setFont(self.fontBold)
             self.pushButtonSenden.setFixedHeight(40)
@@ -749,6 +770,8 @@ class MainWindow(QMainWindow):
             datumBenutzerLayoutG.addWidget(labelDokumentiertVon, 0, 1)
             datumBenutzerLayoutG.addWidget(self.dateEditUntersuchungsdatum, 1, 0)
             datumBenutzerLayoutG.addWidget(self.comboBoxBenutzer, 1, 1)
+            layoutPdfErstellenDatenSendenH.addWidget(self.checkBoxPdfErzeugen)
+            layoutPdfErstellenDatenSendenH.addWidget(self.pushButtonSenden)
                         
             ## Nur mit Lizenz
             if self.addOnsFreigeschaltet and gdttoolsL.GdtToolsLizenzschluessel.getSoftwareId(self.lizenzschluessel) == gdttoolsL.SoftwareId.SCOREGDTPSEUDO:
@@ -783,7 +806,7 @@ class MainWindow(QMainWindow):
             if auswertungElement != None:
                 mainLayoutV.addWidget(groupBoxAuswertung, alignment=Qt.AlignmentFlag.AlignCenter)
             mainLayoutV.addLayout(datumBenutzerLayoutG)
-            mainLayoutV.addWidget(self.pushButtonSenden)
+            mainLayoutV.addLayout(layoutPdfErstellenDatenSendenH)
             ## Nur mit Lizenz
             if self.addOnsFreigeschaltet:
                 gueltigeLizenztage = gdttoolsL.GdtToolsLizenzschluessel.nochTageGueltig(self.lizenzschluessel)
@@ -1337,6 +1360,7 @@ class MainWindow(QMainWindow):
     def pushButtonSendenClicked(self):
         if self.lineEditScoreErgebnis.text() != "":
             logger.logger.info("Daten senden geklickt")
+            self.pdferzeugen = self.checkBoxPdfErzeugen.isChecked()
             # GDT-Datei erzeugen
             sh = gdt.SatzHeader(gdt.Satzart.DATEN_EINER_UNTERSUCHUNG_UEBERMITTELN_6310, self.configIni["GDT"]["idpraxisedv"], self.configIni["GDT"]["idscoregdt"], self.zeichensatz, "2.10", "Fabian Treusch - GDT-Tools", "ScoreGDT", self.version, self.patId)
             gd = gdt.GdtDatei()
@@ -1350,8 +1374,36 @@ class MainWindow(QMainWindow):
             gd.addZeile("6200", untersuchungsdatum)
             gd.addZeile("6201", uhrzeit)
             gd.addZeile("8402", "ALLG00")
+            gdtname = str(self.scoreRoot.get("name")) # type: ignore
+            if self.scoreRoot.get("gdtname") != None: # type: ignore
+                gdtname = str(self.scoreRoot.get("gdtname")) # type: ignore
+            # PDF erzeugen
+            pdf = None
+            if self.pdferzeugen:
+                logger.logger.info("PDF-Erzeugung aktiviert")
+                gd.addZeile("6302", "scorepdf")
+                gd.addZeile("6303", "pdf")
+                gd.addZeile("6304", gdtname) # type: ignore
+                gd.addZeile("6305", os.path.join(basedir, "pdf/score_temp.pdf"))
+                # PDF erzeugen
+                pdf = scorepdf.scorepdf("P", "mm", "A4", str(self.scoreRoot.get("name"))) # type: ignore
+                logger.logger.info("FPDF-Instanz erzeugt")
+                pdf.add_page()
+                pdf.set_font("dejavu", "", 14)
+                pdf.cell(0, 10, "von " + self.name + " (* " + self.geburtsdatum + ")", align="C", new_x="LMARGIN", new_y="NEXT")
+                pdf.set_font("dejavu", "", 10)
+                untdat = "{:>02}".format(str(self.untersuchungsdatum.day())) + "." + "{:>02}".format(str(self.untersuchungsdatum.month())) + "." + str(self.untersuchungsdatum.year())
+                einrichtung = ""
+                if self.einrichtunguebernehmen:
+                    einrichtung = self.einrichtungsname
+                pdf.cell(0, 6, "Erstellt am " + untdat + " von " + einrichtung, align="C", new_x="LMARGIN", new_y="NEXT")
+                pdf.cell(0, 10, new_x="LMARGIN", new_y="NEXT")
+                pdf.set_font("dejavu", "", 14)
+                pdf.set_fill_color(240,240,240)
+                
             # Tests
             if str(self.scoreRoot.get("keineTestuebermittlung")) != "True": # type: ignore
+                i = 0
                 for widget in self.widgets:
                     test = None
                     if widget.getTyp() == class_widgets.WidgetTyp.LINEEDIT:
@@ -1372,17 +1424,43 @@ class MainWindow(QMainWindow):
                         test = gdt.GdtTest("ScoreGDT" + "_" + widget.getId(), self.fuerGdtBereinigen(widget.getTitel()), widget.getWert().replace(".", ",").replace(",0", ""), self.fuerGdtBereinigen(widget.getEinheit())) # type: ignore
                     if test != None:
                         gd.addTest(test)
-            gdtname = str(self.scoreRoot.get("name")) # type: ignore
-            if self.scoreRoot.get("gdtname") != None: # type: ignore
-                gdtname = str(self.scoreRoot.get("gdtname")) # type: ignore
+                        if self.pdferzeugen and pdf != None:
+                            pdf.cell(90, 10, test.getTest()["8411_testBezeichnung"] + ":", fill=(i % 2 == 0))
+                            testergebnis = test.getTest()["8420_testErgebnis"]
+                            if widget.getTyp() == class_widgets.WidgetTyp.CHECKBOX:
+                                if testergebnis == "0":
+                                    testergebnis = "Nein"
+                                elif testergebnis == "1":
+                                    testergebnis = "Ja"
+                            pdf.cell(0, 10, testergebnis + " " + test.getTest()["8421_testEinheit"], align="R", new_x="LMARGIN", new_y="NEXT", fill=(i % 2 == 0))
+                            i += 1
             leerzeichenVorEinheit = " "
             if self.labelScoreErgebnisEinheit.text() == "%":
                 leerzeichenVorEinheit = ""
+            if self.erfuellteAuswertungsregel != -1:
+                auswertung = self.labelBeschreibungen[self.erfuellteAuswertungsregel].text()
+            if self.pdferzeugen and pdf != None:
+                pdf.set_font(style="B")
+                pdf.cell(90, 10, "Gesamt:", border="T")
+                pdf.cell(0, 10, self.lineEditScoreErgebnis.text() + leerzeichenVorEinheit + self.labelScoreErgebnisEinheit.text(), border="T", align="R", new_x="LMARGIN", new_y="NEXT")
+                if self.erfuellteAuswertungsregel != -1:
+                    pdf.cell(0, 10, new_x="LMARGIN", new_y="NEXT")
+                    pdf.cell(0, 10, "Auswertung/Interpretation:", new_x="LMARGIN", new_y="NEXT")
+                    pdf.set_font(style="")  
+                    pdf.cell(0, 10, auswertung, new_x="LMARGIN", new_y="NEXT")
+                pdf.set_y(-30)
+                pdf.set_font("dejavu", "I", 10)
+                pdf.cell(0, 10, "Generiert von ScoreGDT V" + self.version + " (\u00a9 GDT-Tools " + str(datetime.date.today().year) + ")", align="R")
+                logger.logger.info("PDF-Seite aufgebaut")
+                try:
+                    pdf.output(os.path.join(basedir, "pdf/score_temp.pdf"))
+                    logger.logger.info("PDF-Output nach " + os.path.join(basedir, "pdf/score_temp.pdf") + " erfolgreich")
+                except:
+                    logger.logger.error("Fehler bei PDF-Output nach " + os.path.join(basedir, "pdf/score_temp.pdf"))
             befund = gdtname + ": " +  self.lineEditScoreErgebnis.text() + leerzeichenVorEinheit + self.labelScoreErgebnisEinheit.text() # type: ignore
             gd.addZeile("6220", befund)
             if self.erfuellteAuswertungsregel != -1:
-                auswertung = "Beurteilung: " + self.labelBeschreibungen[self.erfuellteAuswertungsregel].text()
-                gd.addZeile("6220", auswertung)
+                gd.addZeile("6220", "Beurteilung: " + auswertung)
             gd.addZeile("6227", "Dokumentiert von: " + self.benutzerkuerzelListe[self.aktuelleBenuztzernummer])
             # GDT-Datei exportieren
             if not gd.speichern(os.path.join(self.gdtExportVerzeichnis, self.kuerzelpraxisedv + self.kuerzelscoregdt + ".gdt"), self.zeichensatz):
@@ -1390,6 +1468,7 @@ class MainWindow(QMainWindow):
                 mb = QMessageBox(QMessageBox.Icon.Warning, "Hinweis von ScoreGDT", "GDT-Export nicht möglich.\nBitte überprüfen Sie die Angabe des Exportverzeichnisses.", QMessageBox.StandardButton.Ok)
                 mb.exec()
             else: 
+                self.configIni["Allgemein"]["pdferzeugen"] = str(self.pdferzeugen)
                 self.configIni["Benutzer"]["letzter"] = str(self.aktuelleBenuztzernummer)
                 try:
                     with open(os.path.join(self.configPath, "config.ini"), "w", encoding="utf-8") as configfile:
@@ -1491,6 +1570,8 @@ class MainWindow(QMainWindow):
     def einstellungenAllgemein(self, checked, neustartfrage):
         de = dialogEinstellungenAllgemein.EinstellungenAllgemein(self.configPath, self.root, self.standardscore)
         if de.exec() == 1:
+            self.configIni["Allgemein"]["einrichtungsname"] = de.lineEditEinrichtungsname.text()
+            self.configIni["Allgemein"]["einrichtunguebernehmen"] = str(de.checkBoxEinrichtungUebernehmen.isChecked())
             self.configIni["Allgemein"]["bereichsgrenzenerzwingen"] = str(de.checkBoxZahlengrenzenpruefung.isChecked())
             self.configIni["Allgemein"]["standardscore"] = de.comboBoxScoreAuswahl.currentText()
             self.configIni["Allgemein"]["updaterpfad"] = de.lineEditUpdaterPfad.text()
