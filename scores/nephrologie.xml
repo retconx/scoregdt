@@ -68,84 +68,35 @@
                 </variable>
             </variablen>
         </berechnung>
+        <auswertung>
+            <beurteilung>
+                <ergebnisbereich>&#x3e; 89 ml/min/1,73 m&#xb2;</ergebnisbereich>
+                <beschreibung>Normale Nierenfunktion</beschreibung>
+                <regel>GROESSERALS 89</regel>
+            </beurteilung> 
+            <beurteilung>
+                <ergebnisbereich>60 - 89 ml/min/1,73 m&#xb2;</ergebnisbereich>
+                <beschreibung>Milde Nierenfunktionseinschränkung</beschreibung>
+                <regel>GROESSERGLEICHALS 60</regel>
+                <regel>KLEINERGLEICHALS0 89</regel>
+            </beurteilung> 
+            <beurteilung>
+                <ergebnisbereich>30 - 59 ml/min/1,73 m&#xb2;</ergebnisbereich>
+                <beschreibung>Moderate Nierenfunktionseinschränkung</beschreibung>
+                <regel>GROESSERGLEICHALS 30</regel>
+                <regel>KLEINERALS0 60</regel>
+            </beurteilung> 
+            <beurteilung>
+                <ergebnisbereich>15 - 29 ml/min/1,73 m&#xb2;</ergebnisbereich>
+                <beschreibung>Schwere Nierenfunktionseinschränkung</beschreibung>
+                <regel>GROESSERGLEICHALS 15</regel>
+                <regel>KLEINERALS0 30</regel>
+            </beurteilung> 
+            <beurteilung>
+                <ergebnisbereich>&#x3c; 15 ml/min/1,73 m&#xb2;</ergebnisbereich>
+                <beschreibung>Chronisches Nierenversagen</beschreibung>
+                <regel>KLEINERALS 15</regel>
+            </beurteilung> 
+        </auswertung>
     </score>
-    <!--<score name="CKD-EPI 2021" gruppe="Nephrologie">
-        <information>Abschätzung der glomerulären Filtrationsrate bei Erwachsenen</information>
-        <quelle>The National Kidney Foundation</quelle>
-        <part typ="Frame" id="0" titel="" zeile="0" spalte="0">
-            <widget id="100" typ="LineEdit" titel="Serum-Kreatinin"> 
-                <regex>^\d+([,.]\d+)?$</regex>
-                <einheit>mg/dl</einheit>
-            </widget>
-            <widget id="101" typ="LineEdit" titel="Alter" alterspruefung="True"> 
-                <regex>^\d+$</regex>
-                <einheit>Jahre</einheit>
-            </widget>
-        </part>
-        <part typ="GroupBox" id="1" titel="Geschlecht" zeile="1" spalte="0" geschlechtpruefung="True">
-            <widget id="102" typ="RadioButton" titel="Männlich" checked="True">
-                <wert>0</wert>   
-            </widget>
-            <widget id="103" typ="RadioButton" titel="Weiblich">
-                <wert>1</wert>   
-            </widget>
-        </part>
-        <berechnung>
-            <formel>142*$var{min}^$var{alpha}*$var{max}^-1,2*0,9938^$id{101}*$var{faktorweiblich}</formel>
-            <ergebniseinheit>ml/min/1,73 m&#xb2;</ergebniseinheit>
-            <variablen>
-                <variable name="kappa">
-                    <bedingung>
-                        <regel>$id{102} ISTGLEICH 0</regel>
-                        <wert>0.9</wert>
-                    </bedingung>
-                    <bedingung>
-                        <regel>$id{102} ISTGLEICH 1</regel>
-                        <wert>0.7</wert>
-                    </bedingung>
-                </variable>
-                <variable name="creadurchkappa">$id{100}/$var{kappa}</variable>
-                <variable name="min">
-                    <bedingung>
-                        <regel>$var{creadurchkappa} KLEINERALS 1</regel>
-                        <wert>$var{creadurchkappa}</wert>
-                    </bedingung>
-                    <bedingung>
-                        <regel>1 KLEINERGLEICHALS $var{creadurchkappa}</regel>
-                        <wert>1</wert>
-                    </bedingung>
-                </variable>
-                <variable name="max">
-                    <bedingung>
-                        <regel>$var{creadurchkappa} GROESSERALS 1</regel>
-                        <wert>$var{creadurchkappa}</wert>
-                    </bedingung>
-                    <bedingung>
-                        <regel>1 GROESSERGLEICHALS $var{creadurchkappa}</regel>
-                        <wert>1</wert>
-                    </bedingung>
-                </variable>
-                <variable name="alpha">
-                    <bedingung>
-                        <regel>$id{102} ISTGLEICH 0</regel>
-                        <wert>-0.302</wert>
-                    </bedingung>
-                    <bedingung>
-                        <regel>$id{102} ISTGLEICH 1</regel>
-                        <wert>-0.241</wert>
-                    </bedingung>
-                </variable>
-                <variable name="faktorweiblich">
-                    <bedingung>
-                        <regel>$id{102} ISTGLEICH 0</regel>
-                        <wert>1</wert>
-                    </bedingung>
-                    <bedingung>
-                        <regel>$id{102} ISTGLEICH 1</regel>
-                        <wert>1.012</wert>
-                    </bedingung>
-                </variable>
-            </variablen>
-        </berechnung>
-    </score>-->
 </root>

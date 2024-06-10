@@ -730,13 +730,14 @@ class MainWindow(QMainWindow):
                 self.labelBeschreibungen = []
                 i = 0
                 for ergebnisbereich in ergebnisbereiche:
-                    tempLabelErgebnis = QLabel(ergebnisbereich + ":")
+                    tempLabelErgebnis = QLabel(ergebnisbereich)
                     tempLabelErgebnis.setFont(self.fontNormal)
                     tempLabelBeschreibung= QLabel(beschreibungen[i])
                     tempLabelBeschreibung.setFont(self.fontNormal)
                     self.labelErgebnisbereiche.append(tempLabelErgebnis)
                     self.labelBeschreibungen.append(tempLabelBeschreibung)
                     groupBoxAuswertungLayoutG.addWidget(tempLabelErgebnis, i, 0)
+                    groupBoxAuswertungLayoutG.setHorizontalSpacing(20)
                     groupBoxAuswertungLayoutG.addWidget(tempLabelBeschreibung, i, 1)
                     i += 1
 

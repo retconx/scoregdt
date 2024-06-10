@@ -14,7 +14,7 @@ class WidgetTyp(Enum):
     LINEEDIT = "LineEdit"
     RADIOBUTTON = "RadioButton"
 
-regexZahl = r"^-?\d+([.,]\d)?$"
+regexZahl = r"^-?\d+([.,]\d+)?$"
 
 class Widget():
     # def __init__(self, id:str, partId:str, titel:str, erklaerung:str, einheit:str, bisherigesRoot:ElementTree.Element):
