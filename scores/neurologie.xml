@@ -565,4 +565,373 @@
             </beurteilung>   
         </auswertung>
     </score>
+    <score name="DemTect" gruppe="Neurologie">
+        <information>Früherkennung kognitiver Einschränkungen</information>
+        <quelle autor="Kalbe et al.">DemTect: a new, sensitive cognitive screening test to support the diagnosis of mild cognitive impairment and early dementia</quelle>
+        <part id="0" typ="GroupBox" titel="Wortliste (1. Durchgang)" erklaerung="Möglichst viele Worte wiederholen&#xa;(Reihenfolge egal)" zeile="0" spalte="0">
+            <widget id="100" typ="CheckBox" titel="Teller">
+                <wert>1</wert>
+            </widget>
+            <widget id="101" typ="CheckBox" titel="Hund">
+                <wert>1</wert>
+            </widget>
+            <widget id="102" typ="CheckBox" titel="Lampe">
+                <wert>1</wert>
+            </widget>
+            <widget id="103" typ="CheckBox" titel="Brief">
+                <wert>1</wert>
+            </widget>
+            <widget id="104" typ="CheckBox" titel="Apfel">
+                <wert>1</wert>
+            </widget>
+            <widget id="105" typ="CheckBox" titel="Hose">
+                <wert>1</wert>
+            </widget>
+            <widget id="106" typ="CheckBox" titel="Tisch">
+                <wert>1</wert>
+            </widget>
+            <widget id="107" typ="CheckBox" titel="Wiese">
+                <wert>1</wert>
+            </widget>
+            <widget id="108" typ="CheckBox" titel="Glas">
+                <wert>1</wert>
+            </widget>
+            <widget id="109" typ="CheckBox" titel="Baum">
+                <wert>1</wert>
+            </widget>
+        </part>
+        <part id="1" typ="GroupBox" titel="Wortliste (2. Durchgang)" erklaerung="Möglichst viele Worte wiederholen&#xa;(Reihenfolge egal)" zeile="0" spalte="1">
+            <widget id="110" typ="CheckBox" titel="Teller">
+                <wert>1</wert>
+            </widget>
+            <widget id="111" typ="CheckBox" titel="Hund">
+                <wert>1</wert>
+            </widget>
+            <widget id="112" typ="CheckBox" titel="Lampe">
+                <wert>1</wert>
+            </widget>
+            <widget id="113" typ="CheckBox" titel="Brief">
+                <wert>1</wert>
+            </widget>
+            <widget id="114" typ="CheckBox" titel="Apfel">
+                <wert>1</wert>
+            </widget>
+            <widget id="115" typ="CheckBox" titel="Hose">
+                <wert>1</wert>
+            </widget>
+            <widget id="116" typ="CheckBox" titel="Tisch">
+                <wert>1</wert>
+            </widget>
+            <widget id="117" typ="CheckBox" titel="Wiese">
+                <wert>1</wert>
+            </widget>
+            <widget id="118" typ="CheckBox" titel="Glas">
+                <wert>1</wert>
+            </widget>
+            <widget id="119" typ="CheckBox" titel="Baum">
+                <wert>1</wert>
+            </widget>
+        </part>
+        <part id="2" typ="GroupBox" titel="Zahlen umwandeln" erklaerung="Ziffern als Wörter schreiben und umgekehrt" zeile="0" spalte="2">
+            <widget id="120" typ="CheckBox" titel="209">
+                <wert>1</wert>
+            </widget>
+            <widget id="121" typ="CheckBox" titel="4054">
+                <wert>1</wert>
+            </widget>
+            <widget id="122" typ="CheckBox" titel="sechshunderteinundachtzig">
+                <wert>1</wert>
+            </widget>
+            <widget id="123" typ="CheckBox" titel="zweitausendsiebenundzwanzig">
+                <wert>1</wert>
+            </widget>
+        </part>
+        <part id="3" typ="GroupBox" titel="Supermarkt" erklaerung="Möglichst viele Supermarktwaren&#xa;in einer Minute nennen" zeile="1" spalte="0">
+            <widget id="124" typ="LineEdit" titel="Ware(n) (max. 30)">
+                <regex>^\d+$</regex>
+                <zahlengrenze regelart="GROESSERGLEICHALS">0</zahlengrenze>
+                <zahlengrenze regelart="KLEINERGLEICHALS">30</zahlengrenze>
+            </widget>
+        </part>
+        <part id="4" typ="GroupBox" titel="Zahlenfolge rückwärts" erklaerung="Die längste rückwärts genannte Folge zählt." zeile="1" spalte="1">
+            <widget id="125" buttongroup="zahlenfolge" typ="CheckBox" titel="7-2 oder 8-6">
+                <wert>2</wert>
+            </widget>
+            <widget id="126" buttongroup="zahlenfolge" typ="CheckBox" titel="4-7-9 oder 3-1-5">
+                <wert>3</wert>
+            </widget>
+            <widget id="127" buttongroup="zahlenfolge" typ="CheckBox" titel="5-4-9-6 oder 1-9-7-4">
+                <wert>4</wert>
+            </widget>
+            <widget id="128" buttongroup="zahlenfolge" typ="CheckBox" titel="2-7-5-3-6 oder 1-3-5-4-8">
+                <wert>5</wert>
+            </widget>
+            <widget id="129" buttongroup="zahlenfolge" typ="CheckBox" titel="8-1-3-5-4-2 oder 4-1-2-7-9-5">
+                <wert>6</wert>
+            </widget>
+        </part>
+        <part id="5" typ="GroupBox" titel="Wiederholung der Wortliste" erklaerung="Möglichst viele Worte wiederholen&#xa;(Reihenfolge egal)" zeile="1" spalte="2">
+            <widget id="130" typ="CheckBox" titel="Teller">
+                <wert>1</wert>
+            </widget>
+            <widget id="131" typ="CheckBox" titel="Hund">
+                <wert>1</wert>
+            </widget>
+            <widget id="132" typ="CheckBox" titel="Lampe">
+                <wert>1</wert>
+            </widget>
+            <widget id="133" typ="CheckBox" titel="Brief">
+                <wert>1</wert>
+            </widget>
+            <widget id="134" typ="CheckBox" titel="Apfel">
+                <wert>1</wert>
+            </widget>
+            <widget id="135" typ="CheckBox" titel="Hose">
+                <wert>1</wert>
+            </widget>
+            <widget id="136" typ="CheckBox" titel="Tisch">
+                <wert>1</wert>
+            </widget>
+            <widget id="137" typ="CheckBox" titel="Wiese">
+                <wert>1</wert>
+            </widget>
+            <widget id="138" typ="CheckBox" titel="Glas">
+                <wert>1</wert>
+            </widget>
+            <widget id="139" typ="CheckBox" titel="Baum">
+                <wert>1</wert>
+            </widget>
+        </part>
+        <berechnung>
+            <formel>$var{wortlisteKorrigiert} + $var{zahlenUmwandelnKorrigiert} + $var{supermarktKorrigiert} + $var{zahlenfolgeKorrigiert} + $var{wortlisteWiederholtKorrigiert}</formel>
+            <ergebniseinheit>Punkte</ergebniseinheit>
+            <variablen>
+                <variable name="wortliste">$id{100} + $id{101} + $id{102} + $id{103} + $id{104} + $id{105} + $id{106} + $id{107} + $id{108} + $id{109} + $id{110} + $id{111} + $id{112} + $id{113} + $id{114} + $id{115} + $id{116} + $id{117} + $id{118} + $id{119}</variable>
+                <variable name="zahlenUmwandeln">$id{120} + $id{121} + $id{122} + $id{123}</variable>
+                <variable name="supermarkt">$id{124}</variable>
+                <variable name="zahlenfolge">$id{125} + $id{126} + $id{127} + $id{128} + $id{129}</variable>
+                <variable name="wortlisteWiederholt">$id{130} + $id{131} + $id{132} + $id{133} + $id{134} + $id{135} + $id{136} + $id{137} + $id{138} + $id{139}</variable>
+                <variable name="wortlisteKorrigiert">
+                    <bedingung>
+                        <regel>$id{ALTER} KLEINERALS 60</regel>
+                        <regel>$var{wortliste} KLEINERGLEICHALS 7</regel>
+                        <wert>0</wert>
+                    </bedingung>
+                    <bedingung>
+                        <regel>$id{ALTER} KLEINERALS 60</regel>
+                        <regel>$var{wortliste} GROESSERGLEICHALS 8</regel>
+                        <regel>$var{wortliste} KLEINERGLEICHALS 10</regel>
+                        <wert>1</wert>
+                    </bedingung>
+                    <bedingung>
+                        <regel>$id{ALTER} KLEINERALS 60</regel>
+                        <regel>$var{wortliste} GROESSERGLEICHALS 11</regel>
+                        <regel>$var{wortliste} KLEINERGLEICHALS 12</regel>
+                        <wert>2</wert>
+                    </bedingung>
+                    <bedingung>
+                        <regel>$id{ALTER} KLEINERALS 60</regel>
+                        <regel>$var{wortliste} GROESSERGLEICHALS 13</regel>
+                        <wert>3</wert>
+                    </bedingung>
+                    <bedingung>
+                        <regel>$id{ALTER} GROESSERGLEICHALS 60</regel>
+                        <regel>$var{wortliste} KLEINERGLEICHALS 6</regel>
+                        <wert>0</wert>
+                    </bedingung>
+                    <bedingung>
+                        <regel>$id{ALTER} GROESSERGLEICHALS 60</regel>
+                        <regel>$var{wortliste} GROESSERGLEICHALS 7</regel>
+                        <regel>$var{wortliste} KLEINERGLEICHALS 8</regel>
+                        <wert>1</wert>
+                    </bedingung>
+                    <bedingung>
+                        <regel>$id{ALTER} GROESSERGLEICHALS 60</regel>
+                        <regel>$var{wortliste} GROESSERGLEICHALS 9</regel>
+                        <regel>$var{wortliste} KLEINERGLEICHALS 10</regel>
+                        <wert>2</wert>
+                    </bedingung>
+                    <bedingung>
+                        <regel>$id{ALTER} GROESSERGLEICHALS 60</regel>
+                        <regel>$var{wortliste} GROESSERGLEICHALS 11</regel>
+                        <wert>3</wert>
+                    </bedingung>
+                </variable>
+                <variable name="zahlenUmwandelnKorrigiert">
+                    <bedingung>
+                        <regel>$var{zahlenUmwandeln} ISTGLEICH 0</regel>
+                        <wert>0</wert>
+                    </bedingung>
+                    <bedingung>
+                        <regel>$var{zahlenUmwandeln} GROESSERGLEICHALS 1</regel>
+                        <regel>$var{zahlenUmwandeln} KLEINERGLEICHALS 2</regel>
+                        <wert>1</wert>
+                    </bedingung>
+                    <bedingung>
+                        <regel>$var{zahlenUmwandeln} ISTGLEICH 3</regel>
+                        <wert>2</wert>
+                    </bedingung>
+                    <bedingung>
+                        <regel>$var{zahlenUmwandeln} ISTGLEICH 4</regel>
+                        <wert>3</wert>
+                    </bedingung>
+                </variable>
+                <variable name="supermarktKorrigiert">
+                    <bedingung>
+                        <regel>$id{ALTER} KLEINERALS 60</regel>
+                        <regel>$var{supermarkt} KLEINERGLEICHALS 12</regel>
+                        <wert>0</wert>
+                    </bedingung>
+                    <bedingung>
+                        <regel>$id{ALTER} KLEINERALS 60</regel>
+                        <regel>$var{supermarkt} GROESSERGLEICHALS 13</regel>
+                        <regel>$var{supermarkt} KLEINERGLEICHALS 15</regel>
+                        <wert>1</wert>
+                    </bedingung>
+                    <bedingung>
+                        <regel>$id{ALTER} KLEINERALS 60</regel>
+                        <regel>$var{supermarkt} GROESSERGLEICHALS 16</regel>
+                        <regel>$var{supermarkt} KLEINERGLEICHALS 19</regel>
+                        <wert>2</wert>
+                    </bedingung>
+                    <bedingung>
+                        <regel>$id{ALTER} KLEINERALS 60</regel>
+                        <regel>$var{supermarkt} GROESSERGLEICHALS 20</regel>
+                        <wert>4</wert>
+                    </bedingung>
+                    <bedingung>
+                        <regel>$id{ALTER} GROESSERGLEICHALS 60</regel>
+                        <regel>$var{supermarkt} KLEINERGLEICHALS 5</regel>
+                        <wert>0</wert>
+                    </bedingung>
+                    <bedingung>
+                        <regel>$id{ALTER} GROESSERGLEICHALS 60</regel>
+                        <regel>$var{supermarkt} GROESSERGLEICHALS 6</regel>
+                        <regel>$var{supermarkt} KLEINERGLEICHALS 9</regel>
+                        <wert>1</wert>
+                    </bedingung>
+                    <bedingung>
+                        <regel>$id{ALTER} GROESSERGLEICHALS 60</regel>
+                        <regel>$var{supermarkt} GROESSERGLEICHALS 10</regel>
+                        <regel>$var{supermarkt} KLEINERGLEICHALS 15</regel>
+                        <wert>2</wert>
+                    </bedingung>
+                    <bedingung>
+                        <regel>$id{ALTER} GROESSERGLEICHALS 60</regel>
+                        <regel>$var{supermarkt} GROESSERGLEICHALS 16</regel>
+                        <wert>4</wert>
+                    </bedingung>
+                </variable>
+                <variable name="zahlenfolgeKorrigiert">
+                    <bedingung>
+                        <regel>$var{zahlenfolge} ISTGLEICH 0</regel>
+                        <wert>0</wert>
+                    </bedingung>
+                    <bedingung>
+                        <regel>$id{ALTER} KLEINERALS 60</regel>
+                        <regel>$var{zahlenfolge} GROESSERGLEICHALS 2</regel>
+                        <regel>$var{zahlenfolge} KLEINERGLEICHALS 3</regel>
+                        <wert>1</wert>
+                    </bedingung>
+                    <bedingung>
+                        <regel>$id{ALTER} KLEINERALS 60</regel>
+                        <regel>$var{zahlenfolge} ISTGLEICH 4</regel>
+                        <wert>2</wert>
+                    </bedingung>
+                    <bedingung>
+                        <regel>$id{ALTER} KLEINERALS 60</regel>
+                        <regel>$var{zahlenfolge} GROESSERGLEICHALS 5</regel>
+                        <wert>3</wert>
+                    </bedingung>
+                    <bedingung>
+                        <regel>$id{ALTER} GROESSERGLEICHALS 60</regel>
+                        <regel>$var{zahlenfolge} ISTGLEICH 2</regel>
+                        <wert>1</wert>
+                    </bedingung>
+                    <bedingung>
+                        <regel>$id{ALTER} GROESSERGLEICHALS 60</regel>
+                        <regel>$var{zahlenfolge} ISTGLEICH 3</regel>
+                        <wert>2</wert>
+                    </bedingung>
+                    <bedingung>
+                        <regel>$id{ALTER} GROESSERGLEICHALS 60</regel>
+                        <regel>$var{zahlenfolge} GROESSERGLEICHALS 4</regel>
+                        <wert>3</wert>
+                    </bedingung>
+                </variable>
+                <variable name="wortlisteWiederholtKorrigiert">
+                    <bedingung>
+                        <regel>$id{ALTER} KLEINERALS 60</regel>
+                        <regel>$var{wortlisteWiederholt} ISTGLEICH 0</regel>
+                        <wert>0</wert>
+                    </bedingung>
+                    <bedingung>
+                        <regel>$id{ALTER} KLEINERALS 60</regel>
+                        <regel>$var{wortlisteWiederholt} GROESSERGLEICHALS 1</regel>
+                        <regel>$var{wortlisteWiederholt} KLEINERGLEICHALS 3</regel>
+                        <wert>1</wert>
+                    </bedingung>
+                    <bedingung>
+                        <regel>$id{ALTER} KLEINERALS 60</regel>
+                        <regel>$var{wortlisteWiederholt} GROESSERGLEICHALS 4</regel>
+                        <regel>$var{wortlisteWiederholt} KLEINERGLEICHALS 5</regel>
+                        <wert>2</wert>
+                    </bedingung>
+                    <bedingung>
+                        <regel>$id{ALTER} KLEINERALS 60</regel>
+                        <regel>$var{wortlisteWiederholt} GROESSERGLEICHALS 6</regel>
+                        <wert>5</wert>
+                    </bedingung>
+                    <bedingung>
+                        <regel>$id{ALTER} GROESSERGLEICHALS 60</regel>
+                        <regel>$var{wortlisteWiederholt} ISTGLEICH 0</regel>
+                        <wert>0</wert>
+                    </bedingung>
+                    <bedingung>
+                        <regel>$id{ALTER} GROESSERGLEICHALS 60</regel>
+                        <regel>$var{wortlisteWiederholt} GROESSERGLEICHALS 1</regel>
+                        <regel>$var{wortlisteWiederholt} KLEINERGLEICHALS 2</regel>
+                        <wert>1</wert>
+                    </bedingung>
+                    <bedingung>
+                        <regel>$id{ALTER} GROESSERGLEICHALS 60</regel>
+                        <regel>$var{wortlisteWiederholt} GROESSERGLEICHALS 3</regel>
+                        <regel>$var{wortlisteWiederholt} KLEINERGLEICHALS 4</regel>
+                        <wert>2</wert>
+                    </bedingung>
+                    <bedingung>
+                        <regel>$id{ALTER} GROESSERGLEICHALS 60</regel>
+                        <regel>$var{wortlisteWiederholt} GROESSERGLEICHALS 5</regel>
+                        <wert>5</wert>
+                    </bedingung>
+                </variable>
+            </variablen>
+        </berechnung>
+        <auswertung>
+            <beurteilung>
+                <ergebnisbereich>13-18 Punkte</ergebnisbereich>
+                <beschreibung>Altersgemäße kognitive Leistung</beschreibung>
+                <regel>GROESSERALS 12</regel>
+            </beurteilung>  
+            <beurteilung>
+                <ergebnisbereich>9-12 Punkte</ergebnisbereich>
+                <beschreibung>Leichte kognitive Beeinträchtigung</beschreibung>
+                <regel>KLEINERGLEICHALS 12</regel>
+                <regel>GROESSERGLEICHALS 9</regel>
+            </beurteilung>  
+            <beurteilung>
+                <ergebnisbereich>&#x3c;9 Punkte</ergebnisbereich>
+                <beschreibung>Demenzverdacht</beschreibung>
+                <regel>KLEINERALS 9</regel>
+            </beurteilung>  
+        </auswertung>
+        <pdf>
+            <zeile titel="Wortliste" einheit="Punkte">wortlisteKorrigiert</zeile>
+            <zeile partid="2" einheit="Punkte">zahlenUmwandelnKorrigiert</zeile>
+            <zeile partid="3" einheit="Punkte">supermarktKorrigiert</zeile>
+            <zeile partid="4" einheit="Punkte">zahlenfolgeKorrigiert</zeile>
+            <zeile partid="5" einheit="Punkte">wortlisteWiederholtKorrigiert</zeile>
+        </pdf>
+    </score>
+
 </root>

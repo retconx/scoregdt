@@ -1042,7 +1042,7 @@ class MainWindow(QMainWindow):
 
     def ersetzeIdVariablen(self, string:str):
         """
-        Ersetzt Variablen im Format $id{xxx} mit dem aktuellen Wert des Widgets mit der id xxx
+        Ersetzt Variablen im Format $id{xxx} durch den aktuellen Wert des Widgets mit der id xxx
         Parameter:
             string:str
         Return:
@@ -1053,12 +1053,15 @@ class MainWindow(QMainWindow):
         ersetzt = string
         for idVariable in idVariablen:
             id = idVariable[4:-1]
-            ersetzt = ersetzt.replace(idVariable, self.getWertAusWidgetId(id))
+            if id == "ALTER":
+                ersetzt = ersetzt.replace(idVariable, str(getAktuellesAlterInJahren(self.geburtsdatumAlsDate)))
+            else:
+                ersetzt = ersetzt.replace(idVariable, self.getWertAusWidgetId(id))
         return ersetzt
     
     def ersetzeVariablen(self, variablen:dict, string:str):
         """
-        Ersetzt Variablen im Format $var{xxx} durch deen Wert
+        Ersetzt Variablen im Format $var{xxx} durch den Wert
         Parameter:
             variablen: dict mit key: Variablenname, value: Variablenwert
             strint:. str
@@ -1158,6 +1161,19 @@ class MainWindow(QMainWindow):
                     else:
                         mb = QMessageBox(QMessageBox.Icon.Warning, "Hinweis von ScoreGDT", "Der Score kann nicht berechnet werden, da für die folgenden Variablen keine Regel zutrifft:\n- " + str.join("\n- ", variablenMitNichtErfuelltenRegeln), QMessageBox.StandardButton.Ok)
                         mb.exec()
+                    # PDF-Alternative
+                    self.pdfZeilen = []
+                    pdfElement = self.scoreRoot.find("pdf") # type: ignore
+                    if pdfElement != None: # type: ignore
+                        for zeileElement in pdfElement.findall("zeile"):
+                            titel = str(zeileElement.get("titel"))
+                            if titel == "None":
+                                titel = self.getPart(str(zeileElement.get("partid"))).getTitel() # type: ignore
+                            wert = variablen[str(zeileElement.text)]
+                            einheit = str(zeileElement.get("einheit"))
+                            if wert == "1" and einheit == "Punkte":
+                                einheit = "Punkt"
+                            self.pdfZeilen.append((titel, wert, einheit))
                 elif str(formelElement.text) == "dvo2023": # type: ignore
                     logger.logger.info("dvo2023 gewählt")
                     risikofaktorBezeichnungen = ["Wirbelfrakturen", "Andere Frakturen", "Allgemeine Risikofaktoren", "Rheumatologie und Glukokortikoide", "Sturzrisiko assoziierte Risikofaktoren/Geriatrie", "Endokrinologie", "Weitere Erkraknungen/Medikationen", "TBS"]
@@ -1420,21 +1436,27 @@ class MainWindow(QMainWindow):
                         wert = "0"
                         if widget.getQt().isChecked():
                             wert = widget.getWert().replace(".", ",").replace(",0", "")
+                        if wert == "0":
+                            wert = "Nein"
+                        elif wert == "1":
+                            wert = "Ja"
                         test = gdt.GdtTest("ScoreGDT" + "_" + widget.getId(), self.fuerGdtBereinigen(widget.getTitel()), wert, self.fuerGdtBereinigen(widget.getEinheit())) # type: ignore
                     else:
                         test = gdt.GdtTest("ScoreGDT" + "_" + widget.getId(), self.fuerGdtBereinigen(widget.getTitel()), widget.getWert().replace(".", ",").replace(",0", ""), self.fuerGdtBereinigen(widget.getEinheit())) # type: ignore
                     if test != None:
                         gd.addTest(test)
-                        if self.pdferzeugen and pdf != None:
+                        if self.pdferzeugen and pdf != None and len(self.pdfZeilen) == 0: # type: ignore
                             pdf.cell(90, 10, test.getTest()["8411_testBezeichnung"] + ":", fill=(i % 2 == 0))
                             testergebnis = test.getTest()["8420_testErgebnis"]
-                            if widget.getTyp() == class_widgets.WidgetTyp.CHECKBOX:
-                                if testergebnis == "0":
-                                    testergebnis = "Nein"
-                                elif testergebnis == "1":
-                                    testergebnis = "Ja"
                             pdf.cell(0, 10, testergebnis + " " + test.getTest()["8421_testEinheit"], align="R", new_x="LMARGIN", new_y="NEXT", fill=(i % 2 == 0))
                             i += 1
+            # PDF-Alternative
+            if pdf != None and len(self.pdfZeilen) > 0:
+                i = 0
+                for pdfZeile in self.pdfZeilen:
+                    pdf.cell(90, 10, str(pdfZeile[0]) + ":", fill=(i % 2 == 0))
+                    pdf.cell(0, 10, str(pdfZeile[1]) + " " + str(pdfZeile[2]), align="R", new_x="LMARGIN", new_y="NEXT", fill=(i % 2 == 0))
+                    i += 1
             leerzeichenVorEinheit = " "
             if self.labelScoreErgebnisEinheit.text() == "%":
                 leerzeichenVorEinheit = ""
