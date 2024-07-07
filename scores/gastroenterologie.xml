@@ -191,4 +191,131 @@
             </beurteilung>
         </auswertung>
     </score>
+    <score name="Morbus Crohn-Aktivitätsindex (CDAI)" gruppe="Gastroenterologie">
+        <information>Beurteilung der Krankheitsaktivität bei Morbus Crohn</information>
+        <quelle autor="Best et al.">Development of a Crohn's Disease activity index. National Cooperative Crohn's Disease Study.</quelle>
+        <part id="0" typ="GroupBox" titel="Geschlecht" zeile="0" spalte="0" geschlechtpruefung="True">
+            <widget id="100" typ="RadioButton" titel="Weiblich" checked="True">
+                <wert>0</wert>   
+            </widget>
+            <widget id="101" typ="RadioButton" titel="Männlich">
+                <wert>1</wert>   
+            </widget>
+        </part>
+        <part id="1" typ="GroupBox" titel="Körpergewicht und Hämatokrit" zeile="0" spalte="1">
+            <widget id="102" typ="LineEdit" titel="Aktuelles Gewicht">
+                <regex>^\d+([.,]\d+)?$</regex>  
+                <einheit>kg</einheit>
+            </widget>
+            <widget id="103" typ="LineEdit" titel="Idealgewicht">
+                <regex>^\d+([.,]\d+)?$</regex>  
+                <einheit>kg</einheit>
+            </widget>
+            <widget id="104" typ="LineEdit" titel="Hämatokrit">
+                <regex>^\d+$</regex>  
+                <einheit>%</einheit>
+            </widget>
+        </part>
+        <part id="2" typ="GroupBox" titel="Stuhlgewohnheiten" zeile="0" spalte="2">
+            <widget id="105" typ="LineEdit" titel="Durchschnittliche Anzahl ungeformter Stühle/Tag&#xa;in den letzten sieben Tage">
+                <regex>^\d+$</regex>  
+            </widget>
+            <widget id="106" typ="CheckBox" titel="Anwendung von Diarrhoika">
+                <wert>30</wert>
+            </widget>
+        </part>
+        <part id="3" typ="GroupBox" titel="Durchschnittliche Bauchschmerzen-Bewertung in den letzten sieben Tagen" zeile="0" spalte="3">
+            <widget id="107" typ="ComboBox" titel="Schmerzintensität">
+                <items>
+                    <item wert="0">Keine Schmerzen</item>
+                    <item wert="35">Leichte Schmerzen</item>
+                    <item wert="70">Mäßige Schmerzen</item>
+                    <item wert="105">Starke Schmerzen</item>
+                </items>
+            </widget>
+        </part>
+        <part id="4" typ="GroupBox" titel="Allgmeines Wohlbefinden in den letzten sieben Tagen" zeile="1" spalte="0">
+            <widget id="108" typ="ComboBox" titel="Wohlbefinden">
+                <items>
+                    <item wert="0">Gut</item>
+                    <item wert="49">Etwas unter Durchschnitt</item>
+                    <item wert="98">Schlecht</item>
+                    <item wert="147">Sehr schlecht</item>
+                    <item wert="196">Schrecklich</item>
+                    </items>
+            </widget>
+        </part>
+        <part id="5" typ="GroupBox" titel="Abdominelle Raumforderung" zeile="1" spalte="1">
+            <widget id="109" typ="RadioButton" titel="Keine Raumforderung" checked="True">
+                <wert>0</wert>   
+            </widget>
+            <widget id="110" typ="RadioButton" titel="Mögliche Raumforderung">
+                <wert>20</wert>   
+            </widget>
+            <widget id="111" typ="RadioButton" titel="Definitive Raumforderung">
+                <wert>50</wert>   
+            </widget>
+        </part>
+        <part id="6" typ="GroupBox" titel="Komplikationen" zeile="1" spalte="2">
+            <widget id="112" typ="CheckBox" titel="Arthritis/Arthralgie">
+                <wert>20</wert>
+            </widget>
+            <widget id="113" typ="CheckBox" titel="Iritis/Uveitis">
+                <wert>20</wert>
+            </widget>
+            <widget id="114" typ="CheckBox" titel="Erythema nodosum/Pyoderma gangraenosum/&#xa;Stomatitis aphtosa">
+                <wert>20</wert>
+            </widget>
+            <widget id="115" typ="CheckBox" titel="Analfissur/-fistel/-abszess">
+                <wert>20</wert>
+            </widget>
+            <widget id="116" typ="CheckBox" titel="Andere Fistel">
+                <wert>20</wert>
+            </widget>
+            <widget id="117" typ="CheckBox" titel="Temperatur über 37,8° in den letzten sieben Tagen">
+                <wert>20</wert>
+            </widget>
+        </part>
+        <berechnung>
+            <formel>($id{103} - $id{102}) * 100 / $id{103} + $id{105} * 2 + $id{106} + $id{107} + $id{108} + $id{109} + $id{112} + $id{113} + $id{114} + $id{115} + $id{116} + $id{117} + ($var{hktNorm} - $id{104}) * 6</formel>
+            <ergebniseinheit>Punkte</ergebniseinheit>
+            <variablen>
+                <variable name="hktNorm">
+                    <bedingung>
+                        <regel>$id{100} ISTGLEICH 1</regel>
+                        <wert>47</wert>
+                    </bedingung>
+                    <bedingung>
+                        <regel>$id{100} ISTGLEICH 0</regel>
+                        <wert>42</wert>
+                    </bedingung>
+                </variable>
+            </variablen>
+        </berechnung>
+        <auswertung>
+			<beurteilung>
+                <ergebnisbereich>0 - 149 Punkte</ergebnisbereich>
+                <beschreibung>Asymptomatische Remission</beschreibung>
+                <regel>GROESSERGLEICHALS 0</regel>
+                <regel>KLEINERGLEICHALS 149</regel>
+            </beurteilung>
+			<beurteilung>
+                <ergebnisbereich>150 - 220 Punkte</ergebnisbereich>
+                <beschreibung>Mild bis mäßig aktiver Morbus Crohn</beschreibung>
+                <regel>GROESSERGLEICHALS 150</regel>
+                <regel>KLEINERGLEICHALS 220</regel>
+            </beurteilung>
+			<beurteilung>
+                <ergebnisbereich>221 - 450 Punkte</ergebnisbereich>
+                <beschreibung>Mäßig bis stark aktiver Morbus Crohn</beschreibung>
+                <regel>GROESSERGLEICHALS 221</regel>
+                <regel>KLEINERGLEICHALS 450</regel>
+            </beurteilung>
+			<beurteilung>
+                <ergebnisbereich>&#x3e; 450 Punkte</ergebnisbereich>
+                <beschreibung>Stark aktiver bis fulminanter Morbus Crohn</beschreibung>
+                <regel>GROESSERGLEICHALS 451</regel>
+            </beurteilung>
+        </auswertung>
+    </score>
 </root>
