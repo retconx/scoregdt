@@ -1322,15 +1322,22 @@ class MainWindow(QMainWindow):
                 self.labelErgebnisbereiche[i].setPalette(farbe.getTextPalette(farbe.farben.NORMAL, self.palette()))
                 self.labelBeschreibungen[i].setPalette(farbe.getTextPalette(farbe.farben.NORMAL, self.palette()))
         if auswertungElement != None and ergebnis != "":
-            ergebnis = str(ergebnis)
+            ergebnis = str(ergebnis).replace(",", ".")
             beurteilungNr = 0
             for beurteilungElement in auswertungElement.findall("beurteilung"):
                 regelErfuellt = True
                 for regelElement in beurteilungElement.findall("regel"):
-                    regel = ergebnis + str(regelElement.text)
-                    if not self.regelIstErfuellt(regel):
-                        regelErfuellt = False
-                        break
+                    # Ggf. Altersregel prüfen
+                    altersregelErfuellt = True
+                    if regelElement.get("altersid") != None and regelElement.get("altersregel") != None:
+                        alter = self.getWertAusWidgetId(str(regelElement.get("altersid")))
+                        altersregel = str(regelElement.get("altersregel"))
+                        altersregelErfuellt = self.regelIstErfuellt(alter + altersregel)
+                    if altersregelErfuellt:
+                        regel = ergebnis + str(regelElement.text)
+                        if not self.regelIstErfuellt(regel):
+                            regelErfuellt = False
+                            break
                 if regelErfuellt:
                     self.erfuellteAuswertungsregel = beurteilungNr
                     break

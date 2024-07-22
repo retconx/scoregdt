@@ -1,6 +1,6 @@
 <root>
 	<score name="Child-Pugh-Score" gruppe="Gastroenterologie">
-        <information>Beurteilung des Schweregrads einer Leberzirrhose</information>
+        <information>Beurteilung des Schweregrads einer Leberfibrose</information>
         <quelle autor="Child et al.">Surgery and portal hypertension</quelle>
         <part typ="GroupBox" id="0" titel="Serum-Albumin" zeile="0" spalte="0">
             <widget id="100" typ="RadioButton" titel="&#x3e; 3,5 g/dl" checked="True">
@@ -315,6 +315,53 @@
                 <ergebnisbereich>&#x3e; 450 Punkte</ergebnisbereich>
                 <beschreibung>Stark aktiver bis fulminanter Morbus Crohn</beschreibung>
                 <regel>GROESSERGLEICHALS 451</regel>
+            </beurteilung>
+        </auswertung>
+    </score>
+    <score name="FIB-4" gruppe="Gastroenterologie" altersregel="GROESSERGLEICHALS 36">
+        <information>Beurteilung des Risikos für eine fortgeschrittene Leberfibrose</information>
+        <quelle autor="Sterling et al.">Development of a simple noninvasive index to predict significant fibrosis in patients with HIV/HCV coinfection</quelle>
+        <part id="0" typ="Frame" zeile="0" spalte="0">
+            <widget id="100" typ="LineEdit" titel="Alter" alterspruefung="True">
+                <regex>^\d+?$</regex>
+                <einheit>Jahre</einheit>
+            </widget>
+            <widget id="101" typ="LineEdit" titel="AST/GOT">
+                <regex>^\d+?$</regex>
+                <einheit>U/l</einheit>
+            </widget>
+            <widget id="102" typ="LineEdit" titel="ALT/GPT">
+                <regex>^\d+?$</regex>
+                <einheit>U/l</einheit>
+            </widget>
+            <widget id="103" typ="LineEdit" titel="Thrombozyten">
+                <regex>^\d+?$</regex>
+                <zahlengrenze regelart="KLEINERALS">1000</zahlengrenze>
+                <einheit>/nl</einheit>
+            </widget>
+        </part>
+        <berechnung>
+            <formel dezimalstellen="2">$id{100} * $id{101} / $id{103} / sqrt$id{102}</formel>
+            <variablen />
+        </berechnung>
+        <auswertung>
+			<beurteilung>
+                <ergebnisbereich>&#x3c; 1,3 (&#x3c; 2,0 bei Alter &#x2265; 65 Jahre)</ergebnisbereich>
+                <beschreibung>Niedriges Risiko für fortgeschrittene Leberfibrose</beschreibung>
+                <regel altersid="100" altersregel="KLEINERALS 65">KLEINERALS 1.3</regel>
+                <regel altersid="100" altersregel="GROESSERGLEICHALS 65">KLEINERALS 2.0</regel>
+            </beurteilung>
+			<beurteilung>
+                <ergebnisbereich>1,3 - 2,67 (2,0  - 2,67 bei Alter &#x2265; 65 Jahre)</ergebnisbereich>
+                <beschreibung>Intermdiäres Risiko für fortgeschrittene Leberfibrose</beschreibung>
+                <regel altersid="100" altersregel="KLEINERALS 65">GROESSERGLEICHALS 1.3</regel>
+                <regel altersid="100" altersregel="GROESSERGLEICHALS 65">GROESSERGLEICHALS 2.0</regel>
+                <regel>KLEINERGLEICHALS 2.67</regel>
+            </beurteilung>
+            <beurteilung>
+                <ergebnisbereich>&#x3e; 2,67</ergebnisbereich>
+                <beschreibung>Hohes Risiko für fortgeschrittene Leberfibrose</beschreibung>
+                <regel>GROESSERALS 2.67</regel>
             </beurteilung>
         </auswertung>
     </score>
