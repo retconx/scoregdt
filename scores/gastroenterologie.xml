@@ -353,7 +353,7 @@
             </beurteilung>
 			<beurteilung>
                 <ergebnisbereich>1,3 - 2,67 (2,0  - 2,67 bei Alter &#x2265; 65 Jahre)</ergebnisbereich>
-                <beschreibung>Intermdiäres Risiko für fortgeschrittene Leberfibrose</beschreibung>
+                <beschreibung>Intermediäres Risiko für fortgeschrittene Leberfibrose</beschreibung>
                 <regel altersid="100" altersregel="KLEINERALS 65">GROESSERGLEICHALS 1.3</regel>
                 <regel altersid="100" altersregel="GROESSERGLEICHALS 65">GROESSERGLEICHALS 2.0</regel>
                 <regel>KLEINERGLEICHALS 2.67</regel>
