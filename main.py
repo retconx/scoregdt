@@ -493,9 +493,17 @@ class MainWindow(QMainWindow):
                                     zahlengrenze = float(str(zahlengrenzeElement.text))
                                     regelart = str(zahlengrenzeElement.get("regelart"))
                                     self.widgets[len(self.widgets) - 1].addZahlengrenze(zahlengrenze, class_enums.Regelarten(regelart))
+                                # Relativgrenzen festlegen
+                                for relativgrenzeElement in widgetElement.findall("relativgrenze"):
+                                    id = str(relativgrenzeElement.text)
+                                    regelart = str(relativgrenzeElement.get("regelart"))
+                                    self.widgets[len(self.widgets) - 1].addRelativgrenze(id, class_enums.Regelarten(regelart))
                                 # Faktor festlegen
                                 if widgetElement.find("faktor") != None:
                                     self.widgets[len(self.widgets) - 1].setFaktor(float(str(widgetElement.find("faktor").text))) # type: ignore
+                                if widgetElement.find("addition") != None:
+                                    additionElement = widgetElement.find("addition")
+                                    self.widgets[len(self.widgets) - 1].setAddition(float(str(additionElement.text)), str(additionElement.get("vorfaktor"))) # type: ignore
                             elif widgetTyp == class_widgets.WidgetTyp.RADIOBUTTON.value:
                                 checked = str(widgetElement.get("checked")) == "True" and partElement.get("geschlechtpruefung") == None
                                 altersregel = str(widgetElement.get("altersregel"))
@@ -1099,6 +1107,19 @@ class MainWindow(QMainWindow):
                     if not widget.zahlengrenzregelnErfuellt():
                         zahl = float(widget.getQt().text().replace(",", "."))
                         widget.getQt().setText(str(widget.getGrenzzahl(zahl)).replace(".", ",").replace(",0", ""))
+                if widget.relativgrenzeGesetzt():
+                    relativgrenzen = widget.getRelativgrenzen()
+                    for relativgrenze in relativgrenzen:
+                        id = str(relativgrenze)[4:-1] # xxx aus $id{xxx}
+                        regelart = relativgrenzen[relativgrenze]
+                        regel = widget.getWertOhneFaktor() + regelart.value + self.getWertAusWidgetId(id)
+                        if not self.regelIstErfuellt(regel):
+                            mb = QMessageBox(QMessageBox.Icon.Information, "Hinweis von ScoreGDT", "Textfeld " + widget.getTitel() + " ungültig ausgefüllt.", QMessageBox.StandardButton.Ok)
+                            mb.exec()
+                            widget.getQt().setFocus()
+                            widget.getQt().selectAll()
+                            formularOk = False
+                            break
        
         if formularOk :
             try:
@@ -1431,7 +1452,7 @@ class MainWindow(QMainWindow):
                 for widget in self.widgets:
                     test = None
                     if widget.getTyp() == class_widgets.WidgetTyp.LINEEDIT:
-                        test = gdt.GdtTest("ScoreGDT" + "_" + widget.getId(), widget.getTitel(), widget.getWertOhneFaktor().replace(".", ",").replace(",0", ""), widget.getEinheit()) # type: ignore
+                        test = gdt.GdtTest("ScoreGDT" + "_" + widget.getId(), self.fuerGdtBereinigen(widget.getTitel()), widget.getWertOhneFaktor().replace(".", ",").replace(",0", ""), widget.getEinheit()) # type: ignore
                     elif widget.getTyp() == class_widgets.WidgetTyp.RADIOBUTTON:
                         if widget.getQt().isChecked():
                             partId = widget.getPartId()
@@ -1453,7 +1474,7 @@ class MainWindow(QMainWindow):
                     if test != None:
                         gd.addTest(test)
                         if self.pdferzeugen and pdf != None and len(self.pdfZeilen) == 0: # type: ignore
-                            pdf.cell(90, 10, test.getTest()["8411_testBezeichnung"] + ":", fill=(i % 2 == 0))
+                            pdf.cell(0, 10, test.getTest()["8411_testBezeichnung"] + ":", fill=(i % 2 == 0))
                             testergebnis = test.getTest()["8420_testErgebnis"]
                             pdf.cell(0, 10, testergebnis + " " + test.getTest()["8421_testEinheit"], align="R", new_x="LMARGIN", new_y="NEXT", fill=(i % 2 == 0))
                             i += 1
@@ -1461,7 +1482,7 @@ class MainWindow(QMainWindow):
             if pdf != None and len(self.pdfZeilen) > 0:
                 i = 0
                 for pdfZeile in self.pdfZeilen:
-                    pdf.cell(90, 10, str(pdfZeile[0]) + ":", fill=(i % 2 == 0))
+                    pdf.cell(0, 10, str(pdfZeile[0]) + ":", fill=(i % 2 == 0))
                     pdf.cell(0, 10, str(pdfZeile[1]) + " " + str(pdfZeile[2]), align="R", new_x="LMARGIN", new_y="NEXT", fill=(i % 2 == 0))
                     i += 1
             leerzeichenVorEinheit = " "

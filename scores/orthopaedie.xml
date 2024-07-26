@@ -201,7 +201,7 @@
                 <ergebnisbereich>Frakturrisiko 5 bis &#x3c; 10% / 3 Jahre</ergebnisbereich>
                 <beschreibung>Eine spezifische medikamentöse Therapie soll empfohlen werden</beschreibung>
                 <regel>GROESSERGLEICHALS 5</regel>
-                <regel>KLEINERGLEICHALS 10</regel>
+                <regel>KLEINERALS 10</regel>
             </beurteilung>
             <beurteilung>
                 <ergebnisbereich>Frakturrisiko &#x2265; 10% / 3 Jahre</ergebnisbereich>

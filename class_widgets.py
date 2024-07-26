@@ -139,7 +139,10 @@ class LineEdit(Widget):
         self.lineedit = QLineEdit()
         self.typ = WidgetTyp.LINEEDIT
         self.zahlengrenzen = {}
+        self.relativgrenzen = {}
         self.faktor = 1
+        self.addition = 0
+        self.additionVorFaktor = False
         
     def getQt(self):
         return self.lineedit
@@ -147,8 +150,12 @@ class LineEdit(Widget):
     def getWert(self):
         if re.match(regexZahl, self.lineedit.text()) != None:
             zahl = float(self.lineedit.text().replace(",", "."))
+            if self.additionVorFaktor:
+                zahl += self.addition
             faktorzahl = self.faktor * zahl
             logger.logger.info("Faktor " + str(self.faktor) + " auf " + self.lineedit.text() + " angewendet")
+            if not self.additionVorFaktor:
+                faktorzahl += self.addition
             return str(faktorzahl)
         return self.lineedit.text()
     
@@ -192,8 +199,21 @@ class LineEdit(Widget):
         grenzen = [grenze for grenze in self.zahlengrenzen]
         return getNaechstliegendeZahl(grenzen, zahl)
     
+    def addRelativgrenze(self, id:str, regelart:class_enums.Regelarten):
+        self.relativgrenzen[id] = regelart
+    
+    def relativgrenzeGesetzt(self):
+        return len(self.relativgrenzen) > 0
+    
+    def getRelativgrenzen(self):
+        return self.relativgrenzen
+    
     def setFaktor(self, faktor:float):
         self.faktor = faktor
+    
+    def setAddition(self, addition:float, vorFaktor:bool):
+        self.addition = addition
+        self.additionVorFaktor = vorFaktor
     
 class RadioButton(Widget):
     def __init__(self, id, partId:str, titel:str, erklaerung:str, einheit:str, wert:str, checked:bool, alterspruefung:bool, altersregel:str):
