@@ -62,4 +62,82 @@
             </beurteilung>  
         </auswertung>
     </score>
+    <score name="ACR/EULAR PMR (ohne Ultraschall)" gruppe="Rheumatologie" altersregel="GROESSERGLEICHALS50">
+        <information>Klassifikation der Polymyalgia rheumatica&#xa;(Alter &#x2265; 50 Jahre, bilateraler Schulterschmerz, CRP und/oder BSG erhöht)</information>
+        <quelle autor="">American College of Rheumatology, European Allicance of Associations for Rheumatology</quelle>
+        <part id="0" typ="GroupBox" titel="Klinische Kriterien" zeile="0" spalte="0">
+            <widget id="100" typ="CheckBox" titel="Morgensteifigkeit &#x3e; 45 Minuten">
+                <wert>2</wert>
+            </widget>
+            <widget id="101" typ="CheckBox" titel="Rheumafaktor und/oder Anti-CCP negativ">
+                <wert>2</wert>
+            </widget>
+            <widget id="102" typ="CheckBox" titel="Beckengürtelschmerz/eingeschränkte Hüftbeweglichkeit">
+                <wert>1</wert>
+            </widget>
+            <widget id="103" typ="CheckBox" titel="Kein weiteres Gelenk schmerzhaft">
+                <wert>1</wert>
+            </widget>
+        </part>
+        <berechnung>
+            <formel>$id{100} + $id{101} + $id{102} + $id{103}</formel>
+            <ergebniseinheit>Punkte</ergebniseinheit>
+            <variablen />
+        </berechnung>
+        <auswertung>
+            <beurteilung>
+                <ergebnisbereich>&#x3c; 4 Punkte</ergebnisbereich>
+                <beschreibung>Polymyalgia rheumatica unwahrscheinlich</beschreibung>
+                <regel>KLEINERALS 5</regel>
+            </beurteilung>  
+            <beurteilung>
+                <ergebnisbereich>4 - 6 Punkte</ergebnisbereich>
+                <beschreibung>Polymyalgia rheumatica wahrscheinlich</beschreibung>
+                <regel>GROESSERGLEICHALS 5</regel>
+            </beurteilung>  
+        </auswertung>
+    </score>
+    <score name="ACR/EULAR PMR (mit Ultraschall)" gruppe="Rheumatologie" altersregel="GROESSERGLEICHALS50">
+        <information>Klassifikation der Polymyalgia rheumatica&#xa;(Alter &#x2265; 50 Jahre, bilateraler Schulterschmerz, CRP und/oder BSG erhöht)</information>
+        <quelle autor="">American College of Rheumatology, European Allicance of Associations for Rheumatology</quelle>
+        <part id="0" typ="GroupBox" titel="Klinische Kriterien" zeile="0" spalte="0">
+            <widget id="100" typ="CheckBox" titel="Morgensteifigkeit &#x3e; 45 Minuten">
+                <wert>2</wert>
+            </widget>
+            <widget id="101" typ="CheckBox" titel="Rheumafaktor und/oder Anti-CCP negativ">
+                <wert>2</wert>
+            </widget>
+            <widget id="102" typ="CheckBox" titel="Beckengürtelschmerz/eingeschränkte Hüftbeweglichkeit">
+                <wert>1</wert>
+            </widget>
+            <widget id="103" typ="CheckBox" titel="Kein weiteres Gelenk schmerzhaft">
+                <wert>1</wert>
+            </widget>
+        </part>
+        <part id="1" typ="GroupBox" titel="Ultraschallkriterien" zeile="0" spalte="1">
+            <widget id="104" typ="CheckBox" titel="Bursitis subdeltoidea, Tenosynovitis der langen Bizepssehne&#xa;und/oder Erguss im Glenohumeralgelenk">
+                <wert>1</wert>
+            </widget>
+            <widget id="105" typ="CheckBox" titel="Bursitis trochanterica und/oder Erguss im Hüftgelenk">
+                <wert>1</wert>
+            </widget>
+        </part>
+        <berechnung>
+            <formel>$id{100} + $id{101} + $id{102} + $id{103} + $id{104} + $id{105}</formel>
+            <ergebniseinheit>Punkte</ergebniseinheit>
+            <variablen />
+        </berechnung>
+        <auswertung>
+            <beurteilung>
+                <ergebnisbereich>&#x3c; 5 Punkte</ergebnisbereich>
+                <beschreibung>Polymyalgia rheumatica unwahrscheinlich</beschreibung>
+                <regel>KLEINERALS 5</regel>
+            </beurteilung>  
+            <beurteilung>
+                <ergebnisbereich>5 - 8 Punkte</ergebnisbereich>
+                <beschreibung>Polymyalgia rheumatica wahrscheinlich</beschreibung>
+                <regel>GROESSERGLEICHALS 5</regel>
+            </beurteilung>  
+        </auswertung>
+    </score>
 </root>
