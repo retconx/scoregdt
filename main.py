@@ -177,6 +177,10 @@ class MainWindow(QMainWindow):
         self.einrichtungsname = ""
         if self.configIni.has_option("Allgemein", "einrichtungsname"):
             self.einrichtungsname = self.configIni["Allgemein"]["einrichtungsname"]
+        # 1.22.0
+        self.archivierungspfad = ""
+        if self.configIni.has_option("Allgemein", "archivierungspfad"):
+            self.updaterpfad = self.configIni["Allgemein"]["archivierungspfad"]
         ## /Nachträglich hinzufefügte Options
 
         z = self.configIni["GDT"]["zeichensatz"]
@@ -296,6 +300,9 @@ class MainWindow(QMainWindow):
                     self.configIni["Allgemein"]["einrichtungsname"] = ""
                 if not self.configIni.has_option("Allgemein", "einrichtunguebernehmen"):
                     self.configIni["Allgemein"]["einrichtunguebernehmen"] = "False"
+                # 1.21.0 -> 1.22.0
+                if not self.configIni.has_option("Allgemein", "archivierungspfad"):
+                    self.configIni["Allgemein"]["archivierungspfad"] = ""
                 ## /config.ini aktualisieren
                 ## scores.xml löschen (ab 1.8.0)
                 try:
@@ -362,6 +369,12 @@ class MainWindow(QMainWindow):
         self.fontBoldGross.setPixelSize(16)
         self.fontGross = QFont()
         self.fontGross.setPixelSize(16)
+
+        if len(sys.argv) > 1:
+            arg = sys.argv[1]
+            if arg == "verlauf":
+                pass
+                
 
         # GDT-Datei laden
         gd = gdt.GdtDatei()
@@ -1474,9 +1487,20 @@ class MainWindow(QMainWindow):
                     if test != None:
                         gd.addTest(test)
                         if self.pdferzeugen and pdf != None and len(self.pdfZeilen) == 0: # type: ignore
-                            pdf.cell(0, 10, test.getTest()["8411_testBezeichnung"] + ":", fill=(i % 2 == 0))
+                            y1 = pdf.get_y()
+                            pdf.multi_cell(140, 10, test.getTest()["8411_testBezeichnung"] + ":", fill=(i % 2 == 0))
+                            y2 = pdf.get_y()
+                            if y2 < y1:
+                                y1 = 20
+                            print(test.getTest()["8411_testBezeichnung"], y1, y2)
+                            pdf.set_xy(150, y1)
                             testergebnis = test.getTest()["8420_testErgebnis"]
-                            pdf.cell(0, 10, testergebnis + " " + test.getTest()["8421_testEinheit"], align="R", new_x="LMARGIN", new_y="NEXT", fill=(i % 2 == 0))
+                            leerzeilen = ""
+                            anzahlLeerzeilen = int((y2 - y1) / 10)
+                            for j in range(anzahlLeerzeilen - 1):
+                                leerzeilen += "\n "
+                            pdf.multi_cell(50, 10, testergebnis + " " + test.getTest()["8421_testEinheit"] + leerzeilen, align="R", new_x="LMARGIN", new_y="NEXT", fill=(i % 2 == 0))
+                            pdf.set_y(y2)
                             i += 1
             # PDF-Alternative
             if pdf != None and len(self.pdfZeilen) > 0:
@@ -1627,6 +1651,7 @@ class MainWindow(QMainWindow):
             self.configIni["Allgemein"]["standardscore"] = de.comboBoxScoreAuswahl.currentText()
             self.configIni["Allgemein"]["updaterpfad"] = de.lineEditUpdaterPfad.text()
             self.configIni["Allgemein"]["autoupdate"] = str(de.checkBoxAutoUpdate.isChecked())
+            self.configIni["Allgemein"]["archivierungspfad"] = de.lineEditArchivierungsverzeichnis.text()
             with open(os.path.join(self.configPath, "config.ini"), "w", encoding="utf-8") as configfile:
                 self.configIni.write(configfile)
             if neustartfrage:

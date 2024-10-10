@@ -42,7 +42,7 @@
         </berechnung>
 		<auswertung>
 			<beurteilung>
-                <ergebnisbereich>&#x3e; 1 Punkt</ergebnisbereich>
+                <ergebnisbereich>&#x3c; 1 Punkt</ergebnisbereich>
                 <beschreibung>Geringe Wahrscheinlichkeit, D-Dimer-Bestimmung erwägen</beschreibung>
                 <regel>KLEINERALS 1</regel>
             </beurteilung>
