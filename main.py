@@ -6,6 +6,7 @@ import gdttoolsL
 ## /Nur mit Lizenz
 import gdt, gdtzeile, class_part, class_widgets, class_score, farbe
 import dialogUeberScoreGdt, dialogEinstellungenAllgemein, dialogEinstellungenGdt, dialogEinstellungenBenutzer, dialogEinstellungenLanrLizenzschluessel, dialogEula, dialogEinstellungenImportExport, dialogScoreAuswahl, dialogEinstellungenFavoriten
+import class_trends
 import class_enums, class_score, class_Rechenoperation, scorepdf
 from PySide6.QtCore import Qt, QTranslator, QLibraryInfo, QDate, QTime
 from PySide6.QtGui import QFont, QAction, QIcon, QDesktopServices, QPixmap
@@ -177,10 +178,13 @@ class MainWindow(QMainWindow):
         self.einrichtungsname = ""
         if self.configIni.has_option("Allgemein", "einrichtungsname"):
             self.einrichtungsname = self.configIni["Allgemein"]["einrichtungsname"]
-        # 1.22.0
-        self.archivierungspfad = ""
+        # 1.22.0 -> wieder entfernt -> 1.21.3
+        # self.archivierungspfad = ""
+        # if self.configIni.has_option("Allgemein", "archivierungspfad"):
+            # self.updaterpfad = self.configIni["Allgemein"]["archivierungspfad"]
+        # 1.21.3
         if self.configIni.has_option("Allgemein", "archivierungspfad"):
-            self.updaterpfad = self.configIni["Allgemein"]["archivierungspfad"]
+            self.configIni.remove_option("Allgemein", "archivierungspfad")
         ## /Nachträglich hinzufefügte Options
 
         z = self.configIni["GDT"]["zeichensatz"]
@@ -300,9 +304,9 @@ class MainWindow(QMainWindow):
                     self.configIni["Allgemein"]["einrichtungsname"] = ""
                 if not self.configIni.has_option("Allgemein", "einrichtunguebernehmen"):
                     self.configIni["Allgemein"]["einrichtunguebernehmen"] = "False"
-                # 1.21.0 -> 1.22.0
-                if not self.configIni.has_option("Allgemein", "archivierungspfad"):
-                    self.configIni["Allgemein"]["archivierungspfad"] = ""
+                # 1.21.0 -> 1.22.0 -> wieder entfernt -> 1.21.3
+                # if not self.configIni.has_option("Allgemein", "archivierungspfad"):
+                #     self.configIni["Allgemein"]["archivierungspfad"] = ""
                 ## /config.ini aktualisieren
                 ## scores.xml löschen (ab 1.8.0)
                 try:
@@ -1549,6 +1553,16 @@ class MainWindow(QMainWindow):
                         self.configIni.write(configfile)
                 except:
                     logger.logger.warning("Problem beim Speichern von Benutzer/letzter")
+                # # trends.xml aktualisieren
+                # test = class_trends.Test(str(self.scoreRoot.get("name")), class_trends.GdtTool.SCOREGDT) # type: ignore
+                # trend = class_trends.Trend(datetime.date(self.untersuchungsdatum.year(), self.untersuchungsdatum.month(), self.untersuchungsdatum.day()), self.lineEditScoreErgebnis.text() + leerzeichenVorEinheit + self.labelScoreErgebnisEinheit.text(), auswertung)
+                # test.addTrend(trend)
+                # try:
+                #     class_trends.aktualisiereXmlDatei(test, trend, os.path.join(self.configPath, "trends.xml"))
+                #     logger.logger.info("trends.xml aktualisiert")
+                # except class_trends.XmlPfadExistiertNichtError as e:
+                #     logger.logger.info(e)
+                #     test.speichereAlsNeueXmlDatei(os.path.join(self.configPath, "trends.xml"))
                 sys.exit()
         else:
             mb = QMessageBox(QMessageBox.Icon.Warning, "Hinweis von ScoreGDT", "Vor dem Senden der Daten muss ein Score berechnet werden.", QMessageBox.StandardButton.Ok)
@@ -1650,7 +1664,6 @@ class MainWindow(QMainWindow):
             self.configIni["Allgemein"]["standardscore"] = de.comboBoxScoreAuswahl.currentText()
             self.configIni["Allgemein"]["updaterpfad"] = de.lineEditUpdaterPfad.text()
             self.configIni["Allgemein"]["autoupdate"] = str(de.checkBoxAutoUpdate.isChecked())
-            self.configIni["Allgemein"]["archivierungspfad"] = de.lineEditArchivierungsverzeichnis.text()
             with open(os.path.join(self.configPath, "config.ini"), "w", encoding="utf-8") as configfile:
                 self.configIni.write(configfile)
             if neustartfrage:

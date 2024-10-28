@@ -35,7 +35,6 @@ class EinstellungenAllgemein(QDialog):
         self.bereichsgrenzenerzwingen = configIni["Allgemein"]["bereichsgrenzenerzwingen"] == "True"
         self.updaterpfad = configIni["Allgemein"]["updaterpfad"]
         self.autoupdate = configIni["Allgemein"]["autoupdate"] == "True"
-        self.archivierungspfad = configIni["Allgemein"]["archivierungspfad"]
 
         self.setWindowTitle("Allgemeine Einstellungen")
         self.buttonBox = QDialogButtonBox(QDialogButtonBox.StandardButton.Ok | QDialogButtonBox.StandardButton.Cancel)
@@ -83,23 +82,6 @@ class EinstellungenAllgemein(QDialog):
         groupBoxScoresLayoutG.addWidget(self.checkBoxZahlengrenzenpruefung, 1, 0)
         groupBoxScores.setLayout(groupBoxScoresLayoutG)
 
-        # Groupbox Archivierung
-        groupBoxArchivierungLayoutG = QGridLayout()
-        groupBoxArchivierung = QGroupBox("Archivierung")
-        groupBoxArchivierung.setFont(self.fontBold)
-        labelArchivierungsverzeichnis = QLabel("Archivierungsverzeichnis:")
-        labelArchivierungsverzeichnis.setFont(self.fontNormal)
-        self.lineEditArchivierungsverzeichnis = QLineEdit(self.archivierungspfad)
-        self.lineEditArchivierungsverzeichnis.setFont(self.fontNormal)
-        self.lineEditArchivierungsverzeichnis.setToolTip(self.archivierungspfad)
-        buttonDurchsuchenArchivierungsverzeichnis = QPushButton("...")
-        buttonDurchsuchenArchivierungsverzeichnis.setFont(self.fontNormal)
-        buttonDurchsuchenArchivierungsverzeichnis.clicked.connect(self.durchsuchenArchivierungsverzeichnis)
-        groupBoxArchivierungLayoutG.addWidget(labelArchivierungsverzeichnis, 0, 0, 1, 2)
-        groupBoxArchivierungLayoutG.addWidget(self.lineEditArchivierungsverzeichnis, 1, 0)
-        groupBoxArchivierungLayoutG.addWidget(buttonDurchsuchenArchivierungsverzeichnis, 1, 1)
-        groupBoxArchivierung.setLayout(groupBoxArchivierungLayoutG)
-
         # GroupBox Updates
         groupBoxUpdatesLayoutG = QGridLayout()
         groupBoxUpdates = QGroupBox("Updates")
@@ -131,24 +113,10 @@ class EinstellungenAllgemein(QDialog):
     
         dialogLayoutV.addWidget(groupBoxEinrichtung)
         dialogLayoutV.addWidget(groupBoxScores)
-        dialogLayoutV.addWidget(groupBoxArchivierung)
         dialogLayoutV.addWidget(groupBoxUpdates)
         dialogLayoutV.addWidget(self.buttonBox)
 
         self.setLayout(dialogLayoutV)
-
-    def durchsuchenArchivierungsverzeichnis(self):
-        fd = QFileDialog(self)
-        fd.setFileMode(QFileDialog.FileMode.Directory)
-        fd.setWindowTitle("Archivierungsverzeichnis")
-        fd.setDirectory(self.archivierungspfad)
-        fd.setModal(True)
-        fd.setLabelText(QFileDialog.DialogLabel.Accept, "Ok")
-        fd.setLabelText(QFileDialog.DialogLabel.Reject, "Abbrechen")
-        if fd.exec() == 1:
-            self.archivierungspfad = fd.directory()
-            self.lineEditArchivierungsverzeichnis.setText(os.path.abspath(fd.directory().path()))
-            self.lineEditArchivierungsverzeichnis.setToolTip(os.path.abspath(fd.directory().path()))
 
     def pushButtonUpdaterPfadClicked(self):
         fd = QFileDialog(self)

@@ -100,7 +100,7 @@ class ScoreAuswahl(QDialog):
         self.setLayout(frameLayoutV)
         
         for rb in self.radioButtonsScore:
-            rb.setFixedWidth(240)
+            rb.setFixedWidth(280)
         
         # Ggf ersten RadioButton aktivieren
         if self.aktuellGewaehlterScore == "":

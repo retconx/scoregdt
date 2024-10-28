@@ -1,3 +1,4 @@
+<?xml version='1.0' encoding='utf-8'?>
 <root>
 	<score name="Child-Pugh-Score" gruppe="Gastroenterologie">
         <information>Beurteilung des Schweregrads einer Leberfibrose</information>
@@ -14,13 +15,13 @@
             </widget>
         </part>
         <part typ="GroupBox" id="1" titel="Serum-Bilirubin gesamt" zeile="0" spalte="1">
-            <widget id="103" typ="RadioButton" titel="&#x3e; 2,0 mg/dl" checked="True">
+            <widget id="103" typ="RadioButton" titel="&#x3c; 2,0 mg/dl" checked="True">
                 <wert>1</wert>
             </widget>
             <widget id="104" typ="RadioButton" titel="2,0 - 3,0 mg/dl">
                 <wert>2</wert>
             </widget>
-            <widget id="105" typ="RadioButton" titel="&#x3c; 3,0 mg/dl">
+            <widget id="105" typ="RadioButton" titel="&#x3e; 3,0 mg/dl">
                 <wert>3</wert>
             </widget>
         </part>
