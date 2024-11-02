@@ -101,6 +101,7 @@ class MainWindow(QMainWindow):
 
     def __init__(self):
         super().__init__()
+        self.maxBenutzeranzahl = 20
 
         # config.ini lesen
         ersterStart = False
@@ -1553,16 +1554,16 @@ class MainWindow(QMainWindow):
                         self.configIni.write(configfile)
                 except:
                     logger.logger.warning("Problem beim Speichern von Benutzer/letzter")
-                # # trends.xml aktualisieren
-                # test = class_trends.Test(str(self.scoreRoot.get("name")), class_trends.GdtTool.SCOREGDT) # type: ignore
-                # trend = class_trends.Trend(datetime.date(self.untersuchungsdatum.year(), self.untersuchungsdatum.month(), self.untersuchungsdatum.day()), self.lineEditScoreErgebnis.text() + leerzeichenVorEinheit + self.labelScoreErgebnisEinheit.text(), auswertung)
-                # test.addTrend(trend)
-                # try:
-                #     class_trends.aktualisiereXmlDatei(test, trend, os.path.join(self.configPath, "trends.xml"))
-                #     logger.logger.info("trends.xml aktualisiert")
-                # except class_trends.XmlPfadExistiertNichtError as e:
-                #     logger.logger.info(e)
-                #     test.speichereAlsNeueXmlDatei(os.path.join(self.configPath, "trends.xml"))
+                # trends.xml aktualisieren
+                test = class_trends.Test(str(self.scoreRoot.get("name")), class_trends.GdtTool.SCOREGDT) # type: ignore
+                trend = class_trends.Trend(datetime.datetime(self.untersuchungsdatum.year(), self.untersuchungsdatum.month(), self.untersuchungsdatum.day(), datetime.datetime.now().hour, datetime.datetime.now().minute, datetime.datetime.now().second), self.lineEditScoreErgebnis.text() + leerzeichenVorEinheit + self.labelScoreErgebnisEinheit.text(), auswertung)
+                try:
+                    class_trends.aktualisiereXmlDatei(test, trend, os.path.join(self.configPath, "trends.xml"))
+                    logger.logger.info("trends.xml aktualisiert")
+                except class_trends.XmlPfadExistiertNichtError as e:
+                    logger.logger.info(e)
+                    test.addTrend(trend)
+                    test.speichereAlsNeueXmlDatei(os.path.join(self.configPath, "trends.xml"))
                 sys.exit()
         else:
             mb = QMessageBox(QMessageBox.Icon.Warning, "Hinweis von ScoreGDT", "Vor dem Senden der Daten muss ein Score berechnet werden.", QMessageBox.StandardButton.Ok)
@@ -1699,7 +1700,7 @@ class MainWindow(QMainWindow):
         if de.exec() == 1:
             namen = []
             kuerzel = []
-            for i in range(10):
+            for i in range(self.maxBenutzeranzahl):
                 if de.lineEditNamen[i].text() != "":
                     namen.append(de.lineEditNamen[i].text())
                     kuerzel.append(de.lineEditKuerzel[i].text())

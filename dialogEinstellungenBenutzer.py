@@ -12,6 +12,7 @@ from PySide6.QtWidgets import (
 class EinstellungenBenutzer(QDialog):
     def __init__(self, configPath):
         super().__init__()
+        self.maxBenutzeranzahl = 20
 
         #config.ini lesen
         configIni = configparser.ConfigParser()
@@ -35,10 +36,10 @@ class EinstellungenBenutzer(QDialog):
         dialogLayoutG.addWidget(self.labelKuerzel, 0, 1)
         self.lineEditNamen = []
         self.lineEditKuerzel = []
-        for i in range(10):
+        for i in range(self.maxBenutzeranzahl):
             self.lineEditNamen.append(QLineEdit())
             dialogLayoutG.addWidget(self.lineEditNamen[i], i + 1, 0)
-        for i in range(10):
+        for i in range(self.maxBenutzeranzahl):
             self.lineEditKuerzel.append(QLineEdit())
             self.lineEditKuerzel[i].setFixedWidth(40)
             dialogLayoutG.addWidget(self.lineEditKuerzel[i], i + 1, 1)
@@ -55,12 +56,12 @@ class EinstellungenBenutzer(QDialog):
    
     def accept(self):
         fehlendesKuerzel = -1
-        for i in range(5):
+        for i in range(self.maxBenutzeranzahl):
             if self.lineEditNamen[i].text() != "" and self.lineEditKuerzel[i].text() == "":
                 fehlendesKuerzel = i
                 break
         if fehlendesKuerzel != -1:
-            mb = QMessageBox(QMessageBox.Icon.Information, "Hinweis von InrGDT", "Für den " + str(fehlendesKuerzel + 1) + ". Benutzer wurde kein Kürzel angegeben.", QMessageBox.StandardButton.Ok)
+            mb = QMessageBox(QMessageBox.Icon.Information, "Hinweis von ScoreGDT", "Für den " + str(fehlendesKuerzel + 1) + ". Benutzer wurde kein Kürzel angegeben.", QMessageBox.StandardButton.Ok)
             mb.exec()
             self.lineEditKuerzel[fehlendesKuerzel].setFocus()
         else:
