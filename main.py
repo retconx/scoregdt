@@ -6,10 +6,10 @@ import gdttoolsL
 ## /Nur mit Lizenz
 import gdt, gdtzeile, class_part, class_widgets, class_score, farbe
 import dialogUeberScoreGdt, dialogEinstellungenAllgemein, dialogEinstellungenGdt, dialogEinstellungenBenutzer, dialogEinstellungenLanrLizenzschluessel, dialogEula, dialogEinstellungenImportExport, dialogScoreAuswahl, dialogEinstellungenFavoriten
-import class_trends
+import class_trends, dialogTrendanzeige
 import class_enums, class_score, class_Rechenoperation, scorepdf
 from PySide6.QtCore import Qt, QTranslator, QLibraryInfo, QDate, QTime
-from PySide6.QtGui import QFont, QAction, QIcon, QDesktopServices, QPixmap
+from PySide6.QtGui import QFont, QAction, QIcon, QDesktopServices, QPixmap, QPalette
 from PySide6.QtWidgets import (
     QApplication,
     QSizePolicy,
@@ -28,7 +28,8 @@ from PySide6.QtWidgets import (
     QPushButton,
     QComboBox,
     QButtonGroup,
-    QScrollArea
+    QScrollArea, 
+    QFileDialog
 )
 
 @staticmethod
@@ -186,6 +187,10 @@ class MainWindow(QMainWindow):
         # 1.21.3
         if self.configIni.has_option("Allgemein", "archivierungspfad"):
             self.configIni.remove_option("Allgemein", "archivierungspfad")
+        # 1.22.0
+        self.trendverzeichnis = ""
+        if self.configIni.has_option("Allgemein", "trendverzeichnis"):
+            self.trendverzeichnis = self.configIni["Allgemein"]["trendverzeichnis"]
         ## /Nachträglich hinzufefügte Options
 
         z = self.configIni["GDT"]["zeichensatz"]
@@ -308,6 +313,9 @@ class MainWindow(QMainWindow):
                 # 1.21.0 -> 1.22.0 -> wieder entfernt -> 1.21.3
                 # if not self.configIni.has_option("Allgemein", "archivierungspfad"):
                 #     self.configIni["Allgemein"]["archivierungspfad"] = ""
+                # 1.21.4 -> 1.22.0
+                if not self.configIni.has_option("Allgemein", "trendverzeichnis"):
+                    self.configIni["Allgemein"]["trendverzeichnis"] = ""
                 ## /config.ini aktualisieren
                 ## scores.xml löschen (ab 1.8.0)
                 try:
@@ -438,10 +446,83 @@ class MainWindow(QMainWindow):
             if self.root != None:
                 self.scoreRoot = self.root.find("score")
                 if not gdtLadeFehler:
-                    ds = dialogScoreAuswahl.ScoreAuswahl(self.root, self.standardscore)
+                    ds = dialogScoreAuswahl.ScoreAuswahl(self.root, self.standardscore, self.configPath)
                     if ds.exec() == 1:
-                        self.scoreRoot = class_score.Score.getScoreXml(self.scoresPfad, ds.aktuellGewaehlterScore)
-                        logger.logger.info("Score " + ds.aktuellGewaehlterScore + " ausgewählt")
+                        if not ds.buttonTrendAusdruck.isChecked(): # Scoreberechung
+                            self.scoreRoot = class_score.Score.getScoreXml(self.scoresPfad, ds.aktuellGewaehlterScore)
+                            logger.logger.info("Score " + ds.aktuellGewaehlterScore + " ausgewählt")
+                        else: # Trendberechung
+                            ausgewaehlteTrendScores = [rb.text() for rb in ds.radioButtonsScore if rb.isChecked()]
+                            try:
+                                xmlTree = class_trends.getTrends(self.trendverzeichnis)
+                                ausgewaehlteTestXmls = [t for t in xmlTree.findall("test") if str(t.get("name")) in ausgewaehlteTrendScores or (ds.checkBoxGeriGDT.isChecked() and str(t.get("tool")) == class_trends.GdtTool.GERIGDT.value)]
+                                ausgewaehlteTests = [class_trends.getTestAusXml(t) for t in ausgewaehlteTestXmls]
+                                ausgewaehlteTests = sorted(ausgewaehlteTests, key=lambda t:t.getName())
+                                dt = dialogTrendanzeige.Trendanzeige(ausgewaehlteTests)
+                                if dt.exec() == 1:
+                                    heute = datetime.datetime.now()
+                                    # GDT-Datei erzeugen
+                                    sh = gdt.SatzHeader(gdt.Satzart.DATEN_EINER_UNTERSUCHUNG_UEBERMITTELN_6310, self.configIni["GDT"]["idpraxisedv"], self.configIni["GDT"]["idscoregdt"], self.zeichensatz, "2.10", "Fabian Treusch - GDT-Tools", "ScoreGDT", self.version, self.patId)
+                                    gd = gdt.GdtDatei()
+                                    logger.logger.info("GdtDatei-Instanz für Trendausdruck erzeugt")
+                                    gd.erzeugeGdtDatei(sh.getSatzheader())
+                                    logger.logger.info("Satzheader 6310 erzeugt")
+                                    gd.addZeile("6200", heute.strftime("%d%m%Y"))
+                                    gd.addZeile("6201", heute.strftime("%H%M%S"))
+                                    gd.addZeile("8402", "ALLG00")
+                                    gd.addZeile("6302", "trendpdf")
+                                    gd.addZeile("6303", "pdf")
+                                    gd.addZeile("6304", "Score-Trend")
+                                    gd.addZeile("6305", os.path.join(basedir, "pdf/trend_temp.pdf"))
+                                    # PDF erzeugen
+                                    # Kopf
+                                    if len(ausgewaehlteTests) > 1:
+                                        trendPdf = scorepdf.scorepdf("P", "mm", "A4", "Medizinische Score-Trends")
+                                    else:
+                                        trendPdf = scorepdf.scorepdf("P", "mm", "A4", "Medizinischer Score-Trend")
+                                    logger.logger.info("FPDF-Instanz erzeugt")
+                                    trendPdf.set_fill_color(240,240,240)
+                                    trendPdf.add_page()
+                                    trendPdf.set_font("dejavu", "", 14)
+                                    trendPdf.cell(0, 10, "von " + self.name + " (* " + self.geburtsdatum + ")", align="C", new_x="LMARGIN", new_y="NEXT")
+                                    trendPdf.set_font("dejavu", "", 10)
+                                    einrichtung = ""
+                                    if self.einrichtunguebernehmen:
+                                        einrichtung = " von " + self.einrichtungsname
+                                    trendPdf.cell(0, 10, "Erstellt am " + heute.strftime("%d.%m.%Y") + einrichtung, align="C", new_x="LMARGIN", new_y="NEXT")
+                                    # Trends
+                                    trendPdf.set_font_size(12)
+                                    gruppen = []
+                                    for test in ausgewaehlteTests:
+                                        if test.getGruppe() not in gruppen:
+                                            gruppen.append(test.getGruppe())
+                                    gruppen.sort()
+                                    for gruppe in gruppen:
+                                        trendPdf.set_font("dejavu", "B", 12)
+                                        trendPdf.cell(0, 10, gruppe, fill=True, new_x="LMARGIN", new_y="NEXT")
+                                        for test in ausgewaehlteTests:
+                                            if test.getGruppe() == gruppe:
+                                                trendPdf.set_font("dejavu", "B", 11)
+                                                trendPdf.cell(0, 10, test.getName(), new_x="LMARGIN", new_y="NEXT", border="B")
+                                                trendPdf.set_font("dejavu", "", 11)
+                                                for trend in test.getLetzteTrends():
+                                                    trendPdf.multi_cell(30, 10, trend.getTrend()["datum"].strftime("%d.%m.%Y"), new_y="LAST")
+                                                    trendPdf.multi_cell(45, 10, trend.getTrend()["ergebnis"], new_y="LAST")
+                                                    trendPdf.multi_cell(0, 10, trend.getTrend()["interpretation"], new_x="LMARGIN", new_y="NEXT")
+                                                trendPdf.cell(0, 4, "", new_x="LMARGIN", new_y="NEXT")
+                                    trendPdf.set_y(-30)
+                                    trendPdf.set_font("dejavu", "I", 10)
+                                    trendPdf.cell(0, 10, "Generiert von ScoreGDT V" + self.version + " (\u00a9 GDT-Tools " + str(datetime.date.today().year) + ")", align="R")
+                                    trendPdf.output(os.path.join(basedir, "pdf/trend_temp.pdf"))
+                                    # GDT-Datei exportieren
+                                    if not gd.speichern(os.path.join(self.gdtExportVerzeichnis, self.kuerzelpraxisedv + self.kuerzelscoregdt + ".gdt"), self.zeichensatz):
+                                        logger.logger.error("Fehler bei GDT-Dateiexport nach " + self.gdtExportVerzeichnis + "/" + self.kuerzelpraxisedv + self.kuerzelscoregdt + ".gdt")
+                                        mb = QMessageBox(QMessageBox.Icon.Warning, "Hinweis von ScoreGDT", "GDT-Export nicht möglich.\nBitte überprüfen Sie die Angabe des Exportverzeichnisses.\nScoreGDT wird beendet.", QMessageBox.StandardButton.Ok)
+                                        mb.exec()
+                            except class_trends.XmlPfadExistiertNichtError as e:
+                                mb = QMessageBox(QMessageBox.Icon.Warning, "Hinweis von ScoreGDT", "Problem beim Laden der Trenddaten: " + str(e), QMessageBox.StandardButton.Ok)
+                                mb.exec()
+                            sys.exit()
                     else:
                         logger.logger.info("Kein Score ausgewählt")
                         sys.exit()
@@ -504,7 +585,10 @@ class MainWindow(QMainWindow):
                                 logger.logger.info("Checkbox angelegt (Part-ID: " + partId + ", Widget-ID: " + widgetId + ") angelegt")
                             elif widgetTyp == class_widgets.WidgetTyp.LINEEDIT.value:
                                 regexPattern = str(widgetElement.find("regex").text) # type: ignore
-                                self.widgets.append(class_widgets.LineEdit(widgetId, partId, widgetTitel, widgetErklaerung, widgetEinheit, regexPattern, alterspruefung))
+                                defaultWert = ""
+                                if widgetElement.get("defaultwert") != None:
+                                    defaultWert = str(widgetElement.get("defaultwert"))
+                                self.widgets.append(class_widgets.LineEdit(widgetId, partId, widgetTitel, widgetErklaerung, widgetEinheit, regexPattern, alterspruefung, defaultWert))
                                 logger.logger.info("Lineedit angelegt (Part-ID: " + partId + ", Widget-ID: " + widgetId + ") angelegt")
                                 # Zahlengrenzen festlegen
                                 for zahlengrenzeElement in widgetElement.findall("zahlengrenze"):
@@ -616,6 +700,9 @@ class MainWindow(QMainWindow):
                     if mb.exec() == QMessageBox.StandardButton.Yes:
                         os.execl(sys.executable, __file__, *sys.argv)
             buttonGroups = {}
+            palette = QPalette()
+            colorWindow = palette.window().color()
+            palette.setColor(QPalette.Active, QPalette.Window, colorWindow) # type: ignore
             for part in self.parts:
                 buttonGroups.clear()
                 for widget in self.widgets:
@@ -639,6 +726,7 @@ class MainWindow(QMainWindow):
                         widgetWidget.setFont(self.fontNormal)
                         if widget.getTyp() == class_widgets.WidgetTyp.CHECKBOX or widget.getTyp() == class_widgets.WidgetTyp.RADIOBUTTON:
                             widgetWidget.clicked.connect(self.widgetChanged)
+                            widgetWidget.setPalette(palette)
                         elif widget.getTyp() == class_widgets.WidgetTyp.LINEEDIT:
                             widgetWidget.textEdited.connect(self.widgetChanged)
                         elif widget.getTyp() == class_widgets.WidgetTyp.COMBOBOX:
@@ -1458,8 +1546,8 @@ class MainWindow(QMainWindow):
                 untdat = "{:>02}".format(str(self.untersuchungsdatum.day())) + "." + "{:>02}".format(str(self.untersuchungsdatum.month())) + "." + str(self.untersuchungsdatum.year())
                 einrichtung = ""
                 if self.einrichtunguebernehmen:
-                    einrichtung = self.einrichtungsname
-                pdf.cell(0, 6, "Erstellt am " + untdat + " von " + einrichtung, align="C", new_x="LMARGIN", new_y="NEXT")
+                    einrichtung = " von " + self.einrichtungsname
+                pdf.cell(0, 6, "Erstellt am " + untdat + einrichtung, align="C", new_x="LMARGIN", new_y="NEXT")
                 pdf.cell(0, 10, new_x="LMARGIN", new_y="NEXT")
                 pdf.set_font("dejavu", "", 14)
                 pdf.set_fill_color(240,240,240)
@@ -1555,15 +1643,19 @@ class MainWindow(QMainWindow):
                 except:
                     logger.logger.warning("Problem beim Speichern von Benutzer/letzter")
                 # trends.xml aktualisieren
-                test = class_trends.Test(str(self.scoreRoot.get("name")), class_trends.GdtTool.SCOREGDT) # type: ignore
-                trend = class_trends.Trend(datetime.datetime(self.untersuchungsdatum.year(), self.untersuchungsdatum.month(), self.untersuchungsdatum.day(), datetime.datetime.now().hour, datetime.datetime.now().minute, datetime.datetime.now().second), self.lineEditScoreErgebnis.text() + leerzeichenVorEinheit + self.labelScoreErgebnisEinheit.text(), auswertung)
-                try:
-                    class_trends.aktualisiereXmlDatei(test, trend, os.path.join(self.configPath, "trends.xml"))
-                    logger.logger.info("trends.xml aktualisiert")
-                except class_trends.XmlPfadExistiertNichtError as e:
-                    logger.logger.info(e)
-                    test.addTrend(trend)
-                    test.speichereAlsNeueXmlDatei(os.path.join(self.configPath, "trends.xml"))
+                if self.trendverzeichnis != "" and os.path.exists(self.trendverzeichnis):
+                    test = class_trends.Test(str(self.scoreRoot.get("name")), str(self.scoreRoot.get("gruppe")), class_trends.GdtTool.SCOREGDT) # type: ignore
+                    trend = class_trends.Trend(datetime.datetime(self.untersuchungsdatum.year(), self.untersuchungsdatum.month(), self.untersuchungsdatum.day(), datetime.datetime.now().hour, datetime.datetime.now().minute, datetime.datetime.now().second), self.lineEditScoreErgebnis.text() + leerzeichenVorEinheit + self.labelScoreErgebnisEinheit.text(), auswertung)
+                    try:
+                        class_trends.aktualisiereXmlDatei(test, trend, os.path.join(self.trendverzeichnis, "trends.xml"))
+                        logger.logger.info("trends.xml aktualisiert")
+                    except class_trends.XmlPfadExistiertNichtError as e:
+                        logger.logger.info(e)
+                        test.addTrend(trend)
+                        test.speichereAlsNeueXmlDatei(os.path.join(self.trendverzeichnis, "trends.xml"))
+                    except class_trends.TrendError as e:
+                        mb = QMessageBox(QMessageBox.Icon.Warning, "Hinweis von ScoreGDT", "Fehler beim Aktualisieren/Speichern der Trenddaten: " + e.message, QMessageBox.StandardButton.Ok)
+                        mb.exec()
                 sys.exit()
         else:
             mb = QMessageBox(QMessageBox.Icon.Warning, "Hinweis von ScoreGDT", "Vor dem Senden der Daten muss ein Score berechnet werden.", QMessageBox.StandardButton.Ok)
@@ -1663,6 +1755,7 @@ class MainWindow(QMainWindow):
             self.configIni["Allgemein"]["einrichtunguebernehmen"] = str(de.checkBoxEinrichtungUebernehmen.isChecked())
             self.configIni["Allgemein"]["bereichsgrenzenerzwingen"] = str(de.checkBoxZahlengrenzenpruefung.isChecked())
             self.configIni["Allgemein"]["standardscore"] = de.comboBoxScoreAuswahl.currentText()
+            self.configIni["Allgemein"]["trendverzeichnis"] = de.lineEditTrendverzeichnis.text()
             self.configIni["Allgemein"]["updaterpfad"] = de.lineEditUpdaterPfad.text()
             self.configIni["Allgemein"]["autoupdate"] = str(de.checkBoxAutoUpdate.isChecked())
             with open(os.path.join(self.configPath, "config.ini"), "w", encoding="utf-8") as configfile:

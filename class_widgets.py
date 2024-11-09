@@ -1,6 +1,6 @@
 import xml.etree.ElementTree as ElementTree
 from enum import Enum
-import re, class_enums, logger
+import re, class_enums, logger, sys
 from PySide6.QtWidgets import (
     QComboBox,
     QRadioButton,
@@ -133,10 +133,10 @@ class CheckBox(Widget):
         return self.geschlechtpruefung
     
 class LineEdit(Widget):
-    def __init__(self, id, partId:str, titel:str, erklaerung:str, einheit:str, regexPattern:str, alterspruefung:bool):
+    def __init__(self, id, partId:str, titel:str, erklaerung:str, einheit:str, regexPattern:str, alterspruefung:bool, defaultWert:str):
         super().__init__(id, partId, titel, erklaerung, einheit, alterspruefung)
         self.regexPattern = regexPattern
-        self.lineedit = QLineEdit()
+        self.lineedit = QLineEdit(defaultWert)
         self.typ = WidgetTyp.LINEEDIT
         self.zahlengrenzen = {}
         self.relativgrenzen = {}

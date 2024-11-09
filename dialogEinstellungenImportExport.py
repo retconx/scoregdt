@@ -46,11 +46,12 @@ class EinstellungenImportExport(QDialog):
         self.radiobuttonImport.setText("Importieren")
         self.radiobuttonImport.setStyleSheet("font-weight:normal")
         self.radiobuttonImport.setChecked(True)
-        self.radiobuttonImport.clicked.connect(self.radiobuttonClicked) # type: ignore
+        self.radiobuttonImport.clicked.connect(self.radiobuttonClicked)
         self.radiobuttonExport = QRadioButton()
         self.radiobuttonExport.setText("Exportieren")
         self.radiobuttonExport.setStyleSheet("font-weight:normal")
-        self.radiobuttonExport.clicked.connect(self.radiobuttonClicked) # type: ignore
+        
+        self.radiobuttonExport.clicked.connect(self.radiobuttonClicked)
         groupboxImportExportLayout = QVBoxLayout()
         groupboxImportExportLayout.addWidget(self.radiobuttonImport)
         groupboxImportExportLayout.addWidget(self.radiobuttonExport)

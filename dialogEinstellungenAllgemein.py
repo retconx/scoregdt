@@ -17,7 +17,7 @@ from PySide6.QtWidgets import (
 from PySide6.QtGui import QFont
 
 class EinstellungenAllgemein(QDialog):
-    def __init__(self, configPath, scoresRoot:ElementTree.Element, standardScore:str):
+    def __init__(self, configPath:str, scoresRoot:ElementTree.Element, standardScore:str):
         super().__init__()
         self.scoresRoot = scoresRoot
         self.standardScore = standardScore
@@ -27,7 +27,7 @@ class EinstellungenAllgemein(QDialog):
         self.fontBold = QFont()
         self.fontBold.setBold(True)
 
-        #config.ini lesen
+        # config.ini lesen
         configIni = configparser.ConfigParser()
         configIni.read(os.path.join(configPath, "config.ini"))
         self.einrichtungsname = configIni["Allgemein"]["einrichtungsname"]
@@ -35,6 +35,7 @@ class EinstellungenAllgemein(QDialog):
         self.bereichsgrenzenerzwingen = configIni["Allgemein"]["bereichsgrenzenerzwingen"] == "True"
         self.updaterpfad = configIni["Allgemein"]["updaterpfad"]
         self.autoupdate = configIni["Allgemein"]["autoupdate"] == "True"
+        self.trendverzeichnis = configIni["Allgemein"]["trendverzeichnis"]
 
         self.setWindowTitle("Allgemeine Einstellungen")
         self.buttonBox = QDialogButtonBox(QDialogButtonBox.StandardButton.Ok | QDialogButtonBox.StandardButton.Cancel)
@@ -70,16 +71,27 @@ class EinstellungenAllgemein(QDialog):
         for scoreElement in self.scoresRoot.findall("score"):
            self.scoreNameListe.append(str(scoreElement.get("name")))
         self.scoreNameListe.sort()
+        labelStandardAuswahl = QLabel("Standard-Score")
+        labelStandardAuswahl.setFont(self.fontNormal)
         self.comboBoxScoreAuswahl.addItems(self.scoreNameListe)
         self.comboBoxScoreAuswahl.setCurrentText(self.standardScore)
+        labelTrendverzeichnis = QLabel("Trendverzeichnis")
+        labelTrendverzeichnis.setFont(self.fontNormal)
+        self.lineEditTrendverzeichnis = QLineEdit(self.trendverzeichnis)
+        self.lineEditTrendverzeichnis.setFont(self.fontNormal)
+        self.pushButtonTrendverzeichnis = QPushButton("...")
+        self.pushButtonTrendverzeichnis.setFont(self.fontNormal)
+        self.pushButtonTrendverzeichnis.setToolTip("Trendverzeichnis auswählen")
+        self.pushButtonTrendverzeichnis.clicked.connect(self.pushButtonTrendverzeichnisClicked)
         self.checkBoxZahlengrenzenpruefung = QCheckBox("Bereichsgrenzen erzwingen")
         self.checkBoxZahlengrenzenpruefung.setFont(self.fontNormal)
         self.checkBoxZahlengrenzenpruefung.setChecked(self.bereichsgrenzenerzwingen)
-        labelStandardAuswahl = QLabel("Standard-Score")
-        labelStandardAuswahl.setFont(self.fontNormal)
         groupBoxScoresLayoutG.addWidget(labelStandardAuswahl, 0, 0)
-        groupBoxScoresLayoutG.addWidget(self.comboBoxScoreAuswahl, 0, 1)
-        groupBoxScoresLayoutG.addWidget(self.checkBoxZahlengrenzenpruefung, 1, 0)
+        groupBoxScoresLayoutG.addWidget(self.comboBoxScoreAuswahl, 0, 1, 1, 2)
+        groupBoxScoresLayoutG.addWidget(labelTrendverzeichnis, 1, 0)
+        groupBoxScoresLayoutG.addWidget(self.lineEditTrendverzeichnis, 1, 1)
+        groupBoxScoresLayoutG.addWidget(self.pushButtonTrendverzeichnis, 1, 2)
+        groupBoxScoresLayoutG.addWidget(self.checkBoxZahlengrenzenpruefung, 2, 0, 1, 2)
         groupBoxScores.setLayout(groupBoxScoresLayoutG)
 
         # GroupBox Updates
@@ -88,7 +100,7 @@ class EinstellungenAllgemein(QDialog):
         groupBoxUpdates.setFont(self.fontBold)
         labelUpdaterPfad = QLabel("Updater-Pfad")
         labelUpdaterPfad.setFont(self.fontNormal)
-        self.lineEditUpdaterPfad= QLineEdit(self.updaterpfad)
+        self.lineEditUpdaterPfad = QLineEdit(self.updaterpfad)
         self.lineEditUpdaterPfad.setFont(self.fontNormal)
         self.lineEditUpdaterPfad.setToolTip(self.updaterpfad)
         if not os.path.exists(self.updaterpfad):
@@ -103,7 +115,7 @@ class EinstellungenAllgemein(QDialog):
         groupBoxUpdatesLayoutG.addWidget(labelUpdaterPfad, 0, 0)
         groupBoxUpdatesLayoutG.addWidget(self.lineEditUpdaterPfad, 0, 1)
         groupBoxUpdatesLayoutG.addWidget(self.pushButtonUpdaterPfad, 0, 2)
-        groupBoxUpdatesLayoutG.addWidget(self.checkBoxAutoUpdate, 1, 0)
+        groupBoxUpdatesLayoutG.addWidget(self.checkBoxAutoUpdate, 1, 0, 1, 2)
         groupBoxUpdates.setLayout(groupBoxUpdatesLayoutG)
 
         groupBoxUpdatesLayoutG.addWidget(labelUpdaterPfad, 0, 0)
@@ -117,6 +129,18 @@ class EinstellungenAllgemein(QDialog):
         dialogLayoutV.addWidget(self.buttonBox)
 
         self.setLayout(dialogLayoutV)
+
+    def pushButtonTrendverzeichnisClicked(self):
+        fd = QFileDialog(self)
+        fd.setFileMode(QFileDialog.FileMode.Directory)
+        fd.setModal(True)
+        fd.setLabelText(QFileDialog.DialogLabel.Accept, "Ok")
+        fd.setLabelText(QFileDialog.DialogLabel.Reject, "Abbrechen")
+        if fd.exec() == 1:
+            pfad = fd.directory().absolutePath()
+            self.lineEditTrendverzeichnis.setText(pfad)
+            self.trendverzeichnis = pfad
+
 
     def pushButtonUpdaterPfadClicked(self):
         fd = QFileDialog(self)

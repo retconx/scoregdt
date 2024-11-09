@@ -147,4 +147,99 @@
             </beurteilung>  
         </auswertung>
     </score>
+    <score name="Gulich-Score" gruppe="Infektiologie">
+        <information>Abschätzung der Wahrscheinlichkeit, mit der eine Pharyngitis durch A-Streptokokken verursacht ist</information>
+        <quelle autor="Gulich et al.">Development and validation of a simple, two-step algorithm to identify streptococcal infection in adults with sore throat</quelle>
+        <part typ="GroupBox" id="0" titel="Rachenschleimhaut" zeile="0" spalte="0">
+            <widget id="100" typ="RadioButton" titel="Granulationen" checked="True">
+                <wert>0</wert>
+            </widget>
+            <widget id="101" typ="RadioButton" titel="Rötlich">
+                <wert>1</wert>
+            </widget>
+            <widget id="102" typ="RadioButton" titel="Tief rot">
+                <wert>2</wert>
+            </widget>
+        </part>
+        <part typ="GroupBox" id="1" titel="Uvula" zeile="0" spalte="1">
+            <widget id="103" typ="RadioButton" titel="Normal" checked="True">
+                <wert>0</wert>
+            </widget>
+            <widget id="104" typ="RadioButton" titel="Rötlich">
+                <wert>1</wert>
+            </widget>
+            <widget id="105" typ="RadioButton" titel="Tief rot">
+                <wert>2</wert>
+            </widget>
+        </part>
+        <part typ="GroupBox" id="2" titel="Weicher Gaumen" zeile="0" spalte="2">
+            <widget id="106" typ="RadioButton" titel="Normal" checked="True">
+                <wert>0</wert>
+            </widget>
+            <widget id="107" typ="RadioButton" titel="Rötlich">
+                <wert>1</wert>
+            </widget>
+            <widget id="108" typ="RadioButton" titel="Tief rot">
+                <wert>2</wert>
+            </widget>
+        </part>
+        <part typ="GroupBox" id="3" titel="Mandeln" zeile="1" spalte="0">
+            <widget id="109" typ="RadioButton" titel="Normal/entfernt" checked="True">
+                <wert>0</wert>
+            </widget>
+            <widget id="110" typ="RadioButton" titel="Rötlich">
+                <wert>1</wert>
+            </widget>
+            <widget id="111" typ="RadioButton" titel="Exsudat">
+                <wert>2</wert>
+            </widget>
+        </part>
+        <part typ="GroupBox" id="4" titel="Labor" zeile="1" spalte="1" erklaerung="Bei klinischem Score-Ergebnis von 4 oder 5 Punkten&#xa;Korrektur um -2 bzw. +2 Punkte bei CRP &#x3c; bzw. &#x2265; 35 mg/l">
+            <widget id="112" typ="LineEdit" titel="CRP" defaultwert="0">
+                <regex>^\d+([,.]\d+)?$</regex>
+                <einheit>mg/l</einheit>
+            </widget>
+        </part>
+        <berechnung>
+            <formel>$id{100} + $id{103} + $id{106} + $id{109} + $var{crpKorrektur}</formel>
+            <ergebniseinheit>Punkte</ergebniseinheit>
+            <variablen>
+                <variable name="score">$id{100} + $id{103} + $id{106} + $id{109}</variable>
+                <variable name="crpKorrektur">
+                    <bedingung>
+                        <regel>$var{score} KLEINERGLEICHALS 3</regel>
+                        <wert>0</wert>
+                    </bedingung>
+                    <bedingung>
+                        <regel>$var{score} GROESSERGLEICHALS 6</regel>
+                        <wert>0</wert>
+                    </bedingung>
+                    <bedingung>
+                        <regel>$var{score} GROESSERGLEICHALS 4</regel>
+                        <regel>$var{score} KLEINERGLEICHALS 5</regel>
+                        <regel>$id{112} KLEINERALS 35</regel>
+                        <wert>-2</wert>
+                    </bedingung>
+                    <bedingung>
+                        <regel>$var{score} GROESSERGLEICHALS 4</regel>
+                        <regel>$var{score} KLEINERGLEICHALS 5</regel>
+                        <regel>$id{112} GROESSERGLEICHALS 35</regel>
+                        <wert>2</wert>
+                    </bedingung>
+                </variable>
+            </variablen>
+        </berechnung>
+        <auswertung>
+            <beurteilung>
+                <ergebnisbereich>&#x2264; 3 Punkte</ergebnisbereich>
+                <beschreibung>A-Streptokokkeninfektion zu 91% unwahrscheinlich</beschreibung>
+                <regel>KLEINERGLEICHALS 3</regel>
+            </beurteilung> 
+            <beurteilung>
+                <ergebnisbereich>&#x2265; 6 Punkte</ergebnisbereich>
+                <beschreibung>A-Streptokokkeninfektion zu 86% wahrscheinlich</beschreibung>
+                <regel>GROESSERGLEICHALS 6</regel>
+            </beurteilung> 
+        </auswertung>
+    </score>
 </root>
