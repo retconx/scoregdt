@@ -27,7 +27,7 @@ class ScoreAuswahl(QDialog):
         screenHoehe = ag.size().height()
         self.setMinimumHeight(screenHoehe - 100)
 
-    def __init__(self, root:ElementTree.Element, standardScore:str, configPath:str):
+    def __init__(self, root:ElementTree.Element, standardScore:str, configPath:str, patId:str):
         super().__init__()
         self.fontNormal = QFont()
         self.fontNormal.setBold(False)
@@ -35,6 +35,7 @@ class ScoreAuswahl(QDialog):
         self.fontBold.setBold(True)
 
         self.configPath = configPath
+        self.patId = patId
 
         # config.ini lesen
         configIni = configparser.ConfigParser()
@@ -73,19 +74,19 @@ class ScoreAuswahl(QDialog):
             scoreGruppen[scoreGruppenname] = scoreNamenUndInfos.copy()
         # Formular aufbauen   
         trendLayout = QGridLayout()
-        self.buttonTrendAusdruck = QPushButton("Scoreauswahl für Trendberechnung")
+        self.buttonTrendAusdruck = QPushButton("Scoreauswahl für Trendanzeige")
         self.buttonTrendAusdruck.setFont(self.fontBold)
         self.buttonTrendAusdruck.setFixedWidth(300)
         self.buttonTrendAusdruck.setCheckable(True)
-        self.buttonTrendAusdruck.setEnabled(os.path.exists(os.path.join(self.trendverzeichnis, "trends.xml")))
-        if not os.path.exists(os.path.join(self.trendverzeichnis, "trends.xml")):
-            self.buttonTrendAusdruck.setToolTip("Bisher wurde kein Score für die Trendberechnung gespeichert.")
+        self.buttonTrendAusdruck.setEnabled(os.path.exists(os.path.join(self.trendverzeichnis, self.patId, "trends.xml")))
+        if not os.path.exists(os.path.join(self.trendverzeichnis, self.patId, "trends.xml")):
+            self.buttonTrendAusdruck.setToolTip("Bisher wurde kein Score für die Trendanzeige gespeichert.")
         self.buttonTrendAusdruck.clicked.connect(self.buttonTrendAusdruckClicked)
         self.groupBoxGeriGDT = QGroupBox("Geriatrisches Basisassessment")
         self.groupBoxGeriGDT.setFont(self.fontBold)
         self.groupBoxGeriGDT.setVisible(False)
         groupBoxGeriGDTLayoutH = QHBoxLayout()
-        self.checkBoxGeriGDT = QCheckBox("Barthel-Index und Timed \"Up and Go\"-Test in Trendberechnung einbeziehen (Daten von GeriGDT)")
+        self.checkBoxGeriGDT = QCheckBox("Barthel-Index und Timed \"Up and Go\"-Test in Trendanzeige einbeziehen (Daten von GeriGDT)")
         self.checkBoxGeriGDT.setFont(self.fontNormal)
         self.checkBoxGeriGDT.clicked.connect(self.checkBoxGeriGDTClicked)
         groupBoxGeriGDTLayoutH.addWidget(self.checkBoxGeriGDT)
@@ -159,7 +160,7 @@ class ScoreAuswahl(QDialog):
             colorWindow = palette.window().color()
             palette.setColor(QPalette.Active, QPalette.Window, colorWindow) # type: ignore
             try:
-                tests = class_trends.getTrends(self.trendverzeichnis)
+                tests = class_trends.getTrends(os.path.join(self.trendverzeichnis, self.patId))
                 testNamen = [str(test.get("name")) for test in tests.findall("test")]
                 testTools = [str(test.get("tool")) for test in tests.findall("test")]
                 for rb in self.radioButtonsScore:

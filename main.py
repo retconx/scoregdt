@@ -446,15 +446,15 @@ class MainWindow(QMainWindow):
             if self.root != None:
                 self.scoreRoot = self.root.find("score")
                 if not gdtLadeFehler:
-                    ds = dialogScoreAuswahl.ScoreAuswahl(self.root, self.standardscore, self.configPath)
+                    ds = dialogScoreAuswahl.ScoreAuswahl(self.root, self.standardscore, self.configPath, self.patId)
                     if ds.exec() == 1:
                         if not ds.buttonTrendAusdruck.isChecked(): # Scoreberechung
                             self.scoreRoot = class_score.Score.getScoreXml(self.scoresPfad, ds.aktuellGewaehlterScore)
                             logger.logger.info("Score " + ds.aktuellGewaehlterScore + " ausgewählt")
-                        else: # Trendberechung
+                        else: # Trendanzeige
                             ausgewaehlteTrendScores = [rb.text() for rb in ds.radioButtonsScore if rb.isChecked()]
                             try:
-                                xmlTree = class_trends.getTrends(self.trendverzeichnis)
+                                xmlTree = class_trends.getTrends(os.path.join(self.trendverzeichnis, self.patId))
                                 ausgewaehlteTestXmls = [t for t in xmlTree.findall("test") if str(t.get("name")) in ausgewaehlteTrendScores or (ds.checkBoxGeriGDT.isChecked() and str(t.get("tool")) == class_trends.GdtTool.GERIGDT.value)]
                                 ausgewaehlteTests = [class_trends.getTestAusXml(t) for t in ausgewaehlteTestXmls]
                                 ausgewaehlteTests = sorted(ausgewaehlteTests, key=lambda t:t.getName())
@@ -1646,13 +1646,16 @@ class MainWindow(QMainWindow):
                 if self.trendverzeichnis != "" and os.path.exists(self.trendverzeichnis):
                     test = class_trends.Test(str(self.scoreRoot.get("name")), str(self.scoreRoot.get("gruppe")), class_trends.GdtTool.SCOREGDT) # type: ignore
                     trend = class_trends.Trend(datetime.datetime(self.untersuchungsdatum.year(), self.untersuchungsdatum.month(), self.untersuchungsdatum.day(), datetime.datetime.now().hour, datetime.datetime.now().minute, datetime.datetime.now().second), self.lineEditScoreErgebnis.text() + leerzeichenVorEinheit + self.labelScoreErgebnisEinheit.text(), auswertung)
+                    if not os.path.exists(os.path.join(self.trendverzeichnis, self.patId)):
+                        os.mkdir(self.trendverzeichnis + os.path.sep + self.patId, 0o777)
+                        logger.logger.info("Trendverzeichnis für PatId " + self.patId + " erstellt")
                     try:
-                        class_trends.aktualisiereXmlDatei(test, trend, os.path.join(self.trendverzeichnis, "trends.xml"))
+                        class_trends.aktualisiereXmlDatei(test, trend, os.path.join(self.trendverzeichnis, self.patId, "trends.xml"))
                         logger.logger.info("trends.xml aktualisiert")
                     except class_trends.XmlPfadExistiertNichtError as e:
                         logger.logger.info(e)
                         test.addTrend(trend)
-                        test.speichereAlsNeueXmlDatei(os.path.join(self.trendverzeichnis, "trends.xml"))
+                        test.speichereAlsNeueXmlDatei(os.path.join(self.trendverzeichnis, self.patId, "trends.xml"))
                     except class_trends.TrendError as e:
                         mb = QMessageBox(QMessageBox.Icon.Warning, "Hinweis von ScoreGDT", "Fehler beim Aktualisieren/Speichern der Trenddaten: " + e.message, QMessageBox.StandardButton.Ok)
                         mb.exec()
