@@ -7428,7 +7428,7 @@
                 <wert>1</wert>
             </widget>
         </part>     
-         <berechnung>
+        <berechnung>
             <formel dezimalstellen="1">100*(1 - $var{bs} ^ (e ^ ($var{cxvIndSum} - $var{cxvMean})))</formel>
             <ergebniseinheit>%</ergebniseinheit>
             <variablen>
@@ -12517,6 +12517,160 @@
             <beurteilung>
                 <ergebnisbereich>&#x2265; 20%</ergebnisbereich>
                 <beschreibung>Sehr hohes 10 Jahres-Risiko für CV-Ereignis</beschreibung>
+                <regel>GROESSERGLEICHALS 20</regel>
+            </beurteilung>  
+        </auswertung>
+    </score>
+    <score name="PREVENT-Score (CVD)" gruppe="Kardiologie">
+        <information>Abschätzung des Risikos für ein kardiovaskuläres Ereignis in den nächsten 10 Jahren&#xa;(Alter 30 - 79 Jahre ohne bekannte kardiovaskuläre Erkrankung)</information>
+        <quelle autor="Khan et al.">Development and Validation of the American Heart Association's PREVENT Equations</quelle>
+        <part id="0" typ="GroupBox" titel="Geschlecht" zeile="0" spalte="0" geschlechtpruefung="True">
+            <widget id="100" typ="RadioButton" titel="Weiblich" checked="True">
+                <wert>0</wert>
+            </widget>
+            <widget id="101" typ="RadioButton" titel="Männlich">
+                <wert>1</wert>
+            </widget>
+        </part>
+        <part id="1" typ="Frame" titel="" zeile="0" spalte="1">
+            <widget id="102" typ="LineEdit" titel="Alter" alterspruefung="True">
+                <regex>^\d+$</regex>
+                <zahlengrenze regelart="GROESSERGLEICHALS">30</zahlengrenze>
+                <zahlengrenze regelart="KLEINERGLEICHALS">79</zahlengrenze>
+                <einheit>Jahre</einheit>
+            </widget>
+            <widget id="103" typ="LineEdit" titel="eGFR">
+                <regex>^\d+$</regex>
+                <einheit>ml/min/1,73m&#xb2;</einheit>
+            </widget>
+        </part>
+        <part id="2" typ="GroupBox" titel="Cholesterin" zeile="0" spalte="2">
+            <widget id="105" typ="LineEdit" titel="Gesamt-Cholesterin">
+                <regex>^\d+$</regex>
+                <einheit>mg/dl</einheit>
+            </widget>
+            <widget id="106" typ="LineEdit" titel="HDL-Cholesterin">
+                <regex>^\d+$</regex>
+                <einheit>mg/dl</einheit>
+            </widget>
+            <widget id="107" typ="CheckBox" titel="Statintherapie">
+                <wert>1</wert>
+            </widget>
+        </part>
+        <part id="3" typ="GroupBox" titel="Blutdruck" zeile="1" spalte="0">
+            <widget id="108" typ="LineEdit" titel="Systolisch">
+                <regex>^\d+$</regex>
+                <einheit>mmHg</einheit>
+            </widget>
+            <widget id="109" typ="CheckBox" titel="Antihypertensive Medikation">
+                <wert>1</wert>
+            </widget>
+        </part>
+        <part id="4" typ="GroupBox" titel="Diabetes" zeile="1" spalte="1">
+            <widget id="110" typ="RadioButton" titel="Nein" checked="True">
+                <wert>0</wert>
+            </widget>
+            <widget id="111" typ="RadioButton" titel="Ja">
+                <wert>1</wert>
+            </widget>
+        </part>
+        <part id="5" typ="GroupBox" titel="Aktuell rauchend" zeile="1" spalte="2">
+            <widget id="112" typ="RadioButton" titel="Nein" checked="True">
+                <wert>0</wert>
+            </widget>
+            <widget id="113" typ="RadioButton" titel="Ja">
+                <wert>1</wert>
+            </widget>
+        </part>
+        <berechnung>
+            <formel dezimalstellen="1">e^($var{summe}) / (1 + e^($var{summe})) * 100</formel>
+            <ergebniseinheit>%</ergebniseinheit>
+            <variablen>
+                <variable name="konstante">
+                    <bedingung>
+                        <regel>$id{100} ISTGLEICH 0</regel>
+                        <wert>-3.307728</wert>
+                    </bedingung>
+                    <bedingung>
+                        <regel>$id{100} ISTGLEICH 1</regel>
+                        <wert>-3.031168</wert>
+                    </bedingung>
+                </variable>
+                <variable name="nhdlMmol">($id{105} - $id{106}) * 0.02586</variable>
+                <variable name="hdlMmol">$id{106} * 0.02586</variable>
+                <variable name="rrsysMin">
+                    <bedingung>
+                        <regel>$id{108} KLEINERGLEICHALS 110</regel>
+                        <wert>$id{108}</wert>
+                    </bedingung>
+                    <bedingung>
+                        <regel>$id{108} GROESSERALS 110</regel>
+                        <wert>110</wert>
+                    </bedingung>
+                </variable>
+                <variable name="rrsysMax">
+                    <bedingung>
+                        <regel>$id{108} GROESSERGLEICHALS 110</regel>
+                        <wert>$id{108}</wert>
+                    </bedingung>
+                    <bedingung>
+                        <regel>$id{108} KLEINERALS 110</regel>
+                        <wert>110</wert>
+                    </bedingung>
+                </variable>
+                <variable name="gfrMin">
+                    <bedingung>
+                        <regel>$id{103} KLEINERGLEICHALS 60</regel>
+                        <wert>$id{103}</wert>
+                    </bedingung>
+                    <bedingung>
+                        <regel>$id{103} GROESSERALS 60</regel>
+                        <wert>60</wert>
+                    </bedingung>
+                </variable>
+                <variable name="gfrMax">
+                    <bedingung>
+                        <regel>$id{103} GROESSERGLEICHALS 60</regel>
+                        <wert>$id{103}</wert>
+                    </bedingung>
+                    <bedingung>
+                        <regel>$id{103} KLEINERALS 60</regel>
+                        <wert>60</wert>
+                    </bedingung>
+                </variable>
+                <variable name="summe">
+                    <bedingung>
+                        <regel>$id{101} ISTGLEICH 0</regel>
+                        <wert>$var{konstante} + 0.7939329 * ($id{102} - 55) / 10 + 0.0305239 * ($var{nhdlMmol} - 3.5) - 0.1606857 * ($var{hdlMmol} - 1.3) / 0.3 - 0.2394003 * ($var{rrsysMin} - 110) / 20 + 0.360078 * ($var{rrsysMax} - 130) / 20 + 0.8667604 * $id{110} + 0.5360739 * $id{112} + 0.6045917 * ($var{gfrMin} - 60) / -15 + 0.0433769 * ($var{gfrMax} - 90) / -15 + 0.3151672 * $id{109} - 0.1477655 * $id{107} - 0.0663612 * $id{109} * ($var{rrsysMax} - 130) / 20 + 0.1197879 * $id{107} * ($var{nhdlMmol} - 3.5) - 0.0819715 * ($id{102} - 55) / 10 * ($var{nhdlMmol} - 3.5) + 0.0306769 * ($id{102} - 55) / 10 * ($var{hdlMmol} - 1.3) / 0.3 - 0.0946348 * ($id{102} - 55) / 10 * ($var{rrsysMax} - 130) / 20 - 0.27057 * ($id{102} - 55) / 10 * $id{110} - 0.078715 * ($id{102} - 55) / 10 * $id{112} - 0.1637806 * ($id{102} - 55) / 10 * ($var{gfrMin} - 60) / -15</wert>
+                    </bedingung>
+                    <bedingung>
+                        <regel>$id{101} ISTGLEICH 1</regel>
+                        <wert>$var{konstante} + 0.7688528 * ($id{102} - 55) / 10 + 0.0736174 * ($var{nhdlMmol} - 3.5) - 0.0954431 * ($var{hdlMmol} - 1.3) / 0.3 - 0.4347345 * ($var{rrsysMin} - 110) / 20 + 0.3362658 * ($var{rrsysMax} - 130) / 20 + 0.7692857 * $id{110} + 0.4386871 * $id{112} + 0.5378979 * ($var{gfrMin} - 60) / -15 + 0.0164827 * ($var{gfrMax} - 90) / -15 + 0.288879 * $id{109} - 0.1337349 * $id{107} - 0.0475924 * $id{109} * ($var{rrsysMax} - 130) / 20 + 0.150273 * $id{107} * ($var{nhdlMmol} - 3.5) - 0.0517874 * ($id{102} - 55) / 10 * ($var{nhdlMmol} - 3.5) + 0.0191169 * ($id{102} - 55) / 10 * ($var{hdlMmol} - 1.3) / 0.3 - 0.1049477 * ($id{102} - 55) / 10 * ($var{rrsysMax} - 130) / 20 - 0.2251948 * ($id{102} - 55) / 10 * $id{110} - 0.0895067 * ($id{102} - 55) / 10 * $id{112} - 0.1543702 * ($id{102} - 55) / 10 * ($var{gfrMin} - 60) / -15</wert>
+                    </bedingung>
+                </variable>
+            </variablen>
+        </berechnung>
+        <auswertung>
+            <beurteilung>
+                <ergebnisbereich>&#x3c; 5%</ergebnisbereich>
+                <beschreibung>Geringes Risiko</beschreibung>
+                <regel>KLEINERALS 5</regel>
+            </beurteilung>  
+            <beurteilung>
+                <ergebnisbereich>5 - &#x3c; 7,5%</ergebnisbereich>
+                <beschreibung>Grenzwertiges Risiko</beschreibung>
+                <regel>GROESSERGLEICHALS 5</regel>
+                <regel>KLEINERALS 7.5</regel>
+            </beurteilung>  
+            <beurteilung>
+                <ergebnisbereich>7,5 - &#x3c; 20%</ergebnisbereich>
+                <beschreibung>Intermediäres Risiko</beschreibung>
+                <regel>GROESSERGLEICHALS 7.5</regel>
+                <regel>KLEINERALS 20</regel>
+            </beurteilung>  
+            <beurteilung>
+                <ergebnisbereich>&#x2265; 20%</ergebnisbereich>
+                <beschreibung>Hohes Risiko</beschreibung>
                 <regel>GROESSERGLEICHALS 20</regel>
             </beurteilung>  
         </auswertung>

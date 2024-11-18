@@ -1284,6 +1284,7 @@ class MainWindow(QMainWindow):
                         self.lineEditScoreErgebnis.setText(str(ergebnis).replace(".", ","))
                         logger.logger.info("Endergebnis: " + str(ergebnis).replace(".", ","))
                         # Auswertung
+                        
                         self.auswertung(ergebnis)
                     else:
                         mb = QMessageBox(QMessageBox.Icon.Warning, "Hinweis von ScoreGDT", "Der Score kann nicht berechnet werden, da für die folgenden Variablen keine Regel zutrifft:\n- " + str.join("\n- ", variablenMitNichtErfuelltenRegeln), QMessageBox.StandardButton.Ok)

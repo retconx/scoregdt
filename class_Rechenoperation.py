@@ -177,16 +177,22 @@ class Rechenoperation:
                             ersetzungStartPos += len(self.operanden[i]) + len(self.operationen[i])
                         ersetzungLaenge = len(self.operanden[operationszaehler]) + len(self.operationen[operationszaehler]) + len(self.operanden[operationszaehler + 1])
                         if dezimalstellenIntern == -1:
-                            formel = formel[:ersetzungStartPos] + str(tempErgebnis) + formel[ersetzungStartPos + ersetzungLaenge:]
+                            tempErgebnisString = str(tempErgebnis)
+                            if tempErgebnis == 0 and tempErgebnisString.startswith("-"):
+                                tempErgebnisString = tempErgebnisString[1:]
+                            formel = formel[:ersetzungStartPos] + tempErgebnisString + formel[ersetzungStartPos + ersetzungLaenge:]
                         else:
+                            tempErgebnisString = ergebnisformatierung.format(tempErgebnis)
+                            if tempErgebnis == 0 and tempErgebnisString.startswith("-"):
+                                tempErgebnisString = tempErgebnisString[1:]
                             ergebnisformatierung = "{:." + str(dezimalstellenIntern) + "f}"
-                            formel = formel[:ersetzungStartPos] + ergebnisformatierung.format(tempErgebnis) + formel[ersetzungStartPos + ersetzungLaenge:]
+                            formel = formel[:ersetzungStartPos] + tempErgebnisString + formel[ersetzungStartPos + ersetzungLaenge:]
                         break
                     operationszaehler += 1   
-                formel = self.__aktualisiereFormel(formel, dezimalstellenIntern)  
+                formel = self.__aktualisiereFormel(formel, dezimalstellenIntern) 
                 moeglicheOperationInFormel = False
                 for moeglicheOperation in moeglicheOperationsGruppe:
-                    if moeglicheOperation in formel and formel.index(moeglicheOperation) > 0:
+                    if moeglicheOperation in formel[1:]:
                         moeglicheOperationInFormel = True
                         break
         if dezimalstellenErgebnis != -1:
