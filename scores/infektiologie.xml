@@ -7,13 +7,11 @@
             <widget id="100" typ="CheckBox" titel="Atemfrequenz &#x3e; 22/min">
                 <wert>1</wert>
             </widget>
-            <widget id="101" typ="CheckBox" titel="Verändertes Bewusstsein">
+            <widget id="101" typ="CheckBox" titel="Glasgow Coma Scale &#x3c; 15">
                 <wert>1</wert>
-                <erklaerung>Glasgow Coma Scale &#x3c; 15</erklaerung>
             </widget>
-			<widget id="102" typ="CheckBox" titel="Blood pressure">
+			<widget id="102" typ="CheckBox" titel="Systolischer Blutdruck &#x2264; 100 mmHg">
                 <wert>1</wert>
-                <erklaerung>Blutdruck systolisch ≤ 100 mmHg</erklaerung>
             </widget>
         </part>
         <berechnung>
@@ -21,6 +19,18 @@
             <ergebniseinheit>Punkte</ergebniseinheit>
             <variablen />
         </berechnung>
+        <auswertung>
+            <beurteilung>
+                <ergebnisbereich>&#x2264; 1 Punkt</ergebnisbereich>
+                <beschreibung>Kein hohes Sepsis-/ Mortalitätsrisiko</beschreibung>
+                <regel>KLEINERGLEICHALS 1</regel>
+            </beurteilung>  
+            <beurteilung>
+                <ergebnisbereich>&#x2265; 2 Punkte</ergebnisbereich>
+                <beschreibung>Hohes Sepsis-/ Mortalitätsrisiko</beschreibung>
+                <regel>GROESSERGLEICHALS 2</regel>
+            </beurteilung>   
+        </auswertung>
     </score>
     <score name="Centor-Score" gruppe="Infektiologie">
         <information>Abschätzung der Wahrscheinlichkeit, mit der eine Pharyngitis durch A-Streptokokken verursacht ist</information>
