@@ -100,4 +100,41 @@
             </beurteilung> 
         </auswertung>
     </score>
+    <score name="Risikokalkulator Nierenversagen (5 Jahre)" gruppe="Nephrologie">
+        <information>Abschätzung des 5-Jahresrisikos für eine Progression zum nierenersatztherapiepflichtigen Nierenversagen</information>
+        <quelle autor="Tangri et al.">Multinational Assessment of Accuracy of Equations for Predicting Risk of Kidney Failure. A Meta-analysis</quelle>
+        <part typ="GroupBox" id="0" titel="Geschlecht" zeile="0" spalte="0" geschlechtpruefung="True">
+            <widget id="100" typ="RadioButton" titel="Männlich" checked="True">
+                <wert>1</wert>   
+            </widget>
+            <widget id="101" typ="RadioButton" titel="Weiblich">
+                <wert>0</wert>   
+            </widget>
+        </part>
+        <part typ="Frame" id="1" titel="" zeile="0" spalte="1">
+            <widget id="102" typ="LineEdit" titel="Alter" alterspruefung="True"> 
+                <regex>^\d+$</regex>
+                <einheit>Jahre</einheit>
+            </widget>
+        </part>
+        <part typ="Frame" id="2" titel="" zeile="1" spalte="0">
+            <widget id="103" typ="LineEdit" titel="eGFR"> 
+                <regex>^\d+$</regex>
+                <zahlengrenze regelart="GROESSERGLEICHALS">10</zahlengrenze>
+                <zahlengrenze regelart="KLEINERGLEICHALS">59</zahlengrenze>
+                <einheit>ml/min/1,73 m&#xb2;</einheit>
+            </widget>
+        </part>
+        <part typ="Frame" id="3" titel="" zeile="1" spalte="1">
+            <widget id="104" typ="LineEdit" titel="Albumin-Creatinin-Ratio im Urin"> 
+                <regex>^\d+$</regex>
+                <einheit>mg/g</einheit>
+            </widget>
+        </part>
+        <berechnung>
+            <formel dezimalstellen="1">100 * (1 - 0.9365 ^ (e ^ (-0.2201 * ($id{102}/10 - 7.036) + 0.2467 * ($id{100} - 0.5642) - 0.5567 * ($id{103}/5 - 7.222) + 0.4510 * (ln$id{104} - 5.137))))</formel>
+            <ergebniseinheit>%</ergebniseinheit>
+            <variablen/>
+        </berechnung>
+    </score>
 </root>

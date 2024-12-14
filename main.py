@@ -1212,7 +1212,10 @@ class MainWindow(QMainWindow):
                 elif not self.bereichsgrenzenerzwingen and widget.zahlengrenzeGesetzt():
                     if not widget.zahlengrenzregelnErfuellt():
                         zahl = float(widget.getQt().text().replace(",", "."))
-                        widget.getQt().setText(str(widget.getGrenzzahl(zahl)).replace(".", ",").replace(",0", ""))
+                        grenzzahl = str(widget.getGrenzzahl(zahl)).replace(".", ",").replace(",0", "")
+                        widget.getQt().setText(grenzzahl)
+                        mb = QMessageBox(QMessageBox.Icon.Information, "Hinweis von ScoreGDT", "Textfeld " + widget.getTitel() + " ungültig ausgefüllt. Der Wert wird auf " + grenzzahl + " gesetzt.", QMessageBox.StandardButton.Ok)
+                        mb.exec()
                 if widget.relativgrenzeGesetzt():
                     relativgrenzen = widget.getRelativgrenzen()
                     for relativgrenze in relativgrenzen:
@@ -1259,6 +1262,7 @@ class MainWindow(QMainWindow):
                                     if not self.regelIstErfuellt(regelMitVarWertErsetzt):
                                         regelErfuellt = False
                                 if regelErfuellt:
+                                    bedingungNichtAbgebildet = False
                                     logger.logger.info("Regel " + regel + " erfüllt")
                                     wert = str(bedingungElement.find("wert").text) # type: ignore
                                     wertMitIdWertErsetzt = self.ersetzeIdVariablen(wert)
@@ -1284,7 +1288,6 @@ class MainWindow(QMainWindow):
                         self.lineEditScoreErgebnis.setText(str(ergebnis).replace(".", ","))
                         logger.logger.info("Endergebnis: " + str(ergebnis).replace(".", ","))
                         # Auswertung
-                        
                         self.auswertung(ergebnis)
                     else:
                         mb = QMessageBox(QMessageBox.Icon.Warning, "Hinweis von ScoreGDT", "Der Score kann nicht berechnet werden, da für die folgenden Variablen keine Regel zutrifft:\n- " + str.join("\n- ", variablenMitNichtErfuelltenRegeln), QMessageBox.StandardButton.Ok)
@@ -1605,11 +1608,12 @@ class MainWindow(QMainWindow):
             leerzeichenVorEinheit = " "
             if self.labelScoreErgebnisEinheit.text() == "%":
                 leerzeichenVorEinheit = ""
+            auswertung = "-"
             if self.erfuellteAuswertungsregel != -1:
                 auswertung = self.labelBeschreibungen[self.erfuellteAuswertungsregel].text()
             if self.pdferzeugen and pdf != None:
                 pdf.set_font(style="B")
-                pdf.cell(90, 10, "Gesamt:", border="T")
+                pdf.cell(90, 10, "Ergebnis:", border="T")
                 pdf.cell(0, 10, self.lineEditScoreErgebnis.text() + leerzeichenVorEinheit + self.labelScoreErgebnisEinheit.text(), border="T", align="R", new_x="LMARGIN", new_y="NEXT")
                 if self.erfuellteAuswertungsregel != -1:
                     pdf.cell(0, 10, new_x="LMARGIN", new_y="NEXT")
@@ -1660,6 +1664,8 @@ class MainWindow(QMainWindow):
                     except class_trends.TrendError as e:
                         mb = QMessageBox(QMessageBox.Icon.Warning, "Hinweis von ScoreGDT", "Fehler beim Aktualisieren/Speichern der Trenddaten: " + e.message, QMessageBox.StandardButton.Ok)
                         mb.exec()
+                elif self.trendverzeichnis != "" and not os.path.exists(self.trendverzeichnis):
+                    logger.logger.warning("Trendverzeichnis " + self.trendverzeichnis + " nicht erreichbar")
                 sys.exit()
         else:
             mb = QMessageBox(QMessageBox.Icon.Warning, "Hinweis von ScoreGDT", "Vor dem Senden der Daten muss ein Score berechnet werden.", QMessageBox.StandardButton.Ok)

@@ -9,7 +9,7 @@ class Rechenoperation:
     moeglicheEinoperandenOperationen = {
         "sqrt" : math.sqrt,
         "ln" : math.log,
-        "log10" : math.log10,
+        "log" : math.log10,
         "e" : math.e
     }
     patternZahl = r"^-?\d+([.,]\d+)?$"
@@ -97,7 +97,7 @@ class Rechenoperation:
                     positionInFormel += len(einoperandOperation)
                     endposEinoperandOperation = positionInFormel
                     einoperand = ""
-                    while positionInFormel < len(formel) and (re.match(r"^\d+([.,]?|[.,]\d+?)$", einoperand + formel[positionInFormel]) != None):
+                    while positionInFormel < len(formel) and (re.match(r"^-$|^-?\d+([.,]?|[.,]\d+?)$", einoperand + formel[positionInFormel]) != None):
                         einoperand += formel[positionInFormel]
                         positionInFormel += 1
                     ergebnisformatierung = "{:." + str(dezimalstellenIntern) + "f}"
@@ -202,7 +202,8 @@ class Rechenoperation:
     
     def __call__(self, dezimalstellenErgebnis:int, dezimalstellenIntern:int):
         while "(" in self.tempFormel:
-            for innerstenKlammerinhalt in self.getInnersteKlammerninhalte(self.tempFormel):
+            tempFormel = self.tempFormel
+            for innerstenKlammerinhalt in self.getInnersteKlammerninhalte(tempFormel):
                 ergebnis = self.__getErgebnis(innerstenKlammerinhalt, dezimalstellenIntern, dezimalstellenIntern)
                 self.tempFormel = self.tempFormel.replace("(" + innerstenKlammerinhalt + ")", str(ergebnis))
         self.tempFormel = self.__aktualisiereFormel(self.tempFormel, dezimalstellenIntern)
