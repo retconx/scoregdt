@@ -101,9 +101,9 @@ class Score:
         Gibt ein Score-Element zurück
         Parameter:
             Score-Verzeichnispfad:str
-            Score-ID:str
+            Score-Name:str
         Return:
-            Score-Element:ElementTree.Element oder None, falls ID nicht gefunden
+            Score-Element:ElementTree.Element oder None, falls Name nicht gefunden
         """
         scoreElement = None
         root = Score.getGesamtRoot(scoreverzeichnispfad)

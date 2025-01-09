@@ -103,4 +103,449 @@
             </beurteilung> 
         </auswertung>
     </score>
+    <score name="FINDRISK" gruppe="Endokrinologie">
+        <information>Abschätzung des Risikos für die Entwicklung eines Diabetes mellitus in den nächsten 10 Jahren</information>
+        <quelle autor="Schuppenies et al.">FINDRISK - Development of a questionnaire to estimate the risk of diabetes</quelle>
+        <part id="0" typ="GroupBox" titel="Persönliche Daten" zeile="0" spalte="0">
+            <widget id="100" typ="LineEdit" titel="Alter" alterspruefung="True">
+                <regex>^\d+$</regex>  
+                <einheit>Jahre</einheit>
+            </widget>
+            <widget id="101" typ="LineEdit" titel="Körpergröße" groessepruefung="True">
+                <regex>^\d+([.,]\d)?$</regex>  
+                <einheit>cm</einheit>
+            </widget>
+            <widget id="102" typ="LineEdit" titel="Körpergewicht" gewichtpruefung="True">
+                <regex>^\d+([.,]\d)?$</regex>  
+                <einheit>kg</einheit>
+            </widget>
+        </part>
+        <part id="1" typ="GroupBox" titel="Geschlecht" geschlechtpruefung="True" zeile="0" spalte="1">
+            <widget id="103" typ="RadioButton" titel="Weiblich" checked="True">
+                <wert>0</wert>   
+            </widget>
+            <widget id="104" typ="RadioButton" titel="Männlich">
+                <wert>1</wert>   
+            </widget>
+        </part>
+        <part id="2" typ="GroupBox" titel="Tallienumfang auf Nabelhöhe" zeile="0" spalte="2">
+            <widget id="105" typ="RadioButton" titel="Frau &#x3c; 80/Mann &#x3c; 94 cm" checked="True">
+                <wert>0</wert>
+            </widget>
+            <widget id="106" typ="RadioButton" titel="Frau 80 - 88/Mann 94 - 102 cm">
+                <wert>3</wert>
+            </widget>
+            <widget id="107" typ="RadioButton" titel="Frau &#x3e; 88/Mann &#x3e; 102 cm">
+                <wert>4</wert>
+            </widget>
+        </part>
+        <part id="3" typ="GroupBox" titel="Mindestens 30 Minuten tägliche Bewegung am Stück" zeile="1" spalte="0">
+            <widget id="108" typ="RadioButton" titel="Ja" checked="True">
+                <wert>0</wert>
+            </widget>
+            <widget id="109" typ="RadioButton" titel="Nein">
+                <wert>2</wert>
+            </widget>
+        </part>
+        <part id="4" typ="GroupBox" titel="Täglich Gemüse, Obst oder dunkles Brot" zeile="1" spalte="1">
+            <widget id="110" typ="RadioButton" titel="Ja" checked="True">
+                <wert>0</wert>
+            </widget>
+            <widget id="111" typ="RadioButton" titel="Nein">
+                <wert>1</wert>
+            </widget>
+        </part>
+        <part id="5" typ="GroupBox" titel="Antihypertensive Therapie aktuell oder früher" zeile="1" spalte="2">
+            <widget id="112" typ="RadioButton" titel="Ja">
+                <wert>2</wert>
+            </widget>
+            <widget id="113" typ="RadioButton" titel="Nein" checked="True">
+                <wert>0</wert>
+            </widget>
+        </part>
+        <part id="6" typ="GroupBox" titel="Erhöhter Blutzucker" zeile="2" spalte="0">
+            <widget id="114" typ="RadioButton" titel="Ja">
+                <wert>5</wert>
+            </widget>
+            <widget id="115" typ="RadioButton" titel="Nein" checked="True">
+                <wert>0</wert>
+            </widget>
+        </part>
+        <part id="7" typ="GroupBox" titel="Diabetes mellitus in Blutsverwandtschaft" zeile="2" spalte="1">
+            <widget id="116" typ="RadioButton" titel="Nein" checked="True">
+                <wert>0</wert>
+            </widget>
+            <widget id="117" typ="RadioButton" titel="Bei Eltern, Geschwistern oder Kindern">
+                <wert>5</wert>
+            </widget>
+            <widget id="118" typ="RadioButton" titel="Bei Großeltern, Onkeln/Tanten, Cousins/Cousinen">
+                <wert>3</wert>
+            </widget>
+        </part>
+        <berechnung>
+            <formel>$var{alter} + $var{bmi} + $id{103} + $id{105} + $id{108} + $id{110} + $id{112} + $id{114} + $id{116}</formel>
+            <ergebniseinheit>Punkte</ergebniseinheit>
+            <variablen>
+                <variable name="alter">
+                    <bedingung>
+                        <regel>$id{100} KLEINERALS 35</regel>
+                        <wert>0</wert>
+                    </bedingung>
+                    <bedingung>
+                        <regel>$id{100} GROESSERGLEICHALS 35</regel>
+                        <regel>$id{100} KLEINERGLEICHALS 44</regel>
+                        <wert>1</wert>
+                    </bedingung>
+                    <bedingung>
+                        <regel>$id{100} GROESSERGLEICHALS 45</regel>
+                        <regel>$id{100} KLEINERGLEICHALS 54</regel>
+                        <wert>2</wert>
+                    </bedingung>
+                    <bedingung>
+                        <regel>$id{100} GROESSERGLEICHALS 55</regel>
+                        <regel>$id{100} KLEINERGLEICHALS 64</regel>
+                        <wert>3</wert>
+                    </bedingung>
+                    <bedingung>
+                        <regel>$id{100} GROESSERALS 64</regel>
+                        <wert>4</wert>
+                    </bedingung>
+                </variable>
+                <variable name="bmi">$id{102} / $id{101} / $id{101}</variable>
+            </variablen>
+        </berechnung>
+        <auswertung>
+            <beurteilung>
+                <ergebnisbereich>&#x3c; 7 Punkte</ergebnisbereich>
+                <beschreibung>10-Jahres-Risiko ca. 1%</beschreibung>
+                <regel>KLEINERALS 7</regel>
+            </beurteilung> 
+            <beurteilung>
+                <ergebnisbereich>7 - 11 Punkte</ergebnisbereich>
+                <beschreibung>10-Jahres-Risiko ca. 4%</beschreibung>
+                <regel>GROESSERGLEICHALS 7</regel>
+                <regel>KLEINERGLEICHALS 11</regel>
+            </beurteilung> 
+            <beurteilung>
+                <ergebnisbereich>12 - 14 Punkte</ergebnisbereich>
+                <beschreibung>10-Jahres-Risiko ca. 17%</beschreibung>
+                <regel>GROESSERGLEICHALS 12</regel>
+                <regel>KLEINERGLEICHALS 14</regel>
+            </beurteilung> 
+            <beurteilung>
+                <ergebnisbereich>15 - 20 Punkte</ergebnisbereich>
+                <beschreibung>10-Jahres-Risiko ca. 33%</beschreibung>
+                <regel>GROESSERGLEICHALS 15</regel>
+                <regel>KLEINERGLEICHALS 20</regel>
+            </beurteilung> 
+            <beurteilung>
+                <ergebnisbereich>&#x3e; 20 Punkte</ergebnisbereich>
+                <beschreibung>10-Jahres-Risiko ca. 50%</beschreibung>
+                <regel>GROESSERALS 20</regel>
+            </beurteilung> 
+        </auswertung>
+    </score>
+    <score name="Deutscher Diabetes Risikotest" gruppe="Endokrinologie">
+        <information>Abschätzung des Risikos für die Entwicklung eines Diabetes mellitus in den nächsten 10 Jahren</information>
+        <quelle>Deutsches Institut für Ernährungsforschung Potsdam-Rehbrücke (DIfE)</quelle>
+        <part id="0" typ="GroupBox" titel="Persönliche Daten" zeile="0" spalte="0">
+            <widget id="100" typ="LineEdit" titel="Alter" alterspruefung="True">
+                <regex>^\d+$</regex>  
+                <einheit>Jahre</einheit>
+            </widget>
+            <widget id="101" typ="LineEdit" titel="Körpergröße" groessepruefung="True">
+                <regex>^\d+([.,]\d)?$</regex>  
+                <einheit>cm</einheit>
+            </widget>
+            <widget id="102" typ="LineEdit" titel="Tallienumfang auf Nabelhöhe">
+                <regex>^\d+([.,]\d)?$</regex>  
+                <einheit>cm</einheit>
+            </widget>
+        </part>
+        <part id="1" typ="GroupBox" titel="Raucherstatus" zeile="0" spalte="1">
+            <widget id="103" typ="RadioButton" titel="Nie geraucht" checked="True">
+                <wert>0</wert>
+            </widget>
+            <widget id="104" typ="RadioButton" titel="Ehemals &#x3c; 20 Zigaretten/Tag">
+                <wert>1</wert>
+            </widget>
+            <widget id="105" typ="RadioButton" titel="Ehemals &#x2265; 20 Zigaretten/Tag">
+                <wert>5</wert>
+            </widget>
+            <widget id="105" typ="RadioButton" titel="Aktuell &#x3c; 20 Zigaretten/Tag">
+                <wert>2</wert>
+            </widget>
+            <widget id="106" typ="RadioButton" titel="Aktuell &#x2265; 20 Zigaretten/Tag">
+                <wert>8</wert>
+            </widget>
+        </part>
+        <part id="2" typ="GroupBox" titel="Mindestens 5 Stunden wöchentliche Bewegung (Sport, Gartenarbeit)" zeile="0" spalte="2">
+            <widget id="107" typ="RadioButton" titel="Nein" checked="True">
+                <wert>1</wert>
+            </widget>
+            <widget id="108" typ="RadioButton" titel="Ja">
+                <wert>0</wert>
+            </widget>
+        </part>
+        <part id="3" typ="GroupBox" titel="Anamnestisch erhöhter Blutdruck" zeile="1" spalte="0">
+            <widget id="109" typ="RadioButton" titel="Nein" checked="True">
+                <wert>0</wert>
+            </widget>
+            <widget id="110" typ="RadioButton" titel="Ja">
+                <wert>5</wert>
+            </widget>
+        </part>
+        <part id="4" typ="GroupBox" titel="Anzahl Scheiben Vollkornbrot/Protionen Müsli täglich" zeile="1" spalte="1">
+            <widget id="111" typ="ComboBox" titel="Anzahl Scheiben/Portionen">
+                <items>
+                    <item wert="5">0</item>
+                    <item wert="4">1</item>
+                    <item wert="3">2</item>
+                    <item wert="2">2</item>
+                    <item wert="1">4</item>
+                    <item wert="0">&#x3e; 4</item>
+                </items>
+            </widget>
+        </part>
+        <part id="5" typ="GroupBox" titel="Typ 2-Diabetes bei Eltern" zeile="1" spalte="2">
+            <widget id="112" typ="RadioButton" titel="Nein" checked="True">
+                <wert>0</wert>
+            </widget>
+            <widget id="113" typ="RadioButton" titel="Ja, ein Elternteil">
+                <wert>6</wert>
+            </widget>
+            <widget id="114" typ="RadioButton" titel="Ja, beide Elternteile">
+                <wert>11</wert>
+            </widget>
+        </part>
+        <part id="6" typ="GroupBox" titel="Typ 2-Diabetes bei Geschwistern" zeile="2" spalte="0">
+            <widget id="115" typ="RadioButton" titel="Nein/nicht bekannt" checked="True">
+                <wert>0</wert>
+            </widget>
+            <widget id="116" typ="RadioButton" titel="Ja, mindestens ein Geschwisterkind">
+                <wert>6</wert>
+            </widget>
+        </part>
+        <part id="7" typ="GroupBox" titel="Wie häufig Rind-, Schweine-, Lammfleisch" zeile="2" spalte="1">
+            <widget id="117" typ="ComboBox" titel="Häufigkeit">
+                <items>
+                    <item wert="0">Nie oder selten</item>
+                    <item wert="1">1-2x/Woche</item>
+                    <item wert="3">3-4x/Woche</item>
+                    <item wert="5">5-6x/Woche</item>
+                    <item wert="6">Täglich</item>
+                    <item wert="8">Mehrmals täglich</item>
+                </items>
+            </widget>
+        </part>
+        <part id="8" typ="GroupBox" titel="Wieviele Tassen Kaffe/Tag" zeile="2" spalte="2">
+            <widget id="118" typ="ComboBox" titel="Anzahl Tassen">
+                <items>
+                    <item wert="3">0-1</item>
+                    <item wert="2">2-5</item>
+                    <item wert="0">&#x3e; 5</item>
+                </items>
+            </widget>
+        </part>
+        <berechnung>
+            <formel>$var{alter} + $var{groesse} + $var{tallie} + $id{103} + $id{107} + $id{109} + $id{111} + $id{112} + $id{115} + $id{117} + $id{118}</formel>
+            <ergebniseinheit>Punkte</ergebniseinheit>
+            <variablen>
+                <variable name="alter">
+                    <bedingung>
+                        <regel>$id{100} KLEINERALS 35</regel>
+                        <wert>0</wert>
+                    </bedingung>
+                    <bedingung>
+                        <regel>$id{100} GROESSERGLEICHALS 35</regel>
+                        <regel>$id{100} KLEINERGLEICHALS 39</regel>
+                        <wert>1</wert>
+                    </bedingung>
+                    <bedingung>
+                        <regel>$id{100} GROESSERGLEICHALS 40</regel>
+                        <regel>$id{100} KLEINERGLEICHALS 44</regel>
+                        <wert>4</wert>
+                    </bedingung>
+                    <bedingung>
+                        <regel>$id{100} GROESSERGLEICHALS 45</regel>
+                        <regel>$id{100} KLEINERGLEICHALS 49</regel>
+                        <wert>7</wert>
+                    </bedingung>
+                    <bedingung>
+                        <regel>$id{100} GROESSERGLEICHALS 50</regel>
+                        <regel>$id{100} KLEINERGLEICHALS 54</regel>
+                        <wert>10</wert>
+                    </bedingung>
+                    <bedingung>
+                        <regel>$id{100} GROESSERGLEICHALS 55</regel>
+                        <regel>$id{100} KLEINERGLEICHALS 59</regel>
+                        <wert>13</wert>
+                    </bedingung>
+                    <bedingung>
+                        <regel>$id{100} GROESSERGLEICHALS 60</regel>
+                        <regel>$id{100} KLEINERGLEICHALS 64</regel>
+                        <wert>16</wert>
+                    </bedingung>
+                    <bedingung>
+                        <regel>$id{100} GROESSERGLEICHALS 65</regel>
+                        <regel>$id{100} KLEINERGLEICHALS 69</regel>
+                        <wert>19</wert>
+                    </bedingung>
+                    <bedingung>
+                        <regel>$id{100} GROESSERGLEICHALS 70</regel>
+                        <regel>$id{100} KLEINERGLEICHALS 74</regel>
+                        <wert>22</wert>
+                    </bedingung>
+                    <bedingung>
+                        <regel>$id{100} GROESSERALS 74</regel>
+                        <wert>25</wert>
+                    </bedingung>
+                </variable>
+                <variable name="groesse">
+                    <bedingung>
+                        <regel>$id{101} KLEINERALS 152</regel>
+                        <wert>11</wert>
+                    </bedingung>
+                    <bedingung>
+                        <regel>$id{101} GROESSERGLEICHALS 152</regel>
+                        <regel>$id{101} KLEINERGLEICHALS 159</regel>
+                        <wert>9</wert>
+                    </bedingung>
+                    <bedingung>
+                        <regel>$id{101} GROESSERGLEICHALS 160</regel>
+                        <regel>$id{101} KLEINERGLEICHALS 167</regel>
+                        <wert>7</wert>
+                    </bedingung>
+                    <bedingung>
+                        <regel>$id{101} GROESSERGLEICHALS 168</regel>
+                        <regel>$id{101} KLEINERGLEICHALS 175</regel>
+                        <wert>5</wert>
+                    </bedingung>
+                    <bedingung>
+                        <regel>$id{101} GROESSERGLEICHALS 176</regel>
+                        <regel>$id{101} KLEINERGLEICHALS 183</regel>
+                        <wert>3</wert>
+                    </bedingung>
+                    <bedingung>
+                        <regel>$id{101} GROESSERGLEICHALS 184</regel>
+                        <regel>$id{101} KLEINERGLEICHALS 191</regel>
+                        <wert>1</wert>
+                    </bedingung>
+                    <bedingung>
+                        <regel>$id{101} GROESSERGLEICHALS 192</regel>
+                        <wert>0</wert>
+                    </bedingung>
+                </variable>
+                <variable name="tallie">
+                    <bedingung>
+                        <regel>$id{102} KLEINERALS 75</regel>
+                        <wert>0</wert>
+                    </bedingung>
+                    <bedingung>
+                        <regel>$id{102} GROESSERGLEICHALS 75</regel>
+                        <regel>$id{102} KLEINERGLEICHALS 79</regel>
+                        <wert>4</wert>
+                    </bedingung>
+                    <bedingung>
+                        <regel>$id{102} GROESSERGLEICHALS 80</regel>
+                        <regel>$id{102} KLEINERGLEICHALS 84</regel>
+                        <wert>8</wert>
+                    </bedingung>
+                    <bedingung>
+                        <regel>$id{102} GROESSERGLEICHALS 85</regel>
+                        <regel>$id{102} KLEINERGLEICHALS 89</regel>
+                        <wert>12</wert>
+                    </bedingung>
+                    <bedingung>
+                        <regel>$id{102} GROESSERGLEICHALS 90</regel>
+                        <regel>$id{102} KLEINERGLEICHALS 94</regel>
+                        <wert>16</wert>
+                    </bedingung>
+                    <bedingung>
+                        <regel>$id{102} GROESSERGLEICHALS 95</regel>
+                        <regel>$id{102} KLEINERGLEICHALS 99</regel>
+                        <wert>20</wert>
+                    </bedingung>
+                    <bedingung>
+                        <regel>$id{102} GROESSERGLEICHALS 100</regel>
+                        <regel>$id{102} KLEINERGLEICHALS 104</regel>
+                        <wert>24</wert>
+                    </bedingung>
+                    <bedingung>
+                        <regel>$id{102} GROESSERGLEICHALS 105</regel>
+                        <regel>$id{102} KLEINERGLEICHALS 109</regel>
+                        <wert>28</wert>
+                    </bedingung>
+                    <bedingung>
+                        <regel>$id{102} GROESSERGLEICHALS 110</regel>
+                        <regel>$id{102} KLEINERGLEICHALS 114</regel>
+                        <wert>32</wert>
+                    </bedingung>
+                    <bedingung>
+                        <regel>$id{102} GROESSERGLEICHALS 115</regel>
+                        <regel>$id{102} KLEINERGLEICHALS 119</regel>
+                        <wert>36</wert>
+                    </bedingung>
+                    <bedingung>
+                        <regel>$id{102} GROESSERGLEICHALS 120</regel>
+                        <wert>40</wert>
+                    </bedingung>
+                </variable>
+            </variablen>
+        </berechnung>
+        <auswertung>
+            <beurteilung>
+                <ergebnisbereich>&#x3c; 20 Punkte</ergebnisbereich>
+                <beschreibung>10-Jahres-Risiko &#x3c; 1,3%</beschreibung>
+                <regel>KLEINERALS 20</regel>
+            </beurteilung> 
+            <beurteilung>
+                <ergebnisbereich>20 - 39 Punkte</ergebnisbereich>
+                <beschreibung>10-Jahres-Risiko ca. 1,3%</beschreibung>
+                <regel>GROESSERGLEICHALS 20</regel>
+                <regel>KLEINERGLEICHALS 39</regel>
+            </beurteilung> 
+            <beurteilung>
+                <ergebnisbereich>40 - 49 Punkte</ergebnisbereich>
+                <beschreibung>10-Jahres-Risiko ca. 4,6%</beschreibung>
+                <regel>GROESSERGLEICHALS 40</regel>
+                <regel>KLEINERGLEICHALS 49</regel>
+            </beurteilung> 
+            <beurteilung>
+                <ergebnisbereich>50 - 59 Punkte</ergebnisbereich>
+                <beschreibung>10-Jahres-Risiko ca. 11%</beschreibung>
+                <regel>GROESSERGLEICHALS 50</regel>
+                <regel>KLEINERGLEICHALS 59</regel>
+            </beurteilung> 
+            <beurteilung>
+                <ergebnisbereich>60 - 69 Punkte</ergebnisbereich>
+                <beschreibung>10-Jahres-Risiko ca. 23%</beschreibung>
+                <regel>GROESSERGLEICHALS 60</regel>
+                <regel>KLEINERGLEICHALS 69</regel>
+            </beurteilung> 
+            <beurteilung>
+                <ergebnisbereich>70 - 79 Punkte</ergebnisbereich>
+                <beschreibung>10-Jahres-Risiko ca. 45%</beschreibung>
+                <regel>GROESSERGLEICHALS 70</regel>
+                <regel>KLEINERGLEICHALS 79</regel>
+            </beurteilung> 
+            <beurteilung>
+                <ergebnisbereich>80 - 89 Punkte</ergebnisbereich>
+                <beschreibung>10-Jahres-Risiko ca. 76%</beschreibung>
+                <regel>GROESSERGLEICHALS 80</regel>
+                <regel>KLEINERGLEICHALS 89</regel>
+            </beurteilung> 
+            <beurteilung>
+                <ergebnisbereich>90 - 99 Punkte</ergebnisbereich>
+                <beschreibung>10-Jahres-Risiko ca. 96%</beschreibung>
+                <regel>GROESSERGLEICHALS 90</regel>
+                <regel>KLEINERGLEICHALS 99</regel>
+            </beurteilung> 
+            <beurteilung>
+                <ergebnisbereich>&#x3e; 100 Punkte</ergebnisbereich>
+                <beschreibung>10-Jahres-Risiko ca. 100%</beschreibung>
+                <regel>GROESSERALS 100</regel>
+            </beurteilung> 
+        </auswertung>
+    </score>
 </root>

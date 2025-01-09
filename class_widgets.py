@@ -18,7 +18,7 @@ regexZahl = r"^-?\d+([.,]\d+)?$"
 
 class Widget():
     # def __init__(self, id:str, partId:str, titel:str, erklaerung:str, einheit:str, bisherigesRoot:ElementTree.Element):
-    def __init__(self, id:str, partId:str, titel:str, erklaerung:str, einheit:str, alterspruefung:bool):
+    def __init__(self, id:str, partId:str, titel:str, erklaerung:str, einheit:str, alterspruefung:bool, groessepruefung:bool, gewichtpruefung:bool):
         if id != "":
             self.id = id
         # else:
@@ -28,6 +28,8 @@ class Widget():
         self.erklaerung = erklaerung
         self.einheit = einheit
         self.alterspruefung = alterspruefung
+        self.groessepruefung = groessepruefung
+        self.gewichtpruefung = gewichtpruefung
         self.titelbreite = -1
 
     # def getNeueId(self, bisherigesRoot:ElementTree.Element):
@@ -65,6 +67,12 @@ class Widget():
     def alterspruefungAktiv(self):
         return self.alterspruefung
     
+    def groessepruefungAktiv(self):
+        return self.groessepruefung
+    
+    def gewichtpruefungAktiv(self):
+        return self.gewichtpruefung
+    
     def setTitelbreite(self, width:int):
         self.titelbreite = width
 
@@ -73,8 +81,8 @@ class Widget():
 
 
 class ComboBox(Widget):
-    def __init__(self, id:str, partId:str, titel:str, erklaerung:str, einheit:str, itemsUndWerte:list, defaultIndex:int, alterspruefung:bool):
-        super().__init__(id, partId, titel, erklaerung, einheit, alterspruefung)
+    def __init__(self, id:str, partId:str, titel:str, erklaerung:str, einheit:str, itemsUndWerte:list, defaultIndex:int, alterspruefung:bool, groessepruefung:bool, gewichtpruefung:bool):
+        super().__init__(id, partId, titel, erklaerung, einheit, alterspruefung, groessepruefung, gewichtpruefung)
         # itemsUndWerte: Liste mit (item, wert)-Tuples
         self.itemsUndWerte = itemsUndWerte
         self.combobox = QComboBox()
@@ -98,8 +106,8 @@ class ComboBox(Widget):
         return self.typ
     
 class CheckBox(Widget):
-    def __init__(self, id, partId:str, buttongroup:str, titel:str, erklaerung:str, einheit:str, wert:str, checked:bool, alterspruefung:bool, altersregel:str, geschlechtpruefung:bool):
-        super().__init__(id, partId, titel, erklaerung, einheit, alterspruefung)
+    def __init__(self, id, partId:str, buttongroup:str, titel:str, erklaerung:str, einheit:str, wert:str, checked:bool, alterspruefung:bool, altersregel:str, geschlechtpruefung:bool, groessepruefung:bool, gewichtpruefung:bool):
+        super().__init__(id, partId, titel, erklaerung, einheit, alterspruefung, groessepruefung, gewichtpruefung)
         self.buttongroup = buttongroup
         self.wert = wert
         self.checked = checked
@@ -133,8 +141,8 @@ class CheckBox(Widget):
         return self.geschlechtpruefung
     
 class LineEdit(Widget):
-    def __init__(self, id, partId:str, titel:str, erklaerung:str, einheit:str, regexPattern:str, alterspruefung:bool, defaultWert:str):
-        super().__init__(id, partId, titel, erklaerung, einheit, alterspruefung)
+    def __init__(self, id, partId:str, titel:str, erklaerung:str, einheit:str, regexPattern:str, alterspruefung:bool, defaultWert:str, groessepruefung:bool, gewichtpruefung:bool):
+        super().__init__(id, partId, titel, erklaerung, einheit, alterspruefung, groessepruefung, gewichtpruefung)
         self.regexPattern = regexPattern
         self.lineedit = QLineEdit(defaultWert)
         self.typ = WidgetTyp.LINEEDIT
@@ -216,8 +224,8 @@ class LineEdit(Widget):
         self.additionVorFaktor = vorFaktor
     
 class RadioButton(Widget):
-    def __init__(self, id, partId:str, titel:str, erklaerung:str, einheit:str, wert:str, checked:bool, alterspruefung:bool, altersregel:str):
-        super().__init__(id, partId, titel, erklaerung, einheit, alterspruefung)
+    def __init__(self, id, partId:str, titel:str, erklaerung:str, einheit:str, wert:str, checked:bool, alterspruefung:bool, altersregel:str, groessepruefung:bool, gewichtpruefung:bool):
+        super().__init__(id, partId, titel, erklaerung, einheit, alterspruefung, groessepruefung, gewichtpruefung)
         self.wert = wert
         self.checked = checked
         self.radiobutton = QRadioButton()
