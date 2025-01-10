@@ -9,7 +9,7 @@ import dialogUeberScoreGdt, dialogEinstellungenAllgemein, dialogEinstellungenGdt
 import class_trends, dialogTrendanzeige
 import class_enums, class_score, class_Rechenoperation, scorepdf
 from PySide6.QtCore import Qt, QTranslator, QLibraryInfo, QDate, QTime
-from PySide6.QtGui import QFont, QAction, QIcon, QDesktopServices, QPixmap, QPalette
+from PySide6.QtGui import QFont, QAction, QIcon, QDesktopServices, QPixmap, QPalette, QClipboard
 from PySide6.QtWidgets import (
     QApplication,
     QSizePolicy,
@@ -28,8 +28,7 @@ from PySide6.QtWidgets import (
     QPushButton,
     QComboBox,
     QButtonGroup,
-    QScrollArea, 
-    QFileDialog
+    QScrollArea
 )
 
 @staticmethod
@@ -382,13 +381,7 @@ class MainWindow(QMainWindow):
         self.fontBoldGross.setPixelSize(16)
         self.fontGross = QFont()
         self.fontGross.setPixelSize(16)
-
-        if len(sys.argv) > 1:
-            arg = sys.argv[1]
-            if arg == "verlauf":
-                pass
                 
-
         # GDT-Datei laden
         gd = gdt.GdtDatei()
         self.patId = "-"
@@ -444,13 +437,18 @@ class MainWindow(QMainWindow):
                     self.scoreFavoritenVerwalten(False)
 
             if self.root != None:
+                reStartScore = r"^stsc:.+$"
                 self.scoreRoot = self.root.find("score")
                 if not gdtLadeFehler:
                     scoreAlsStartargument = False
-                    if len(sys.argv) > 1: # Score als Startargument
-                        self.scoreRoot = class_score.Score.getScoreXml(self.scoresPfad, sys.argv[1])
-                        if self.scoreRoot != None:
-                            scoreAlsStartargument = True
+                    for arg in sys.argv:
+                        if re.match(reStartScore, arg) != None: # Score als Startargument
+                            scoreName = class_score.Score.getScoreNameAusGdtName(self.scoresPfad, str(arg[5:]).replace("_", " ").replace("{", "(").replace("}", ")"))
+                            if scoreName == None:
+                                scoreName = str(arg[5:].replace("_", " ").replace("{", "(").replace("}", ")"))
+                            self.scoreRoot = class_score.Score.getScoreXml(self.scoresPfad, scoreName)
+                            if self.scoreRoot != None:
+                                scoreAlsStartargument = True
                     auswahlOk = False
                     if not scoreAlsStartargument:
                         ds = dialogScoreAuswahl.ScoreAuswahl(self.root, self.standardscore, self.configPath, self.patId)
@@ -997,6 +995,9 @@ class MainWindow(QMainWindow):
             scoreMenuAuswaehlenAction.triggered.connect(self.scoreAuswaehlen)
             scoreMenuFavoritenVerwaltenAction = QAction("Favoriten verwalten", self)
             scoreMenuFavoritenVerwaltenAction.triggered.connect(self.scoreFavoritenVerwalten)
+            scoreGdtNameInClipboardAction = QAction("Scorename als Startargument in die Zwischenablage kopieren", self)
+            scoreGdtNameInClipboardAction.triggered.connect(self.scoreGdtNameInClipboard)
+
             einstellungenMenu = menubar.addMenu("Einstellungen")
             einstellungenAllgemeinAction = QAction("Allgemeine Einstellungen", self)
             einstellungenAllgemeinAction.triggered.connect(lambda checked = False, neustartfrage = True: self.einstellungenAllgemein(checked, neustartfrage))
@@ -1032,6 +1033,7 @@ class MainWindow(QMainWindow):
             anwendungMenu.addAction(updateAction)
             scoreMenu.addAction(scoreMenuAuswaehlenAction)
             scoreMenu.addAction(scoreMenuFavoritenVerwaltenAction)
+            scoreMenu.addAction(scoreGdtNameInClipboardAction)
             einstellungenMenu.addAction(einstellungenAllgemeinAction)
             einstellungenMenu.addAction(einstellungenGdtAction)
             einstellungenMenu.addAction(einstellungenBenutzerAction)
@@ -1799,7 +1801,19 @@ class MainWindow(QMainWindow):
             mb.exec() 
 
     def scoreAuswaehlen(self, checked):
+        appName = sys.argv[0]
+        sys.argv.clear()
+        sys.argv.append(appName)
         os.execl(sys.executable, __file__, *sys.argv)
+
+    def scoreGdtNameInClipboard(self, checked):
+        gdtname = str(self.scoreRoot.get("name")) # type: ignore
+        if self.scoreRoot.get("gdtname") != None: # type: ignore
+            gdtname = str(self.scoreRoot.get("gdtname")) # type: ignore
+        clipboard = QClipboard()
+        clipboard.setText("stsc:" + gdtname.replace(" ", "_").replace("(", "{").replace(")", "}"))
+        mb = QMessageBox(QMessageBox.Icon.Information, "Hinweis von ScoreGDT", "\"" + "stsc:" + gdtname.replace(" ", "_").replace("(", "{").replace(")", "}") + "\" wurde in die Zwischenablage kopiert und kann als Startargument verwendet werden.", QMessageBox.StandardButton.Ok)
+        mb.exec()
 
     def scoreFavoritenVerwalten(self, checked):
         df = dialogEinstellungenFavoriten.EinstellungenFavoriten(self.configPath, self.scoresPfad)

@@ -113,4 +113,25 @@ class Score:
                 scoreElement = tempScoreElement
                 break
         return scoreElement
+    
+    @staticmethod
+    def getScoreNameAusGdtName(scoreverzeichnispfad:str, gdtName:str):
+        """ 
+        Gibt den Score-Namen zu einem passenden GDT-Namen zurück, falls dieser existiert
+        Parameter: 
+            scoreverzeichnispfad:str
+            gdtName:str, zu suchender GDT-Name
+        Return:
+            Score-Name, falls für den Score ein GDT-Name existiert, andernfalls None
+        """
+        tempName = None
+        root = Score.getGesamtRoot(scoreverzeichnispfad)
+        for tempScoreElement in root.findall("score"):
+            tempGdtName = ""
+            if tempScoreElement.get("gdtname") != None:
+                tempGdtName = str(tempScoreElement.get("gdtname"))
+            if tempGdtName == gdtName:
+                tempName = str(tempScoreElement.get("name"))
+                break
+        return tempName            
 

@@ -1,0 +1,96 @@
+<?xml version='1.0' encoding='utf-8'?>
+<root>
+    <score name="Fagerström-Test" gruppe="Psychologie">
+        <information>Beurteilung der Tabakabhängigkeit</information>
+        <quelle autor="Fagerström et al.">Measuring nicotine dependence: A review of the Fagerström Tolerance Questionnaire</quelle>
+        <part id="0" typ="GroupBox" titel="Erste Zigarette nach dem Aufstehen" erklaerung="Wann nach dem Aufwachen rauchen Sie Ihre erste Zigarette?" zeile="0" spalte="0">
+            <widget id="100" typ="RadioButton" titel="&#x2264; 5 Minuten">
+                <wert>3</wert>
+            </widget>
+            <widget id="101" typ="RadioButton" titel="6 - 30 Minuten">
+                <wert>2</wert>
+            </widget>
+            <widget id="102" typ="RadioButton" titel="30 - 60 Minuten">
+                <wert>1</wert>
+            </widget>
+            <widget id="103" typ="RadioButton" titel="&#x3e; 60 Minuten" checked="True">
+                <wert>0</wert>
+            </widget>
+        </part>
+        <part id="1" typ="GroupBox" titel="Schwierig, Rauchen sein zu lassen" erklaerung="Finden Sie es schwierig, an Orten, wo das Rauchen verboten ist,&#xa;das Rauchen zu unterlassen?" zeile="0" spalte="1">
+            <widget id="104" typ="RadioButton" titel="Ja">
+                <wert>1</wert>
+            </widget>
+            <widget id="105" typ="RadioButton" titel="Nein" checked="True">
+                <wert>0</wert>
+            </widget>
+        </part>
+        <part id="2" typ="GroupBox" titel="Nicht auf Zigarette verzichten" erklaerung="Auf welche Zigarette würden Sie nicht verzichten wollen?" zeile="0" spalte="2">
+            <widget id="106" typ="RadioButton" titel="Erste am Morgen">
+                <wert>1</wert>
+            </widget>
+            <widget id="107" typ="RadioButton" titel="Andere" checked="True">
+                <wert>0</wert>
+            </widget>
+        </part>
+        <part id="3" typ="GroupBox" titel="Zigaretten pro Tag" erklaerung="Wie viele Zigaretten rauchen Sie im Allgemeinen pro Tag?" zeile="1" spalte="0">
+            <widget id="108" typ="RadioButton" titel="&#x2265; 31">
+                <wert>3</wert>
+            </widget>
+            <widget id="109" typ="RadioButton" titel="21 - 30">
+                <wert>2</wert>
+            </widget>
+            <widget id="110" typ="RadioButton" titel="11 - 20">
+                <wert>1</wert>
+            </widget>
+            <widget id="111" typ="RadioButton" titel="&#x2264; 10" checked="True">
+                <wert>0</wert>
+            </widget>
+        </part>
+        <part id="4" typ="GroupBox" titel="Vorwiegend morgendliches Rauchen" erklaerung="Rauchen Sie am Morgen im Allgemeinen mehr als am Rest des Tages?" zeile="1" spalte="1">
+            <widget id="112" typ="RadioButton" titel="Ja">
+                <wert>1</wert>
+            </widget>
+            <widget id="113" typ="RadioButton" titel="Nein" checked="True">
+                <wert>0</wert>
+            </widget>
+        </part>
+        <part id="5" typ="GroupBox" titel="Rauchen bei Krankheit" erklaerung="Kommt es vor, dass Sie rauchen, wenn Sie krank sind und&#xa;tagsüber im Bett bleiben müssen?" zeile="1" spalte="2">
+            <widget id="114" typ="RadioButton" titel="Ja">
+                <wert>1</wert>
+            </widget>
+            <widget id="115" typ="RadioButton" titel="Nein" checked="True">
+                <wert>0</wert>
+            </widget>
+        </part>
+        <berechnung>
+            <formel>$id{100} + $id{104} + $id{106} + $id{108} + $id{112} + $id{114}</formel>
+            <ergebniseinheit>Punkte</ergebniseinheit>
+            <variablen/>
+        </berechnung>
+        <auswertung>
+            <beurteilung>
+                <ergebnisbereich>0 - 2 Punkte</ergebnisbereich>
+                <beschreibung>Geringe körperliche Abhängigkeit</beschreibung>
+                <regel>KLEINERGLEICHALS 2</regel>
+            </beurteilung>
+            <beurteilung>
+                <ergebnisbereich>3 - 5 Punkte</ergebnisbereich>
+                <beschreibung>Mittlere körperliche Abhängigkeit</beschreibung>
+                <regel>GROESSERGLEICHALS 3</regel>
+                <regel>KLEINERGLEICHALS 5</regel>
+            </beurteilung>
+            <beurteilung>
+                <ergebnisbereich>6 - 7 Punkte</ergebnisbereich>
+                <beschreibung>Starke körperliche Abhängigkeit</beschreibung>
+                <regel>GROESSERGLEICHALS 6</regel>
+                <regel>KLEINERGLEICHALS 7</regel>
+            </beurteilung>
+            <beurteilung>
+            <ergebnisbereich>8 - 10</ergebnisbereich>
+            <beschreibung>Sehr starke körperliche Abhängigkeit</beschreibung>
+            <regel>GROESSERGLEICHALS 8</regel>
+            </beurteilung>
+        </auswertung>
+    </score>
+</root>
