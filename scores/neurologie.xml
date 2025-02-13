@@ -120,6 +120,30 @@
             <ergebniseinheit>Punkte</ergebniseinheit>
             <variablen />
         </berechnung>
+        <auswertung>
+            <beurteilung>
+                <ergebnisbereich>&#x2264; 10 Punkte</ergebnisbereich>
+                <beschreibung>Normale Tagesschläfrigkeit</beschreibung>
+                <regel>KLEINERGLEICHALS 10</regel>
+            </beurteilung>
+            <beurteilung>
+                <ergebnisbereich>11 - 12 Punkte</ergebnisbereich>
+                <beschreibung>Gering erhöhte Tagesschläfrigkeit</beschreibung>
+                <regel>GROESSERGLEICHALS 11</regel>
+                <regel>KLEINERGLEICHALS 12</regel>
+            </beurteilung>
+            <beurteilung>
+                <ergebnisbereich>13 - 15 Punkte</ergebnisbereich>
+                <beschreibung>Mäßig erhöhte Tagesschläfrigkeit</beschreibung>
+                <regel>GROESSERGLEICHALS 13</regel>
+                <regel>KLEINERGLEICHALS 15</regel>
+            </beurteilung>
+            <beurteilung>
+                <ergebnisbereich>&#x2265; 16 Punkte</ergebnisbereich>
+                <beschreibung>Stark erhöhte Tagesschläfrigkeit</beschreibung>
+                <regel>GROESSERGLEICHALS 16</regel>
+            </beurteilung>
+		</auswertung>
     </score>
     <score name="Mini Mental Status Test (MMST)" gruppe="Neurologie">
         <information>Erfassung kognitiver Störungen</information>

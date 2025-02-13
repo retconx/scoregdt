@@ -7,7 +7,7 @@ import gdttoolsL
 import gdt, gdtzeile, class_part, class_widgets, class_score, farbe
 import dialogUeberScoreGdt, dialogEinstellungenAllgemein, dialogEinstellungenGdt, dialogEinstellungenBenutzer, dialogEinstellungenLanrLizenzschluessel, dialogEula, dialogEinstellungenImportExport, dialogScoreAuswahl, dialogEinstellungenFavoriten
 import class_trends, dialogTrendanzeige
-import class_enums, class_score, class_Rechenoperation, scorepdf
+import class_enums, class_score, class_Rechenoperation, scorepdf, molGrammConvert
 from PySide6.QtCore import Qt, QTranslator, QLibraryInfo, QDate, QTime
 from PySide6.QtGui import QFont, QAction, QIcon, QDesktopServices, QPixmap, QPalette, QClipboard
 from PySide6.QtWidgets import (
@@ -39,6 +39,19 @@ def getAktuellesAlterInJahren(gebdat:datetime.date):
     if (heute - gebdatDesesJahr).days < 0:
         alterInJahren -= 1
     return alterInJahren
+
+# Atomgewichte
+atomgewicht = {
+    "H" : 1.008,
+    "C" : 12.011,
+    "N" : 14.007,
+    "O" : 15.999,
+    "Na" : 22.990,
+    "Cl" : 35.45,
+    "K" : 39.098,
+    "Ca" : 40.078,
+    "Fe" : 55.845
+}
 
 class ScoreGdtException(Exception):
     def __init__(self, meldung):
@@ -538,6 +551,7 @@ class MainWindow(QMainWindow):
                 if self.scoreRoot != None:
                     self.parts = []
                     self.widgets = []
+                    self.einheitToggles = {}
                     itemsUndWerte = []
                     for partElement in self.scoreRoot.findall("part"):
                         partId = str(partElement.get("id"))
@@ -606,8 +620,10 @@ class MainWindow(QMainWindow):
                                 self.widgets.append(class_widgets.LineEdit(widgetId, partId, widgetTitel, widgetErklaerung, widgetEinheit, regexPattern, alterspruefung, defaultWert, groessepruefung, gewichtpruefung))
                                 logger.logger.info("Lineedit angelegt (Part-ID: " + partId + ", Widget-ID: " + widgetId + ") angelegt")
                                 # Zahlengrenzen festlegen
+                                zahlengrenzen = []
                                 for zahlengrenzeElement in widgetElement.findall("zahlengrenze"):
                                     zahlengrenze = float(str(zahlengrenzeElement.text))
+                                    zahlengrenzen.append(zahlengrenze)
                                     regelart = str(zahlengrenzeElement.get("regelart"))
                                     self.widgets[len(self.widgets) - 1].addZahlengrenze(zahlengrenze, class_enums.Regelarten(regelart))
                                 # Relativgrenzen festlegen
@@ -615,12 +631,14 @@ class MainWindow(QMainWindow):
                                     id = str(relativgrenzeElement.text)
                                     regelart = str(relativgrenzeElement.get("regelart"))
                                     self.widgets[len(self.widgets) - 1].addRelativgrenze(id, class_enums.Regelarten(regelart))
-                                # Faktor festlegen
-                                if widgetElement.find("faktor") != None:
-                                    self.widgets[len(self.widgets) - 1].setFaktor(float(str(widgetElement.find("faktor").text))) # type: ignore
-                                if widgetElement.find("addition") != None:
-                                    additionElement = widgetElement.find("addition")
-                                    self.widgets[len(self.widgets) - 1].setAddition(float(str(additionElement.text)), str(additionElement.get("vorfaktor"))) # type: ignore
+                                if widgetElement.find("konvert") != None:
+                                    konvertElement = widgetElement.find("konvert")
+                                    konvertgruppe = str(konvertElement.get("gruppe")) # type: ignore
+                                    konvertIstBerechnungseinheit = str(konvertElement.get("berechnungseinheit")) == "True" # type: ignore
+                                    mitButton = str(konvertElement.get("button")) == "True" # type: ignore
+                                    konvertEinheit = str(konvertElement.find("einheit").text) # type: ignore
+                                    konvertStrukturformel = str(konvertElement.find("strukturformel").text) # type: ignore
+                                    self.einheitToggles[self.widgets[len(self.widgets) - 1].getId()] = class_widgets.EinheitToggle(self.widgets[len(self.widgets) - 1], konvertgruppe, [widgetEinheit, konvertEinheit], konvertStrukturformel, zahlengrenzen, konvertIstBerechnungseinheit, mitButton)
                             elif widgetTyp == class_widgets.WidgetTyp.RADIOBUTTON.value:
                                 checked = str(widgetElement.get("checked")) == "True" and partElement.get("geschlechtpruefung") == None
                                 altersregel = str(widgetElement.get("altersregel"))
@@ -750,11 +768,34 @@ class MainWindow(QMainWindow):
                         einheitUndErklärung = ""
                         if widget.getEinheit() != "":
                             einheitUndErklärung = widget.getEinheit() + " "
-                        if widget.getErklaerung() != "":
+                        if widget.getTyp() == class_widgets.WidgetTyp.LINEEDIT and widget.zahlengrenzeGesetzt():
+                            einheitUndErklärung +="("
+                            zahlengrenzenDict = widget.getZahlengrenzen()
+                            zahlengrenzenList = list(zahlengrenzenDict)
+                            if len(zahlengrenzenList) == 1:
+                                if zahlengrenzenDict[zahlengrenzenList[0]] == class_enums.Regelarten.KLEINERALS:
+                                    einheitUndErklärung += "\u003c"
+                                elif zahlengrenzenDict[zahlengrenzenList[0]] == class_enums.Regelarten.KLEINERGLEICHALS:
+                                    einheitUndErklärung += "\u2264"
+                                elif zahlengrenzenDict[zahlengrenzenList[0]] == class_enums.Regelarten.GROESSERALS:
+                                    einheitUndErklärung += "\u003e"
+                                elif zahlengrenzenDict[zahlengrenzenList[0]] == class_enums.Regelarten.GROESSERGLEICHALS:
+                                    einheitUndErklärung += "\u2265"
+                                einheitUndErklärung += str(zahlengrenzenList[0]).replace(".", ",").replace(",0", "") + " " + widget.getEinheit()
+                            else:
+                                einheitUndErklärung += str(zahlengrenzenList[0]).replace(".", ",").replace(",0", "") + "-" + str(zahlengrenzenList[1]).replace(".", ",").replace(",0", "") + " " + widget.getEinheit()
+                            einheitUndErklärung += ")"
+                        elif widget.getErklaerung() != "":
                             einheitUndErklärung += "(" + widget.getErklaerung() + ")"
                         labelEinheitUndErklaerung = QLabel(einheitUndErklärung)
                         labelEinheitUndErklaerung.setFont(self.fontNormal)
                         partLayout.addWidget(labelEinheitUndErklaerung, partGridZeile, 2, alignment=Qt.AlignmentFlag.AlignTop | Qt.AlignmentFlag.AlignLeft)
+                        # Einheitenkonvertierung
+                        if widget.getTyp() == class_widgets.WidgetTyp.LINEEDIT and widget.getId() in self.einheitToggles:
+                            self.einheitToggles[widget.getId()].setEinheitenLabel(labelEinheitUndErklaerung)
+                            if self.einheitToggles[widget.getId()].getQt() != None:
+                                partLayout.addWidget(self.einheitToggles[widget.getId()].getQt(), partGridZeile, 3, alignment=Qt.AlignmentFlag.AlignTop | Qt.AlignmentFlag.AlignLeft)
+                                self.einheitToggles[widget.getId()].getQt().clicked.connect(lambda checked = False, lineEditId = widget.getId(): self.konvertButtonClicked(checked, lineEditId))
                         # Prüfen, ob CheckBox ButtonGroup zugehörig
                         if widget.getTyp() == class_widgets.WidgetTyp.CHECKBOX and widget.getButtongroup() in buttonGroups:
                             buttonGroups[widget.getButtongroup()].addButton(widget.getQt())
@@ -1053,6 +1094,28 @@ class MainWindow(QMainWindow):
         else:
             sys.exit()
 
+    def konvertButtonClicked(self, checked, lineEditId):
+        einheitToggle = self.einheitToggles[lineEditId]
+        button = einheitToggle.getQt()
+        if button != None:
+            button.setText(einheitToggle.getAktuelleEinheit())
+        konvertgruppe = einheitToggle.getKonvertgruppe()
+        for einheitToggle in self.einheitToggles:
+            el = self.einheitToggles[einheitToggle].getEinheitenLabel()
+            if self.einheitToggles[einheitToggle].getKonvertgruppe() == konvertgruppe:
+                einheitAlt = self.einheitToggles[einheitToggle].getAktuelleEinheit()
+                zahlengrenzenAlt = self.einheitToggles[einheitToggle].getAktuelleZahlengrenzenAlsString()
+                self.einheitToggles[einheitToggle].toggle()
+                einheitNeu = self.einheitToggles[einheitToggle].getAktuelleEinheit()
+                zahlengrenzenNeu = self.einheitToggles[einheitToggle].getAktuelleZahlengrenzenAlsString()
+                el.setText(el.text().replace(einheitAlt, einheitNeu))
+                labeltextMitaltenZahlengrenzen = el.text()
+                for i in range(len(zahlengrenzenAlt)):
+                    position = labeltextMitaltenZahlengrenzen.find(zahlengrenzenAlt[i])
+                    labeltextMitaltenZahlengrenzen = labeltextMitaltenZahlengrenzen[0:position] + zahlengrenzenNeu[i] + labeltextMitaltenZahlengrenzen[position + len(zahlengrenzenAlt[i]):]
+                el.setText(labeltextMitaltenZahlengrenzen)
+                    
+
     def widgetChanged(self):
         self.lineEditScoreErgebnis.setText("")
         self.auswertung("")
@@ -1109,6 +1172,9 @@ class MainWindow(QMainWindow):
                     if widget.isChecked():
                         wert = widget.getWert()
                         break
+                elif widget.getTyp() == class_widgets.WidgetTyp.LINEEDIT:
+                    wert = widget.getWert(self.einheitToggles)
+                    break
                 else:
                     wert = widget.getWert()
                     break
@@ -1158,7 +1224,7 @@ class MainWindow(QMainWindow):
             return berechnung
         except class_Rechenoperation.RechenoperationException as e:
             logger.logger.error("Fehler bei der Score-Berechnung: " + str(e))
-            mb = QMessageBox(QMessageBox.Icon.Critical, "Hinweis von ScoreGDT", "Fehler bei der Score-Berechnung " + str(e), QMessageBox.StandardButton.Ok)
+            mb = QMessageBox(QMessageBox.Icon.Critical, "Hinweis von ScoreGDT", "Fehler bei der Score-Berechnung" + str(e), QMessageBox.StandardButton.Ok)
             mb.exec()
     
     def regelIstErfuellt(self, regel:str):
@@ -1227,7 +1293,7 @@ class MainWindow(QMainWindow):
         Ersetzt Variablen im Format $var{xxx} durch den Wert
         Parameter:
             variablen: dict mit key: Variablenname, value: Variablenwert
-            strint:. str
+            string: str
         Return: string mit ersetzten Variablen
         """
         patternVar = r"\$var{[^{}]+}"
@@ -1261,7 +1327,7 @@ class MainWindow(QMainWindow):
                 elif not self.bereichsgrenzenerzwingen and widget.zahlengrenzeGesetzt():
                     if not widget.zahlengrenzregelnErfuellt():
                         zahl = float(widget.getQt().text().replace(",", "."))
-                        grenzzahl = str(widget.getGrenzzahl(zahl)).replace(".", ",").replace(",0", "")
+                        grenzzahl = "{:.1f}".format(widget.getGrenzzahl(zahl)).replace(".", ",").replace(",0", "")
                         widget.getQt().setText(grenzzahl)
                         mb = QMessageBox(QMessageBox.Icon.Information, "Hinweis von ScoreGDT", "Textfeld " + widget.getTitel() + " ungültig ausgefüllt. Der Wert wird auf " + grenzzahl + " gesetzt.", QMessageBox.StandardButton.Ok)
                         mb.exec()
@@ -1270,7 +1336,7 @@ class MainWindow(QMainWindow):
                     for relativgrenze in relativgrenzen:
                         id = str(relativgrenze)[4:-1] # xxx aus $id{xxx}
                         regelart = relativgrenzen[relativgrenze]
-                        regel = widget.getWertOhneFaktor() + regelart.value + self.getWertAusWidgetId(id)
+                        regel = widget.getWert(self.einheitToggles) + regelart.value + self.getWertAusWidgetId(id)
                         if not self.regelIstErfuellt(regel):
                             mb = QMessageBox(QMessageBox.Icon.Information, "Hinweis von ScoreGDT", "Textfeld " + widget.getTitel() + " ungültig ausgefüllt.", QMessageBox.StandardButton.Ok)
                             mb.exec()
@@ -1278,216 +1344,213 @@ class MainWindow(QMainWindow):
                             widget.getQt().selectAll()
                             formularOk = False
                             break
-       
         if formularOk :
-            try:
-                # $var{...}-Werte auslesen
-                berechnungElement = self.scoreRoot.find("berechnung") # type: ignore
-                formelElement = berechnungElement.find("formel") # type: ignore
-                dezimalstellen = 0
-                if formelElement.get("dezimalstellen") != None: # type: ignore 
-                    dezimalstellen = int(str(formelElement.get("dezimalstellen"))) # type: ignore 
-                self.erfuellteAuswertungsregel = -1
-                if str(formelElement.get("typ")) != "script": # type: ignore  
-                    formel = str(formelElement.text) # type: ignore 
-                    variablenElement = berechnungElement.find("variablen") # type: ignore
-                    variablen = {}
-                    for variableElement in variablenElement.findall("variable"): # type: ignore
-                        variablenname = str(variableElement.get("name"))
-                        # Ohne Bedingung
-                        if variableElement.find("bedingung") == None:
-                            text = str(variableElement.text)
-                            textMitIdWertErsetzt = self.ersetzeIdVariablen(text)
-                            textMitVarWertErsezt = self.ersetzeVariablen(variablen, textMitIdWertErsetzt)
-                            variablen[variablenname] = str(self.berechnung(textMitVarWertErsezt, -1))
-                        # Mit Bedinung(en)
-                        else: 
-                            for bedingungElement in variableElement.findall("bedingung"):
-                                regelErfuellt = True
-                                for regelElement in bedingungElement.findall("regel"):
-                                    regel = str(regelElement.text)
-                                    regelMitIdWertErsetzt = self.ersetzeIdVariablen(regel)
-                                    regelMitVarWertErsetzt = self.ersetzeVariablen(variablen, regelMitIdWertErsetzt)
-                                    if not self.regelIstErfuellt(regelMitVarWertErsetzt):
-                                        regelErfuellt = False
-                                if regelErfuellt:
-                                    bedingungNichtAbgebildet = False
-                                    logger.logger.info("Regel " + regel + " erfüllt")
-                                    wert = str(bedingungElement.find("wert").text) # type: ignore
-                                    wertMitIdWertErsetzt = self.ersetzeIdVariablen(wert)
-                                    wertMitVarWertErsetzt = self.ersetzeVariablen(variablen, wertMitIdWertErsetzt)
-                                    variablen[variablenname] = wertMitVarWertErsetzt
-                    
-                    patternVar = r"\$var{[^{}]+}"
-                    variablenMitNichtErfuelltenRegeln = []
-                    ergebnis = 0
-                    formelMitZahlen = formel
-                    varVariablen = re.findall(patternVar, formel)
-                    for varVariable in varVariablen:
-                        varName = varVariable[5:-1]
-                        if varName in variablen:
-                            formelMitZahlen = formelMitZahlen.replace(varVariable, variablen[varName])
-                        else:
-                            logger.logger.warning("Variablenname " + varName + " nicht ausgelesen")
-                            variablenMitNichtErfuelltenRegeln.append(varName)
-                    formelMitZahlen = self.ersetzeIdVariablen(formelMitZahlen)
-                    ergebnis = self.berechnung(formelMitZahlen, dezimalstellen)
-                    logger.logger.info("Teilergebnis: " + str(self.berechnung(formelMitZahlen, dezimalstellen)))
-                    if len(variablenMitNichtErfuelltenRegeln) == 0:
-                        self.lineEditScoreErgebnis.setText(str(ergebnis).replace(".", ","))
-                        logger.logger.info("Endergebnis: " + str(ergebnis).replace(".", ","))
-                        # Auswertung
-                        self.auswertung(ergebnis)
+            #try:
+            # $var{...}-Werte auslesen
+            berechnungElement = self.scoreRoot.find("berechnung") # type: ignore
+            formelElement = berechnungElement.find("formel") # type: ignore
+            dezimalstellen = 0
+            if formelElement.get("dezimalstellen") != None: # type: ignore 
+                dezimalstellen = int(str(formelElement.get("dezimalstellen"))) # type: ignore 
+            self.erfuellteAuswertungsregel = -1
+            if str(formelElement.get("typ")) != "script": # type: ignore  
+                formel = str(formelElement.text) # type: ignore 
+                variablenElement = berechnungElement.find("variablen") # type: ignore
+                variablen = {}
+                for variableElement in variablenElement.findall("variable"): # type: ignore
+                    variablenname = str(variableElement.get("name"))
+                    # Ohne Bedingung
+                    if variableElement.find("bedingung") == None:
+                        text = str(variableElement.text)
+                        textMitIdWertErsetzt = self.ersetzeIdVariablen(text)
+                        textMitVarWertErsezt = self.ersetzeVariablen(variablen, textMitIdWertErsetzt)
+                        variablen[variablenname] = str(self.berechnung(textMitVarWertErsezt, -1))
+                    # Mit Bedinung(en)
+                    else: 
+                        for bedingungElement in variableElement.findall("bedingung"):
+                            regelErfuellt = True
+                            for regelElement in bedingungElement.findall("regel"):
+                                regel = str(regelElement.text)
+                                regelMitIdWertErsetzt = self.ersetzeIdVariablen(regel)
+                                regelMitVarWertErsetzt = self.ersetzeVariablen(variablen, regelMitIdWertErsetzt)
+                                if not self.regelIstErfuellt(regelMitVarWertErsetzt):
+                                    regelErfuellt = False
+                            if regelErfuellt:
+                                logger.logger.info("Regel " + regel + " erfüllt")
+                                wert = str(bedingungElement.find("wert").text) # type: ignore
+                                wertMitIdWertErsetzt = self.ersetzeIdVariablen(wert)
+                                wertMitVarWertErsetzt = self.ersetzeVariablen(variablen, wertMitIdWertErsetzt)
+                                variablen[variablenname] = wertMitVarWertErsetzt
+                patternVar = r"\$var{[^{}]+}"
+                variablenMitNichtErfuelltenRegeln = []
+                ergebnis = 0
+                formelMitZahlen = formel
+                varVariablen = re.findall(patternVar, formel)
+                for varVariable in varVariablen:
+                    varName = varVariable[5:-1]
+                    if varName in variablen:
+                        formelMitZahlen = formelMitZahlen.replace(varVariable, variablen[varName])
                     else:
-                        mb = QMessageBox(QMessageBox.Icon.Warning, "Hinweis von ScoreGDT", "Der Score kann nicht berechnet werden, da für die folgenden Variablen keine Regel zutrifft:\n- " + str.join("\n- ", variablenMitNichtErfuelltenRegeln), QMessageBox.StandardButton.Ok)
-                        mb.exec()
-                    # PDF-Alternative
-                    self.pdfZeilen = []
-                    pdfElement = self.scoreRoot.find("pdf") # type: ignore
-                    if pdfElement != None: # type: ignore
-                        for zeileElement in pdfElement.findall("zeile"):
-                            titel = str(zeileElement.get("titel"))
-                            if titel == "None":
-                                titel = self.getPart(str(zeileElement.get("partid"))).getTitel() # type: ignore
-                            wert = variablen[str(zeileElement.text)]
-                            einheit = str(zeileElement.get("einheit"))
-                            if wert == "1" and einheit == "Punkte":
-                                einheit = "Punkt"
-                            self.pdfZeilen.append((titel, wert, einheit))
-                elif str(formelElement.text) == "dvo2023": # type: ignore
-                    logger.logger.info("dvo2023 gewählt")
-                    risikofaktorBezeichnungen = ["Wirbelfrakturen", "Andere Frakturen", "Allgemeine Risikofaktoren", "Rheumatologie und Glukokortikoide", "Sturzrisiko assoziierte Risikofaktoren/Geriatrie", "Endokrinologie", "Weitere Erkraknungen/Medikationen", "TBS"]
-                    indikationstabelleFrau3 = {
-                        0.0: [13, 8, 6, 4, 3, 2.3, 1.8, 1.5, 1.2],
-                        0.5: [9, 6, 4, 3, 2.2, 1.7, 1.3, 1.1, -3],
-                        1.0: [7, 5, 3, 2.3, 1.6, 1.2, -3, -3, -5],
-                        1.5: [5, 3.5, 2.4, 1.7, 1.2, -3, -3, -5, -5],
-                        2.0: [4, 2.6, 1.8, 1.2, -3, -3, -5, -5, -10],
-                        2.5: [3, 1.9, 1.3, -3, -3, -5, -5, -10, -10],
-                        3.0: [2.1, 1.4, -3, -5, -5, -5, -10, -10, -10],
-                        3.5: [1.5, -3, -5, -5, -10, -10, -10, -10, -10],
-                        4.0: [-3, -5, -5, -10, -10, -10, -10, -10, -10]
-                    }
-                    indikationstabelleFrau5 = {
-                        0.0: [21, 14, 10, 7, 5, 4, 3, 2.4, 2],
-                        0.5: [16, 10, 7, 5, 4, 3, 2.2, 1.8, 1.4],
-                        1.0: [12, 8, 5, 4, 2.7, 2.1, 1.6, 1.3, -5],
-                        1.5: [9, 6, 4, 3, 2, 1.5, 1.2, -5, -5],
-                        2.0: [6, 4, 3, 2.1, 1.5, 1.1, -5, -5, -10],
-                        2.5: [5, 3, 2.2, 1.5, 1.1, -5, -5, -10, -10],
-                        3.0: [3.5, 2.3, 1.6, -5, -5, -5, -10, -10, -10],
-                        3.5: [2.5, 1.7, -5, -5, -10, -10, -10, -10, -10],
-                        4.0: [2, -5, -5, -10, -10, -10, -10, -10, -10]
-                    }
-                    indikationstabelleFrau10 = {
-                        0.0: [42, 28, 19, 14, 10, 8, 6, 5, 4],
-                        0.5: [31, 21, 14, 10, 7, 6, 4.4, 3.6, 3],
-                        1.0: [23, 16, 11, 7.5, 5.5, 4.2, 3.2, 2.6, 2.1],
-                        1.5: [17, 12, 8, 6, 4.1, 3.1, 2.4, 1.9, 1.5],
-                        2.0: [13, 9, 6, 4, 3, 2.2, 1.7, 1.3, -10],
-                        2.5: [9, 6, 4.4, 3.1, 2.2, 1.6, 1.3, -10, -10],
-                        3.0: [7, 5, 3.2, 2.3, 1.6, 1.2, -10, -10, -10],
-                        3.5: [5, 3.5, 2.4, 1.7, -10, -10, -10, -10, -10],
-                        4.0: [3.7, 2.5, 1.7, -10, -10, -10, -10, -10, -10]
-                    }
-                    indikationstabelleMann3 = {
-                        0.0: [10, 8, 6, 5, 4, 3, 2.4, 2, 1.4],
-                        0.5: [7, 5, 4, 3, 2.5, 2, 1.6, 1.3, -3],
-                        1.0: [5, 3.7, 2.8, 2.2, 1.7, 1.4, 1.1, -3, -5],
-                        1.5: [3.4, 2.5, 1.9, 1.5, 1.1, -3, -3, -5, -5],
-                        2.0: [2.3, 1.7, 1.3, -3, -3, -5, -5, -5, -10],
-                        2.5: [1.6, 1.2, -3, -5, -5, -5, -10, -10, -10],
-                        3.0: [1.1, -5, -5, -5, -10, -10, -10, -10, -10],
-                        3.5: [-5, -5, -10, -10, -10, -10, -10, -10, -10],
-                        4.0: [-5, -10, -10, -10, -10, -10, -10, -10, -10]
-                    }
-                    indikationstabelleMann5 = {
-                        0.0: [17, 13, 10, 8, 6, 4, 3, 3.3, 2.4],
-                        0.5: [12, 9, 7, 5, 4, 3.4, 2.7, 2.1, 1.5],
-                        1.0: [8, 6, 5, 3.6, 2.8, 2.3, 1.8, 1.4, -5],
-                        1.5: [6, 4, 3.2, 2.4, 1.9, 1.5, 1.2, -5, -5],
-                        2.0: [4, 2.9, 2.2, 1.6, 1.3, -5, -5, -5, -10],
-                        2.5: [2.6, 2, 1.5, -5, -5, -5, -10, -10, -10],
-                        3.0: [1.8, -5, -5, -5, -10, -10, -10, -10, -10],
-                        3.5: [-5, -5, -10, -10, -10, -10, -10, -10, -10],
-                        4.0: [-5, -10, -10, -10, -10, -10, -10, -10, -10]
-                    }
-                    indikationstabelleMann10 = {
-                        0.0: [33, 26, 20, 16, 12, 10, 8, 7, 5],
-                        0.5: [23, 18, 14, 11, 8, 7, 5, 4, 3],
-                        1.0: [16, 12, 9, 7, 6, 4.5, 3.6, 2.8, 2],
-                        1.5: [11, 8, 6, 5, 4, 3, 2.4, 1.8, 1.3],
-                        2.0: [8, 6, 4, 3, 2.5, 2, 1.6, 1.2, -10],
-                        2.5: [5, 4, 3, 2.2, 1.7, 1.3, -10, -10, -10],
-                        3.0: [3.6, 2.6, 1.9, 1.5, -10, -10, -10, -10, -10],
-                        3.5: [2.5, 1.8, -10, -10, -10, -10, -10, -10, -10],
-                        4.0: [1.7, -10, -10, -10, -10, -10, -10, -10, -10]
-                    }
-                    indikationstabellenFrau = [indikationstabelleFrau10, indikationstabelleFrau5, indikationstabelleFrau3]
-                    indikationstabllenMann = [indikationstabelleMann10, indikationstabelleMann5, indikationstabelleMann3]
-                    maxJePart = {} # key: partId, value: Tupel (höchster Faktor des Parts, sgRisiko)
-                    for widget in self.widgets:
-                        partId = int(widget.getPartId())
-                        if partId < 8:
-                            wert = self.getWertAusWidgetId(widget.getId()).replace(",", ".")
-                            sgRisiko = ""
-                            if wert[-1] == "S" or wert[-1] == "G":
-                                sgRisiko = wert[-1]
-                                wert = wert[:-1]
-                            wertFloat = float(wert)
-                            if not partId in maxJePart or maxJePart[partId][0] < wertFloat:
-                                maxJePart[partId] = (wertFloat, sgRisiko)
-                    sortiert = sorted(maxJePart.items(), key=lambda x:x[1][0], reverse=True)
-                    maxJePartSortiert = dict(sortiert) # maxJePart nach höchstem Faktor sortiert (höchster zuerst)
-                    zweiHoechsteFaktoren = []
-                    sRisiko = False
-                    gRisiko = False
-                    for max in maxJePartSortiert:
-                        faktor = maxJePartSortiert[max][0] 
-                        sgRisiko = maxJePartSortiert[max][1]
-                        if len(zweiHoechsteFaktoren) < 2:
-                            if not sRisiko and not gRisiko:
-                                zweiHoechsteFaktoren.append(faktor)
-                            elif sgRisiko == "S" and not sRisiko:
-                                zweiHoechsteFaktoren.append(faktor)
-                                sRisiko = True
-                            elif sgRisiko == "G" and not gRisiko:
-                                zweiHoechsteFaktoren.append(faktor)
-                                gRisiko = True
-                        else:
+                        logger.logger.warning("Variablenname " + varName + " nicht ausgelesen")
+                        variablenMitNichtErfuelltenRegeln.append(varName)
+                formelMitZahlen = self.ersetzeIdVariablen(formelMitZahlen)
+                ergebnis = self.berechnung(formelMitZahlen, dezimalstellen)
+                logger.logger.info("Teilergebnis: " + str(self.berechnung(formelMitZahlen, dezimalstellen)))
+                if len(variablenMitNichtErfuelltenRegeln) == 0:
+                    self.lineEditScoreErgebnis.setText(str(ergebnis).replace(".", ","))
+                    logger.logger.info("Endergebnis: " + str(ergebnis).replace(".", ","))
+                    # Auswertung
+                    self.auswertung(ergebnis)
+                else:
+                    mb = QMessageBox(QMessageBox.Icon.Warning, "Hinweis von ScoreGDT", "Der Score kann nicht berechnet werden, da für die folgenden Variablen keine Regel zutrifft:\n- " + str.join("\n- ", variablenMitNichtErfuelltenRegeln), QMessageBox.StandardButton.Ok)
+                    mb.exec()
+                # PDF-Alternative
+                self.pdfZeilen = []
+                pdfElement = self.scoreRoot.find("pdf") # type: ignore
+                if pdfElement != None: # type: ignore
+                    for zeileElement in pdfElement.findall("zeile"):
+                        titel = str(zeileElement.get("titel"))
+                        if titel == "None":
+                            titel = self.getPart(str(zeileElement.get("partid"))).getTitel() # type: ignore
+                        wert = variablen[str(zeileElement.text)]
+                        einheit = str(zeileElement.get("einheit"))
+                        if wert == "1" and einheit == "Punkte":
+                            einheit = "Punkt"
+                        self.pdfZeilen.append((titel, wert, einheit))
+            elif str(formelElement.text) == "dvo2023": # type: ignore
+                logger.logger.info("dvo2023 gewählt")
+                risikofaktorBezeichnungen = ["Wirbelfrakturen", "Andere Frakturen", "Allgemeine Risikofaktoren", "Rheumatologie und Glukokortikoide", "Sturzrisiko assoziierte Risikofaktoren/Geriatrie", "Endokrinologie", "Weitere Erkraknungen/Medikationen", "TBS"]
+                indikationstabelleFrau3 = {
+                    0.0: [13, 8, 6, 4, 3, 2.3, 1.8, 1.5, 1.2],
+                    0.5: [9, 6, 4, 3, 2.2, 1.7, 1.3, 1.1, -3],
+                    1.0: [7, 5, 3, 2.3, 1.6, 1.2, -3, -3, -5],
+                    1.5: [5, 3.5, 2.4, 1.7, 1.2, -3, -3, -5, -5],
+                    2.0: [4, 2.6, 1.8, 1.2, -3, -3, -5, -5, -10],
+                    2.5: [3, 1.9, 1.3, -3, -3, -5, -5, -10, -10],
+                    3.0: [2.1, 1.4, -3, -5, -5, -5, -10, -10, -10],
+                    3.5: [1.5, -3, -5, -5, -10, -10, -10, -10, -10],
+                    4.0: [-3, -5, -5, -10, -10, -10, -10, -10, -10]
+                }
+                indikationstabelleFrau5 = {
+                    0.0: [21, 14, 10, 7, 5, 4, 3, 2.4, 2],
+                    0.5: [16, 10, 7, 5, 4, 3, 2.2, 1.8, 1.4],
+                    1.0: [12, 8, 5, 4, 2.7, 2.1, 1.6, 1.3, -5],
+                    1.5: [9, 6, 4, 3, 2, 1.5, 1.2, -5, -5],
+                    2.0: [6, 4, 3, 2.1, 1.5, 1.1, -5, -5, -10],
+                    2.5: [5, 3, 2.2, 1.5, 1.1, -5, -5, -10, -10],
+                    3.0: [3.5, 2.3, 1.6, -5, -5, -5, -10, -10, -10],
+                    3.5: [2.5, 1.7, -5, -5, -10, -10, -10, -10, -10],
+                    4.0: [2, -5, -5, -10, -10, -10, -10, -10, -10]
+                }
+                indikationstabelleFrau10 = {
+                    0.0: [42, 28, 19, 14, 10, 8, 6, 5, 4],
+                    0.5: [31, 21, 14, 10, 7, 6, 4.4, 3.6, 3],
+                    1.0: [23, 16, 11, 7.5, 5.5, 4.2, 3.2, 2.6, 2.1],
+                    1.5: [17, 12, 8, 6, 4.1, 3.1, 2.4, 1.9, 1.5],
+                    2.0: [13, 9, 6, 4, 3, 2.2, 1.7, 1.3, -10],
+                    2.5: [9, 6, 4.4, 3.1, 2.2, 1.6, 1.3, -10, -10],
+                    3.0: [7, 5, 3.2, 2.3, 1.6, 1.2, -10, -10, -10],
+                    3.5: [5, 3.5, 2.4, 1.7, -10, -10, -10, -10, -10],
+                    4.0: [3.7, 2.5, 1.7, -10, -10, -10, -10, -10, -10]
+                }
+                indikationstabelleMann3 = {
+                    0.0: [10, 8, 6, 5, 4, 3, 2.4, 2, 1.4],
+                    0.5: [7, 5, 4, 3, 2.5, 2, 1.6, 1.3, -3],
+                    1.0: [5, 3.7, 2.8, 2.2, 1.7, 1.4, 1.1, -3, -5],
+                    1.5: [3.4, 2.5, 1.9, 1.5, 1.1, -3, -3, -5, -5],
+                    2.0: [2.3, 1.7, 1.3, -3, -3, -5, -5, -5, -10],
+                    2.5: [1.6, 1.2, -3, -5, -5, -5, -10, -10, -10],
+                    3.0: [1.1, -5, -5, -5, -10, -10, -10, -10, -10],
+                    3.5: [-5, -5, -10, -10, -10, -10, -10, -10, -10],
+                    4.0: [-5, -10, -10, -10, -10, -10, -10, -10, -10]
+                }
+                indikationstabelleMann5 = {
+                    0.0: [17, 13, 10, 8, 6, 4, 3, 3.3, 2.4],
+                    0.5: [12, 9, 7, 5, 4, 3.4, 2.7, 2.1, 1.5],
+                    1.0: [8, 6, 5, 3.6, 2.8, 2.3, 1.8, 1.4, -5],
+                    1.5: [6, 4, 3.2, 2.4, 1.9, 1.5, 1.2, -5, -5],
+                    2.0: [4, 2.9, 2.2, 1.6, 1.3, -5, -5, -5, -10],
+                    2.5: [2.6, 2, 1.5, -5, -5, -5, -10, -10, -10],
+                    3.0: [1.8, -5, -5, -5, -10, -10, -10, -10, -10],
+                    3.5: [-5, -5, -10, -10, -10, -10, -10, -10, -10],
+                    4.0: [-5, -10, -10, -10, -10, -10, -10, -10, -10]
+                }
+                indikationstabelleMann10 = {
+                    0.0: [33, 26, 20, 16, 12, 10, 8, 7, 5],
+                    0.5: [23, 18, 14, 11, 8, 7, 5, 4, 3],
+                    1.0: [16, 12, 9, 7, 6, 4.5, 3.6, 2.8, 2],
+                    1.5: [11, 8, 6, 5, 4, 3, 2.4, 1.8, 1.3],
+                    2.0: [8, 6, 4, 3, 2.5, 2, 1.6, 1.2, -10],
+                    2.5: [5, 4, 3, 2.2, 1.7, 1.3, -10, -10, -10],
+                    3.0: [3.6, 2.6, 1.9, 1.5, -10, -10, -10, -10, -10],
+                    3.5: [2.5, 1.8, -10, -10, -10, -10, -10, -10, -10],
+                    4.0: [1.7, -10, -10, -10, -10, -10, -10, -10, -10]
+                }
+                indikationstabellenFrau = [indikationstabelleFrau10, indikationstabelleFrau5, indikationstabelleFrau3]
+                indikationstabllenMann = [indikationstabelleMann10, indikationstabelleMann5, indikationstabelleMann3]
+                maxJePart = {} # key: partId, value: Tupel (höchster Faktor des Parts, sgRisiko)
+                for widget in self.widgets:
+                    partId = int(widget.getPartId())
+                    if partId < 8:
+                        wert = self.getWertAusWidgetId(widget.getId()).replace(",", ".")
+                        sgRisiko = ""
+                        if wert[-1] == "S" or wert[-1] == "G":
+                            sgRisiko = wert[-1]
+                            wert = wert[:-1]
+                        wertFloat = float(wert)
+                        if not partId in maxJePart or maxJePart[partId][0] < wertFloat:
+                            maxJePart[partId] = (wertFloat, sgRisiko)
+                sortiert = sorted(maxJePart.items(), key=lambda x:x[1][0], reverse=True)
+                maxJePartSortiert = dict(sortiert) # maxJePart nach höchstem Faktor sortiert (höchster zuerst)
+                zweiHoechsteFaktoren = []
+                sRisiko = False
+                gRisiko = False
+                for max in maxJePartSortiert:
+                    faktor = maxJePartSortiert[max][0] 
+                    sgRisiko = maxJePartSortiert[max][1]
+                    if len(zweiHoechsteFaktoren) < 2:
+                        if not sRisiko and not gRisiko:
+                            zweiHoechsteFaktoren.append(faktor)
+                        elif sgRisiko == "S" and not sRisiko:
+                            zweiHoechsteFaktoren.append(faktor)
+                            sRisiko = True
+                        elif sgRisiko == "G" and not gRisiko:
+                            zweiHoechsteFaktoren.append(faktor)
+                            gRisiko = True
+                    else:
+                        break
+                faktoren = [zweiHoechsteFaktoren[0], zweiHoechsteFaktoren[0] * zweiHoechsteFaktoren[1]]
+                logger.logger.info("Zwei höchste Faktoren: " + str(zweiHoechsteFaktoren))
+                tScore = float(self.getWertAusWidgetId("150").replace(",", "."))
+                tScoreGerundet = round(tScore * 2) / 2
+                alter = float(self.getWertAusWidgetId("151"))
+                alterGerundet = round(alter / 10 * 2) / 2 * 10
+                geschlecht = 2
+                if self.getWertAusWidgetId("152") == "1":
+                    geschlecht = 1
+                risikoListe = [10, 5, 3]
+                therapieindikationsschwelleProzent = 0
+                for i in range(3):
+                    risiko = risikoListe[i]
+                    indikationstabelle = indikationstabellenFrau[i]
+                    if geschlecht == 1:
+                        indikationstabelle = indikationstabllenMann[i]
+                    tabellenErebnis = indikationstabelle[tScoreGerundet * -1][int((alterGerundet - 50) / 5)]
+                    logger.logger.info("Tabellenergebnis " + str(risiko) + "%: " + str(tabellenErebnis))
+                    for faktor in faktoren:
+                        logger.logger.info("Faktor: " + str(faktor))
+                        if faktor >= tabellenErebnis:
+                            therapieindikationsschwelleProzent = risiko
                             break
-                    faktoren = [zweiHoechsteFaktoren[0], zweiHoechsteFaktoren[0] * zweiHoechsteFaktoren[1]]
-                    logger.logger.info("Zwei höchste Faktoren: " + str(zweiHoechsteFaktoren))
-                    tScore = float(self.getWertAusWidgetId("150").replace(",", "."))
-                    tScoreGerundet = round(tScore * 2) / 2
-                    alter = float(self.getWertAusWidgetId("151"))
-                    alterGerundet = round(alter / 10 * 2) / 2 * 10
-                    geschlecht = 2
-                    if self.getWertAusWidgetId("152") == "1":
-                        geschlecht = 1
-                    risikoListe = [10, 5, 3]
-                    therapieindikationsschwelleProzent = 0
-                    for i in range(3):
-                        risiko = risikoListe[i]
-                        indikationstabelle = indikationstabellenFrau[i]
-                        if geschlecht == 1:
-                            indikationstabelle = indikationstabllenMann[i]
-                        tabellenErebnis = indikationstabelle[tScoreGerundet * -1][int((alterGerundet - 50) / 5)]
-                        logger.logger.info("Tabellenergebnis " + str(risiko) + "%: " + str(tabellenErebnis))
-                        for faktor in faktoren:
-                            logger.logger.info("Faktor: " + str(faktor))
-                            if faktor >= tabellenErebnis:
-                                therapieindikationsschwelleProzent = risiko
-                                break
-                        if therapieindikationsschwelleProzent != 0:
-                            break
-                    logger.logger.info("Therapieindikationsschwelle: " + str(therapieindikationsschwelleProzent) + "%")
-                    self.lineEditScoreErgebnis.setText(str(therapieindikationsschwelleProzent))
-                    self.auswertung(therapieindikationsschwelleProzent)
-            except Exception as e:
-                logger.logger.error("Fehler bei der Score-Berechung: " + str(e))
-                mb = QMessageBox(QMessageBox.Icon.Warning, "Hinweis von ScoreGDT", "Fehler bei der Score-Berechung: " + str(e), QMessageBox.StandardButton.Ok)
-                mb.exec()
+                    if therapieindikationsschwelleProzent != 0:
+                        break
+                logger.logger.info("Therapieindikationsschwelle: " + str(therapieindikationsschwelleProzent) + "%")
+                self.lineEditScoreErgebnis.setText(str(therapieindikationsschwelleProzent))
+                self.auswertung(therapieindikationsschwelleProzent)
+            # except Exception as e:
+            #     logger.logger.error("Fehler bei der Score-Berechung: " + str(e))
+            #     mb = QMessageBox(QMessageBox.Icon.Warning, "Hinweis von ScoreGDT", "Fehler bei der Score-Berechung: " + str(e), QMessageBox.StandardButton.Ok)
+            #     mb.exec()
 
     def auswertung(self, ergebnis):
         """
@@ -1601,9 +1664,9 @@ class MainWindow(QMainWindow):
                 if self.einrichtunguebernehmen:
                     einrichtung = " von " + self.einrichtungsname
                 pdf.cell(0, 6, "Erstellt am " + untdat + einrichtung, align="C", new_x="LMARGIN", new_y="NEXT")
-                pdf.cell(0, 10, new_x="LMARGIN", new_y="NEXT")
+                pdf.cell(0, 8, new_x="LMARGIN", new_y="NEXT")
                 pdf.set_font("dejavu", "", 10)
-                pdf.set_fill_color(240,240,240)
+                pdf.set_fill_color(240, 240, 240)
                 
             # Tests
             if str(self.scoreRoot.get("keineTestuebermittlung")) != "True": # type: ignore
@@ -1611,7 +1674,7 @@ class MainWindow(QMainWindow):
                 for widget in self.widgets:
                     test = None
                     if widget.getTyp() == class_widgets.WidgetTyp.LINEEDIT:
-                        test = gdt.GdtTest("ScoreGDT" + "_" + widget.getId(), self.fuerGdtBereinigen(widget.getTitel()), widget.getWertOhneFaktor().replace(".", ",").replace(",0", ""), widget.getEinheit()) # type: ignore
+                        test = gdt.GdtTest("ScoreGDT" + "_" + widget.getId(), self.fuerGdtBereinigen(widget.getTitel()), widget.getWertOhneFaktor().replace(".", ",").replace(",0", ""), widget.getEinheit(self.einheitToggles)) # type: ignore
                     elif widget.getTyp() == class_widgets.WidgetTyp.RADIOBUTTON:
                         if widget.getQt().isChecked():
                             partId = widget.getPartId()
@@ -1634,18 +1697,25 @@ class MainWindow(QMainWindow):
                         gd.addTest(test)
                         if self.pdferzeugen and pdf != None and len(self.pdfZeilen) == 0: # type: ignore
                             y1 = pdf.get_y()
-                            pdf.multi_cell(140, 10, test.getTest()["8411_testBezeichnung"] + ":", fill=(i % 2 == 0))
+                            pdf.multi_cell(140, 8, test.getTest()["8411_testBezeichnung"] + ":", fill=(i % 2 == 0))
                             y2 = pdf.get_y()
-                            if y2 < y1:
+                            if y2 < y1: # Neue Seite
                                 y1 = 20
                             pdf.set_xy(150, y1)
                             testergebnis = test.getTest()["8420_testErgebnis"]
                             leerzeilen = ""
-                            anzahlLeerzeilen = int((y2 - y1) / 10)
+                            anzahlLeerzeilen = int((y2 - y1) / 8)
                             for j in range(anzahlLeerzeilen - 1):
                                 leerzeilen += "\n "
-                            pdf.multi_cell(50, 10, testergebnis + " " + test.getTest()["8421_testEinheit"] + leerzeilen, align="R", new_x="LMARGIN", new_y="NEXT", fill=(i % 2 == 0))
-                            pdf.set_y(y2)
+                            pdf.multi_cell(50, 8, testergebnis + " " + test.getTest()["8421_testEinheit"], align="R", new_x="LMARGIN", new_y="NEXT", fill=(i % 2 == 0))
+                            y3 = pdf.get_y()
+                            if y3 < y2:
+                                pdf.set_x(150)
+                                pdf.cell(50, y2 - y3, "", fill=(i % 2 == 0), new_x="LMARGIN", new_y="NEXT")
+                                #pdf.set_y(y3 + 10 * anzahlLeerzeilen)
+                            elif y3 > y2:
+                                pdf.set_y(y2)
+                                pdf.cell(140, y3 - y2, "", fill=(i % 2 == 0), new_x="LMARGIN", new_y="NEXT")
                             i += 1
             # PDF-Alternative
             if pdf != None and len(self.pdfZeilen) > 0:
@@ -1662,16 +1732,16 @@ class MainWindow(QMainWindow):
                 auswertung = self.labelBeschreibungen[self.erfuellteAuswertungsregel].text()
             if self.pdferzeugen and pdf != None:
                 pdf.set_font(style="B")
-                pdf.cell(90, 10, "Ergebnis:", border="T")
-                pdf.cell(0, 10, self.lineEditScoreErgebnis.text() + leerzeichenVorEinheit + self.labelScoreErgebnisEinheit.text(), border="T", align="R", new_x="LMARGIN", new_y="NEXT")
+                pdf.cell(90, 8, "Ergebnis:", border="T")
+                pdf.cell(0, 8, self.lineEditScoreErgebnis.text() + leerzeichenVorEinheit + self.labelScoreErgebnisEinheit.text(), border="T", align="R", new_x="LMARGIN", new_y="NEXT")
                 if self.erfuellteAuswertungsregel != -1:
-                    pdf.cell(0, 10, new_x="LMARGIN", new_y="NEXT")
-                    pdf.cell(0, 10, "Auswertung/Interpretation:", new_x="LMARGIN", new_y="NEXT")
+                    pdf.cell(0, 8, new_x="LMARGIN", new_y="NEXT")
+                    pdf.cell(0, 8, "Auswertung/Interpretation:", new_x="LMARGIN", new_y="NEXT")
                     pdf.set_font(style="")  
-                    pdf.cell(0, 10, auswertung, new_x="LMARGIN", new_y="NEXT")
+                    pdf.cell(0, 8, auswertung, new_x="LMARGIN", new_y="NEXT")
                 pdf.set_y(-30)
                 pdf.set_font("dejavu", "I", 10)
-                pdf.cell(0, 10, "Generiert von ScoreGDT V" + self.version + " (\u00a9 GDT-Tools " + str(datetime.date.today().year) + ")", align="R")
+                pdf.cell(0, 8, "Generiert von ScoreGDT V" + self.version + " (\u00a9 GDT-Tools " + str(datetime.date.today().year) + ")", align="R")
                 logger.logger.info("PDF-Seite aufgebaut")
                 try:
                     pdf.output(os.path.join(basedir, "pdf/score_temp.pdf"))

@@ -4,35 +4,35 @@
         <information>Beurteilung des Schweregrads einer Leberfibrose</information>
         <quelle autor="Child et al.">Surgery and portal hypertension</quelle>
         <part typ="GroupBox" id="0" titel="Serum-Albumin" zeile="0" spalte="0">
-            <widget id="100" typ="RadioButton" titel="&#x3e; 3,5 g/dl" checked="True">
+            <widget id="100" typ="RadioButton" titel="&#x3e; 3,5 g/dl (&#x3e; 35 g/l)" checked="True">
                 <wert>1</wert>
             </widget>
-            <widget id="101" typ="RadioButton" titel="2,8 - 3,5 g/dl">
+            <widget id="101" typ="RadioButton" titel="2,8 - 3,5 g/dl (28 - 35 g/l)">
                 <wert>2</wert>
             </widget>
-            <widget id="102" typ="RadioButton" titel="&#x3c; 2,6 g/dl">
+            <widget id="102" typ="RadioButton" titel="&#x3c; 2,8 g/dl (&#x3c; 28 g/l)">
                 <wert>3</wert>
             </widget>
         </part>
         <part typ="GroupBox" id="1" titel="Serum-Bilirubin gesamt" zeile="0" spalte="1">
-            <widget id="103" typ="RadioButton" titel="&#x3c; 2,0 mg/dl" checked="True">
+            <widget id="103" typ="RadioButton" titel="&#x3c; 2,0 mg/dl (&#x3c; 34,2 µmol/l)" checked="True">
                 <wert>1</wert>
             </widget>
-            <widget id="104" typ="RadioButton" titel="2,0 - 3,0 mg/dl">
+            <widget id="104" typ="RadioButton" titel="2,0 - 3,0 mg/dl (34,2 - 51,3 µmol/l)">
                 <wert>2</wert>
             </widget>
-            <widget id="105" typ="RadioButton" titel="&#x3e; 3,0 mg/dl">
+            <widget id="105" typ="RadioButton" titel="&#x3e; 3,0 mg/dl (&#x3e; 51,3 µmol/l)">
                 <wert>3</wert>
             </widget>
         </part>
         <part typ="GroupBox" id="2" titel="INR" zeile="0" spalte="2">
-            <widget id="106" typ="RadioButton" titel="&#x3c; 1,7 mg/dl" checked="True">
+            <widget id="106" typ="RadioButton" titel="&#x3c; 1,7" checked="True">
                 <wert>1</wert>
             </widget>
-            <widget id="107" typ="RadioButton" titel="1,7 - 2,2 mg/dl">
+            <widget id="107" typ="RadioButton" titel="1,7 - 2,2">
                 <wert>2</wert>
             </widget>
-            <widget id="108" typ="RadioButton" titel="&#x3e; 2,2 mg/dl">
+            <widget id="108" typ="RadioButton" titel="&#x3e; 2,2">
                 <wert>3</wert>
             </widget>
         </part>
@@ -89,6 +89,10 @@
             <widget id="100" typ="LineEdit" titel="Serum-Bilirubin gesamt">
                 <regex>^\d+([,.]\d+)?$</regex>
                 <einheit>mg/dl</einheit>
+                <konvert gruppe="bilirubin" berechnungseinheit="False" button="True">
+                    <einheit>µmol/l</einheit>
+                    <strukturformel>C33-H36-N4-O6</strukturformel>
+                </konvert>
             </widget>
         </part>
         <part typ="Frame" id="1" titel="" zeile="0" spalte="1">
@@ -100,6 +104,10 @@
             <widget id="102" typ="LineEdit" titel="Serum-Kreatinin">
                 <regex>^\d+([,.]\d+)?$</regex>
                 <einheit>mg/dl</einheit>
+                <konvert gruppe="kreatinin" berechnungseinheit="False" button="True">
+                    <einheit>µmol/l</einheit>
+                    <strukturformel>C4-H7-N3-O</strukturformel>
+                </konvert>
             </widget>
         </part>
         <part typ="Frame" id="3" titel="" zeile="1" spalte="1">

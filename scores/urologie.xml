@@ -1,0 +1,115 @@
+<?xml version='1.0' encoding='utf-8'?>
+<root>
+	<score name="International Prostate Symptom Score (IPSS)" gruppe="Urologie">
+        <information>Beurteilung des Schweregrades einer benignen Prostatahyperplasie während des letzten Monats</information>
+        <quelle autor="Barry et al.">The American Urological Association symptom index for benign prostatic hyperplasia. The Measurement Committee of the American Urological Association</quelle>
+
+        <part typ="Frame" id="0" titel="" zeile="0" spalte="0">
+            <widget id="100" typ="ComboBox" titel="Gefühl unvollständiger Blasenentleerung" titelbreite="250">
+                <items>
+                    <item wert="0">Niemals</item>
+                    <item wert="1">Weniger als 1 von 5 Fällen</item>
+                    <item wert="2">Weniger als in der Hälfte aller Fälle</item>
+                    <item wert="3">In etwa der Hälfte aller Fälle</item>
+                    <item wert="4">In mehr als der Hälfte aller Fälle</item>
+                    <item wert="5">Fast immer</item>
+                </items>
+            </widget>
+        </part>
+        <part typ="Frame" id="1" titel="" zeile="1" spalte="0">
+            <widget id="101" typ="ComboBox" titel="Innerhalb von zwei Stunden zweites&#xa;Mal Wasserlassen" titelbreite="250">
+                <items>
+                    <item wert="0">Niemals</item>
+                    <item wert="1">Weniger als 1 von 5 Fällen</item>
+                    <item wert="2">Weniger als in der Hälfte aller Fälle</item>
+                    <item wert="3">In etwa der Hälfte aller Fälle</item>
+                    <item wert="4">In mehr als der Hälfte aller Fälle</item>
+                    <item wert="5">Fast immer</item>
+                </items>
+            </widget>
+        </part>
+        <part typ="Frame" id="2" titel="" zeile="2" spalte="0">
+            <widget id="102" typ="ComboBox" titel="Beim Wasserlassen mehrmals aufhören&#xa;und neu beginnen" titelbreite="250">
+                <items>
+                    <item wert="0">Niemals</item>
+                    <item wert="1">Weniger als 1 von 5 Fällen</item>
+                    <item wert="2">Weniger als in der Hälfte aller Fälle</item>
+                    <item wert="3">In etwa der Hälfte aller Fälle</item>
+                    <item wert="4">In mehr als der Hälfte aller Fälle</item>
+                    <item wert="5">Fast immer</item>
+                </items>
+            </widget>
+        </part>
+        <part typ="Frame" id="3" titel="" zeile="3" spalte="0">
+            <widget id="103" typ="ComboBox" titel="Schwierigkeiten, das Wasserlassen&#xa;hinauszuzögern" titelbreite="250">
+                <items>
+                    <item wert="0">Niemals</item>
+                    <item wert="1">Weniger als 1 von 5 Fällen</item>
+                    <item wert="2">Weniger als in der Hälfte aller Fälle</item>
+                    <item wert="3">In etwa der Hälfte aller Fälle</item>
+                    <item wert="4">In mehr als der Hälfte aller Fälle</item>
+                    <item wert="5">Fast immer</item>
+                </items>
+            </widget>
+        </part>
+        <part typ="Frame" id="4" titel="" zeile="0" spalte="1">
+            <widget id="104" typ="ComboBox" titel="Schwacher Harnstrahl" titelbreite="250">
+                <items>
+                    <item wert="0">Niemals</item>
+                    <item wert="1">Weniger als 1 von 5 Fällen</item>
+                    <item wert="2">Weniger als in der Hälfte aller Fälle</item>
+                    <item wert="3">In etwa der Hälfte aller Fälle</item>
+                    <item wert="4">In mehr als der Hälfte aller Fälle</item>
+                    <item wert="5">Fast immer</item>
+                </items>
+            </widget>
+        </part>
+        <part typ="Frame" id="5" titel="" zeile="1" spalte="1">
+            <widget id="105" typ="ComboBox" titel="Pressen oder sich anstrengen, um mit&#xa;dem Wasserlassen zu beginnen" titelbreite="250">
+                <items>
+                    <item wert="0">Niemals</item>
+                    <item wert="1">Weniger als 1 von 5 Fällen</item>
+                    <item wert="2">Weniger als in der Hälfte aller Fälle</item>
+                    <item wert="3">In etwa der Hälfte aller Fälle</item>
+                    <item wert="4">In mehr als der Hälfte aller Fälle</item>
+                    <item wert="5">Fast immer</item>
+                </items>
+            </widget>
+        </part>
+        <part typ="Frame" id="6" titel="" zeile="2" spalte="1">
+            <widget id="106" typ="ComboBox" titel="Wie oft durchschnittlich&#xa;nachts Wasserlassen" titelbreite="250">
+                <items>
+                    <item wert="0">Niemals</item>
+                    <item wert="1">Weniger als 1 von 5 Fällen</item>
+                    <item wert="2">Weniger als in der Hälfte aller Fälle</item>
+                    <item wert="3">In etwa der Hälfte aller Fälle</item>
+                    <item wert="4">In mehr als der Hälfte aller Fälle</item>
+                    <item wert="5">Fast immer</item>
+                </items>
+            </widget>
+        </part>
+        <berechnung>
+            <formel>$id{100} + $id{101} + $id{102} + $id{103} + $id{104} + $id{105} + $id{106}</formel>
+            <ergebniseinheit>Punkte</ergebniseinheit>
+            <variablen />
+        </berechnung>
+        <auswertung>
+            <beurteilung>
+                <ergebnisbereich>&#x2264; 7 Punkte</ergebnisbereich>
+                <beschreibung>Milde Symptomatik</beschreibung>
+                <regel>KLEINERGLEICHALS 7</regel>
+            </beurteilung>
+            <beurteilung>
+                <ergebnisbereich>8 - 19 Punkte</ergebnisbereich>
+                <beschreibung>Moderate Symptomatik</beschreibung>
+                <regel>GROESSERGLEICHALS 8</regel>
+                <regel>KLEINERGLEICHALS 19</regel>
+            </beurteilung>
+            <beurteilung>
+                <ergebnisbereich>&#x2265; 20 Punkte</ergebnisbereich>
+                <beschreibung>Schwere Symptomatik</beschreibung>
+                <regel>GROESSERGLEICHALS 20</regel>
+            </beurteilung>
+		</auswertung>
+    </score>
+</root>

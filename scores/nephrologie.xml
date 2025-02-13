@@ -7,6 +7,10 @@
             <widget id="100" typ="LineEdit" titel="Serum-Kreatinin"> 
                 <regex>^\d+([,.]\d+)?$</regex>
                 <einheit>mg/dl</einheit>
+                <konvert gruppe="kreatinin" button="True">
+                    <einheit>µmol/l</einheit>
+                    <strukturformel>C4-H7-N3-O</strukturformel>
+                </konvert>
             </widget>
             <widget id="101" typ="LineEdit" titel="Alter" alterspruefung="True"> 
                 <regex>^\d+$</regex>

@@ -208,6 +208,10 @@
             <widget id="112" typ="LineEdit" titel="CRP" defaultwert="0">
                 <regex>^\d+([,.]\d+)?$</regex>
                 <einheit>mg/l</einheit>
+                <konvert gruppe="crp" berechnungseinheit="False" button="True">
+                    <einheit>mg/dl</einheit>
+                    <strukturformel/>
+                </konvert>
             </widget>
         </part>
         <berechnung>

@@ -1,11 +1,13 @@
 import xml.etree.ElementTree as ElementTree
 from enum import Enum
-import re, class_enums, logger, sys
+import re, class_enums, logger, molGrammConvert
 from PySide6.QtWidgets import (
     QComboBox,
     QRadioButton,
     QLineEdit,
-    QCheckBox
+    QCheckBox,
+    QPushButton,
+    QLabel
 )
 
 class WidgetTyp(Enum):
@@ -148,25 +150,34 @@ class LineEdit(Widget):
         self.typ = WidgetTyp.LINEEDIT
         self.zahlengrenzen = {}
         self.relativgrenzen = {}
-        self.faktor = 1
-        self.addition = 0
-        self.additionVorFaktor = False
         
     def getQt(self):
         return self.lineedit
     
-    def getWert(self):
+    def getWert(self, einheitToggles:dict):
         if re.match(regexZahl, self.lineedit.text()) != None:
             zahl = float(self.lineedit.text().replace(",", "."))
-            if self.additionVorFaktor:
-                zahl += self.addition
-            faktorzahl = self.faktor * zahl
-            logger.logger.info("Faktor " + str(self.faktor) + " auf " + self.lineedit.text() + " angewendet")
-            if not self.additionVorFaktor:
-                faktorzahl += self.addition
-            return str(faktorzahl)
+            if self.getId() in einheitToggles:
+                et = einheitToggles[self.getId()]
+                aktuelleEinheit = et.getAktuelleEinheit()
+                if self.einheit == aktuelleEinheit and self.einheit == et.getBerechnungseinheit():
+                    return str(zahl)
+                elif self.einheit != aktuelleEinheit and self.einheit != et.getBerechnungseinheit():
+                    return str(zahl)
+                elif self.einheit != aktuelleEinheit and self.einheit == et.getBerechnungseinheit():
+                    return str(molGrammConvert.einheitenKonvertieren(et.getStrukturformel(), zahl, molGrammConvert.getKonvertierungseinheiten(et.getEinheitenListe()), False))
+                elif self.einheit == aktuelleEinheit and self.einheit != et.getBerechnungseinheit():
+                    return str(molGrammConvert.einheitenKonvertieren(et.getStrukturformel(), zahl, molGrammConvert.getKonvertierungseinheiten(et.getEinheitenListe()), True))
+            else:
+                return str(zahl)
         return self.lineedit.text()
     
+    def getEinheit(self, einheitToggles:dict = {}):
+        if self.getId() in einheitToggles:
+            et = einheitToggles[self.getId()]
+            return et.getAktuelleEinheit()
+        return self.einheit
+
     def getWertOhneFaktor(self):
         return str(float(self.lineedit.text().replace(",", ".")))
     
@@ -178,9 +189,15 @@ class LineEdit(Widget):
     
     def addZahlengrenze(self, zahl:float, regelart:class_enums.Regelarten):
         self.zahlengrenzen[zahl] = regelart
+    
+    def entferneZahlengrenzen(self):
+        self.zahlengrenzen.clear()
 
     def zahlengrenzeGesetzt(self):
         return len(self.zahlengrenzen) > 0
+    
+    def getZahlengrenzen(self):
+        return self.zahlengrenzen
     
     def zahlengrenzregelnErfuellt(self):
         regelnErfuellt = False
@@ -216,13 +233,6 @@ class LineEdit(Widget):
     def getRelativgrenzen(self):
         return self.relativgrenzen
     
-    def setFaktor(self, faktor:float):
-        self.faktor = faktor
-    
-    def setAddition(self, addition:float, vorFaktor:bool):
-        self.addition = addition
-        self.additionVorFaktor = vorFaktor
-    
 class RadioButton(Widget):
     def __init__(self, id, partId:str, titel:str, erklaerung:str, einheit:str, wert:str, checked:bool, alterspruefung:bool, altersregel:str, groessepruefung:bool, gewichtpruefung:bool):
         super().__init__(id, partId, titel, erklaerung, einheit, alterspruefung, groessepruefung, gewichtpruefung)
@@ -250,10 +260,88 @@ class RadioButton(Widget):
         regeln = self.altersregel.split("UND")
         return regeln
 
+class EinheitToggle():
+    def __init__(self, lineEditWidget:LineEdit, konvertgruppe:str, einheitenListe:list, strukturformel:str, zahlengrenzen:list, konvertIstBerechnungseinheit:bool, mitButton:bool):
+        self.lineEditWidget = lineEditWidget
+        self.konvertgruppe = konvertgruppe
+        self.einheitenListe = einheitenListe
+        self.strukturformel = strukturformel
+        self.konvertIstBerechnungseinheit = konvertIstBerechnungseinheit
+        self.mitButton = mitButton
+        self.toggleButton = None
+        if mitButton:
+            self.toggleButton = QPushButton(einheitenListe[1])
+            self.toggleButton.setStyleSheet("font-weight:normal")
+        self.einheitenLabel = None
+        self.aktuelleEinheit = einheitenListe[0]
+        self.zahlengrenzen = zahlengrenzen
+        self.zahlengrenzenListe = []
+        self.zahlengrenzenListe.append(zahlengrenzen)
+        zahlengrenzenNeu = []
+        ke = molGrammConvert.getKonvertierungseinheiten(einheitenListe)
+        for zg in zahlengrenzen:
+            zahlengrenzenNeu.append(molGrammConvert.einheitenKonvertieren(strukturformel, zg, ke, True))
+        self.zahlengrenzenListe.append(zahlengrenzenNeu)
+        self.aktuelleZahlengrenzen = self.zahlengrenzenListe[0]
+
+    def getEinheitenListe(self):
+        return self.einheitenListe
+    
+    def getLineEdit(self):
+        return self.lineEditWidget.getQt()
+    
+    def getKonvertgruppe(self):
+        return self.konvertgruppe
+    
+    def getBerechnungseinheit(self):
+        if self.konvertIstBerechnungseinheit:
+            return self.einheitenListe[1]
+        return self.einheitenListe[0]
+            
+    def getQt(self):
+        return self.toggleButton
+    
+    def setEinheitenLabel(self, label:QLabel):
+        self.einheitenLabel = label
+    
+    def getEinheitenLabel(self):
+        return self.einheitenLabel
+    
+    def getAktuelleEinheit(self):
+        return self.aktuelleEinheit
+    
+    def getStrukturformel(self):
+        return self.strukturformel
+    
+    def getAktuelleZahlengrenzenAlsString(self):
+        zahlengrenzenAlsString = []
+        for azg in self.aktuelleZahlengrenzen: 
+            azgAlsString = "{:.1f}".format(azg)
+            zahlengrenzenAlsString.append(azgAlsString.replace(".", ",").replace(",0", ""))
+        return zahlengrenzenAlsString
+    
+    def toggle(self):
+        if self.aktuelleEinheit == self.einheitenListe[0]:
+            self.aktuelleEinheit = self.einheitenListe[1]
+            self.aktuelleZahlengrenzen = self.zahlengrenzenListe[1]
+        else:
+            self.aktuelleEinheit = self.einheitenListe[0]
+            self.aktuelleZahlengrenzen = self.zahlengrenzenListe[0]
+        # Zahlengrenzen im LineEdit togglen
+        lineEditZahlengrenzen = self.lineEditWidget.getZahlengrenzen()
+        grenzregeln = []
+        for zg in lineEditZahlengrenzen:
+            grenzregeln.append(lineEditZahlengrenzen[zg])
+        self.lineEditWidget.entferneZahlengrenzen()
+        i = 0
+        for zg in self.aktuelleZahlengrenzen:
+            self.lineEditWidget.addZahlengrenze(zg, grenzregeln[i])
+            i += 1
+
 @staticmethod
 def getNaechstliegendeZahl(zahlenliste:list, zahl:float):
     """
-    Gibt die die Zahl einer Liste zurück, die einer übergebenen Zahl am nächsten liegt
+    Gibt die Zahl einer Liste zurück, die einer übergebenen Zahl am nächsten liegt
     Parameter:
         zahlenliste:list
         zahl:float, zu prüfende Zahl
