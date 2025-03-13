@@ -1697,7 +1697,7 @@ class MainWindow(QMainWindow):
                         gd.addTest(test)
                         if self.pdferzeugen and pdf != None and len(self.pdfZeilen) == 0: # type: ignore
                             y1 = pdf.get_y()
-                            pdf.multi_cell(140, 8, test.getTest()["8411_testBezeichnung"] + ":", fill=(i % 2 == 0))
+                            pdf.multi_cell(140, 8, test.getTest()["8411_testBezeichnung"], fill=(i % 2 == 0))
                             y2 = pdf.get_y()
                             if y2 < y1: # Neue Seite
                                 y1 = 20
@@ -1721,7 +1721,7 @@ class MainWindow(QMainWindow):
             if pdf != None and len(self.pdfZeilen) > 0:
                 i = 0
                 for pdfZeile in self.pdfZeilen:
-                    pdf.cell(0, 10, str(pdfZeile[0]) + ":", fill=(i % 2 == 0))
+                    pdf.cell(0, 10, str(pdfZeile[0]), fill=(i % 2 == 0))
                     pdf.cell(0, 10, str(pdfZeile[1]) + " " + str(pdfZeile[2]), align="R", new_x="LMARGIN", new_y="NEXT", fill=(i % 2 == 0))
                     i += 1
             leerzeichenVorEinheit = " "

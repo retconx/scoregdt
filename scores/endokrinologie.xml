@@ -103,6 +103,82 @@
             </beurteilung> 
         </auswertung>
     </score>
+    <score name="EU TI-RADS" gruppe="Endokrinologie">
+        <information>Beurteilung sonographisch detektierter Schilddrüsenknoten</information>
+        <quelle autor="Russ et al.">European Thyroid Association Guidelines for Ultrasound Malignancy Risk Stratification of Thyroid Nodules in Adults: The EU-TIRADS</quelle>
+        <part typ="GroupBox" id="0" titel="Beschreibung" zeile="0" spalte="0">
+            <widget id="100" typ="RadioButton" titel="Kein Knoten" checked="True">
+                <wert>1</wert>
+            </widget>
+            <widget id="101" typ="RadioButton" titel="Zystisch oder vollständig spongiform">
+                <wert>2</wert>
+            </widget>
+            <widget id="102" typ="RadioButton" titel="Oval, glatt begrenzt, echogleich/echoreich, keine Risikofaktoren">
+                <wert>3</wert>
+            </widget>
+            <widget id="103" typ="RadioButton" titel="Oval, glatt begrenzt, leicht echoarm, keine Risikofaktoren">
+                <wert>4</wert>
+            </widget>
+        </part>
+        <part typ="GroupBox" id="1" titel="Risikofaktoren" zeile="0" spalte="1">
+            <widget id="105" typ="CheckBox" titel="Nicht-ovale, irreguläre Form">
+                <wert>1</wert>
+            </widget>
+            <widget id="106" typ="CheckBox" titel="Irreguläre Begrenzung">
+                <wert>1</wert>
+            </widget>
+            <widget id="107" typ="CheckBox" titel="Mikrokalzifizierungen">
+                <wert>1</wert>
+            </widget>
+            <widget id="108" typ="CheckBox" titel="Stark echoarm/solide">
+                <wert>1</wert>
+            </widget>
+        </part>
+        <berechnung>
+            <formel>$var{tirads}</formel>
+            <ergebniseinheit>Punkte</ergebniseinheit>
+            <variablen>
+                <variable name="risiko">$id{105} + $id{106} +$id{107} +$id{108}</variable>
+                <variable name="tirads">
+                    <bedingung>
+                        <regel>$var{risiko} ISTGLEICH 0</regel>
+                        <wert>$id{100}</wert>
+                    </bedingung>
+                    <bedingung>
+                        <regel>$var{risiko} GROESSERGLEICHALS 1</regel>
+                        <wert>5</wert>
+                    </bedingung>
+                </variable>
+            </variablen>
+        </berechnung>
+        <auswertung>
+            <beurteilung>
+                <ergebnisbereich>1 Punkt</ergebnisbereich>
+                <beschreibung>Kein Malignitätsrisiko</beschreibung>
+                <regel>ISTGLEICH 1</regel>
+            </beurteilung> 
+            <beurteilung>
+                <ergebnisbereich>2 Punkte</ergebnisbereich>
+                <beschreibung>Nahezu kein Malignitätsrisiko</beschreibung>
+                <regel>ISTGLEICH 2</regel>
+            </beurteilung> 
+            <beurteilung>
+                <ergebnisbereich>3 Punkte</ergebnisbereich>
+                <beschreibung>Geringes Malignitätsrisiko, Feinnadelpunktion &#x3e; 20 mm empfohlen</beschreibung>
+                <regel>ISTGLEICH 3</regel>
+            </beurteilung> 
+            <beurteilung>
+                <ergebnisbereich>4 Punkte</ergebnisbereich>
+                <beschreibung>Intermediäres Malignitätsrisiko, Feinnadelpunktion &#x3e; 15 mm empfohlen</beschreibung>
+                <regel>ISTGLEICH 4</regel>
+            </beurteilung> 
+            <beurteilung>
+                <ergebnisbereich>5 Punkte</ergebnisbereich>
+                <beschreibung>Hohes Malignitätsrisiko, Feinnadelpunktion &#x3e; 10 mm empfohlen</beschreibung>
+                <regel>ISTGLEICH 5</regel>
+            </beurteilung> 
+        </auswertung>
+    </score>
     <score name="FINDRISK" gruppe="Endokrinologie">
         <information>Abschätzung des Risikos für die Entwicklung eines Diabetes mellitus in den nächsten 10 Jahren</information>
         <quelle autor="Schuppenies et al.">FINDRISK - Development of a questionnaire to estimate the risk of diabetes</quelle>
