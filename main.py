@@ -1618,6 +1618,7 @@ class MainWindow(QMainWindow):
             "\u00b2" : "2",
             "\u2264" : "<=",
             "\u2265" : ">=",
+            "\n": " ",
             "\r\n": " "
         }
         for zuErsetzen in zuErsetzendeStrings:
