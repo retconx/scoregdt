@@ -784,6 +784,8 @@ class MainWindow(QMainWindow):
                                 einheitUndErklärung += str(zahlengrenzenList[0]).replace(".", ",").replace(",0", "") + " " + widget.getEinheit()
                             else:
                                 einheitUndErklärung += str(zahlengrenzenList[0]).replace(".", ",").replace(",0", "") + "-" + str(zahlengrenzenList[1]).replace(".", ",").replace(",0", "") + " " + widget.getEinheit()
+                            if einheitUndErklärung[len(einheitUndErklärung) - 1] == " ":
+                                einheitUndErklärung = einheitUndErklärung[:len(einheitUndErklärung) - 1]
                             einheitUndErklärung += ")"
                         elif widget.getErklaerung() != "":
                             einheitUndErklärung += "(" + widget.getErklaerung() + ")"

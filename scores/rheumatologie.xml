@@ -63,6 +63,136 @@
             </beurteilung>  
         </auswertung>
     </score>
+    <score name="DAS28 - BSG" gruppe="Rheumatologie">
+        <information>Beurteilung der Krankheitsaktivität bei rheumatoider Arthritis</information>
+        <quelle autor="Van der Heijde et al.">Development of a disease activity score based on judgment in clinical practice by rheumatologists</quelle>
+        <begriffsdefinitionen>
+            <definition bezeichnung="28 Gelenke">Fingergrundgelenke (MCP), Fingermittelgelenke (PIP), Schultern, Ellenbogengelenke, Knie, Handgelenke</definition>
+        </begriffsdefinitionen>
+        <part typ="Frame" id="0" titel="" zeile="0" spalte="0">
+            <widget id="100" typ="LineEdit" titel="Anzahl schmerzhafter Gelenke">
+                <regex>^\d{1,2}$</regex>  
+                <zahlengrenze regelart="GROESSERGLEICHALS">0</zahlengrenze>
+                <zahlengrenze regelart="KLEINERGLEICHALS">28</zahlengrenze>
+            </widget>
+        </part>
+        <part typ="Frame" id="1" titel="" zeile="0" spalte="1">
+            <widget id="101" typ="LineEdit" titel="Anzahl geschwollener Gelenke">
+                <regex>^\d{1,2}$</regex>  
+                <zahlengrenze regelart="GROESSERGLEICHALS">0</zahlengrenze>
+                <zahlengrenze regelart="KLEINERGLEICHALS">28</zahlengrenze>
+            </widget>
+        </part>
+        <part typ="Frame" id="2" titel="" zeile="1" spalte="0">
+            <widget id="102" typ="LineEdit" titel="BSG">
+                <regex>^\d+$</regex>  
+                <einheit>mm/h</einheit>
+            </widget>
+        </part>
+        <part typ="Frame" id="3" titel="" zeile="1" spalte="1">
+            <widget id="103" typ="LineEdit" titel="Patientenurteil zur Krankheitsaktivität">
+                <regex>^\d{1,2}$</regex>  
+                <zahlengrenze regelart="GROESSERGLEICHALS">0</zahlengrenze>
+                <zahlengrenze regelart="KLEINERGLEICHALS">10</zahlengrenze>
+            </widget>
+        </part>
+        <berechnung>
+            <formel dezimalstellen="1">0.56 * sqrt($id{100}) + 0.28 * sqrt($id{101}) + 0.7 * ln($id{102}) + 0.014 * $id{103}</formel>
+            <ergebniseinheit>Punkte</ergebniseinheit>
+            <variablen />
+        </berechnung>
+        <auswertung>
+            <beurteilung>
+                <ergebnisbereich>&#x3c; 2,6 Punkte</ergebnisbereich>
+                <beschreibung>Remission</beschreibung>
+                <regel>KLEINERALS 2.6</regel>
+            </beurteilung>  
+            <beurteilung>
+                <ergebnisbereich>2,6 - 3,2 Punkte</ergebnisbereich>
+                <beschreibung>Geringe Krankheitsaktivität</beschreibung>
+                <regel>GROESSERGLEICHALS 2.6</regel>
+                <regel>KLEINERGLEICHALS 3.2</regel>
+            </beurteilung>  
+            <beurteilung>
+                <ergebnisbereich>&#x3e; 3,2 - 5,1 Punkte</ergebnisbereich>
+                <beschreibung>Moderate Krankheitsaktivität</beschreibung>
+                <regel>GROESSERALS 3.2</regel>
+                <regel>KLEINERGLEICHALS 5.1</regel>
+            </beurteilung>  
+            <beurteilung>
+                <ergebnisbereich>&#x3e; 5,1 Punkte</ergebnisbereich>
+                <beschreibung>Hohe Krankheitsaktivität</beschreibung>
+                <regel>GROESSERALS 5.1</regel>
+            </beurteilung>  
+        </auswertung>
+    </score>
+    <score name="DAS28 - CRP" gruppe="Rheumatologie">
+        <information>Beurteilung der Krankheitsaktivität bei rheumatoider Arthritis</information>
+        <quelle autor="Van der Heijde et al.">Development of a disease activity score based on judgment in clinical practice by rheumatologists</quelle>
+        <begriffsdefinitionen>
+            <definition bezeichnung="28 Gelenke">Fingergrundgelenke (MCP), Fingermittelgelenke (PIP), Schultern, Ellenbogengelenke, Knie, Handgelenke</definition>
+        </begriffsdefinitionen>
+        <part typ="Frame" id="0" titel="" zeile="0" spalte="0">
+            <widget id="100" typ="LineEdit" titel="Anzahl schmerzhafter Gelenke">
+                <regex>^\d{1,2}$</regex>  
+                <zahlengrenze regelart="GROESSERGLEICHALS">0</zahlengrenze>
+                <zahlengrenze regelart="KLEINERGLEICHALS">28</zahlengrenze>
+            </widget>
+        </part>
+        <part typ="Frame" id="1" titel="" zeile="0" spalte="1">
+            <widget id="101" typ="LineEdit" titel="Anzahl geschwollener Gelenke">
+                <regex>^\d{1,2}$</regex>  
+                <zahlengrenze regelart="GROESSERGLEICHALS">0</zahlengrenze>
+                <zahlengrenze regelart="KLEINERGLEICHALS">28</zahlengrenze>
+            </widget>
+        </part>
+        <part typ="Frame" id="2" titel="" zeile="1" spalte="0">
+            <widget id="102" typ="LineEdit" titel="CRP">
+                <regex>^\d+([,.]\d+)?$</regex>
+                <einheit>mg/l</einheit>
+                <konvert gruppe="crp" berechnungseinheit="False" button="True">
+                    <einheit>mg/dl</einheit>
+                    <strukturformel/>
+                </konvert>
+            </widget>
+        </part>
+        <part typ="Frame" id="3" titel="" zeile="1" spalte="1">
+            <widget id="103" typ="LineEdit" titel="Patientenurteil zur Krankheitsaktivität">
+                <regex>^\d{1,2}$</regex>  
+                <zahlengrenze regelart="GROESSERGLEICHALS">0</zahlengrenze>
+                <zahlengrenze regelart="KLEINERGLEICHALS">10</zahlengrenze>
+            </widget>
+        </part>
+        <berechnung>
+            <formel dezimalstellen="1">0.56 * sqrt($id{100}) + 0.28 * sqrt($id{101}) + 0.36 * ln($id{102} + 1) + 0.014 * $id{103} + 0.96</formel>
+            <ergebniseinheit>Punkte</ergebniseinheit>
+            <variablen />
+        </berechnung>
+        <auswertung>
+            <beurteilung>
+                <ergebnisbereich>&#x3c; 2,6 Punkte</ergebnisbereich>
+                <beschreibung>Remission</beschreibung>
+                <regel>KLEINERALS 2.6</regel>
+            </beurteilung>  
+            <beurteilung>
+                <ergebnisbereich>2,6 - 3,2 Punkte</ergebnisbereich>
+                <beschreibung>Geringe Krankheitsaktivität</beschreibung>
+                <regel>GROESSERGLEICHALS 2.6</regel>
+                <regel>KLEINERGLEICHALS 3.2</regel>
+            </beurteilung>  
+            <beurteilung>
+                <ergebnisbereich>&#x3e; 3,2 - 5,1 Punkte</ergebnisbereich>
+                <beschreibung>Moderate Krankheitsaktivität</beschreibung>
+                <regel>GROESSERALS 3.2</regel>
+                <regel>KLEINERGLEICHALS 5.1</regel>
+            </beurteilung>  
+            <beurteilung>
+                <ergebnisbereich>&#x3e; 5,1 Punkte</ergebnisbereich>
+                <beschreibung>Hohe Krankheitsaktivität</beschreibung>
+                <regel>GROESSERALS 5.1</regel>
+            </beurteilung>  
+        </auswertung>
+    </score>
     <score name="ACR/EULAR PMR (ohne Ultraschall)" gruppe="Rheumatologie" altersregel="GROESSERGLEICHALS50">
         <information>Klassifikation der Polymyalgia rheumatica&#xa;(Alter &#x2265; 50 Jahre, bilateraler Schulterschmerz, CRP und/oder BSG erhöht)</information>
         <quelle autor="">American College of Rheumatology, European Allicance of Associations for Rheumatology</quelle>
