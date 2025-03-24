@@ -67,7 +67,8 @@
         <information>Beurteilung der Krankheitsaktivität bei rheumatoider Arthritis</information>
         <quelle autor="Van der Heijde et al.">Development of a disease activity score based on judgment in clinical practice by rheumatologists</quelle>
         <begriffsdefinitionen>
-            <definition bezeichnung="28 Gelenke">Fingergrundgelenke (MCP), Fingermittelgelenke (PIP), Schultern, Ellenbogengelenke, Knie, Handgelenke</definition>
+            <definition bezeichnung="28 Gelenke">Fingergrundgelenke (MCP), Fingermittelgelenke (PIP), Schultern, Ellenbogengelenke, Kniegelenke, Handgelenke</definition>
+            <definition bezeichnung="Krankheitsaktivität">0 = Keine Aktivität, 10 = Stärkst mögliche Aktivität</definition>
         </begriffsdefinitionen>
         <part typ="Frame" id="0" titel="" zeile="0" spalte="0">
             <widget id="100" typ="LineEdit" titel="Anzahl schmerzhafter Gelenke">
@@ -130,7 +131,8 @@
         <information>Beurteilung der Krankheitsaktivität bei rheumatoider Arthritis</information>
         <quelle autor="Van der Heijde et al.">Development of a disease activity score based on judgment in clinical practice by rheumatologists</quelle>
         <begriffsdefinitionen>
-            <definition bezeichnung="28 Gelenke">Fingergrundgelenke (MCP), Fingermittelgelenke (PIP), Schultern, Ellenbogengelenke, Knie, Handgelenke</definition>
+            <definition bezeichnung="28 Gelenke">Fingergrundgelenke (MCP), Fingermittelgelenke (PIP), Schultern, Ellenbogengelenke, Kniegelenke, Handgelenke</definition>
+            <definition bezeichnung="Krankheitsaktivität">0 = Keine Aktivität, 10 = Stärkst mögliche Aktivität</definition>
         </begriffsdefinitionen>
         <part typ="Frame" id="0" titel="" zeile="0" spalte="0">
             <widget id="100" typ="LineEdit" titel="Anzahl schmerzhafter Gelenke">
