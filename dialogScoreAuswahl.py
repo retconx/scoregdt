@@ -1,7 +1,7 @@
-import os, configparser, sys
-import class_trends
+import os, configparser, datetime, sys
+import class_trends, dialogEinstellungenFavoriten
 from xml.etree import ElementTree
-from PySide6.QtGui import QFont, QPalette, QColor
+from PySide6.QtGui import QFont, QPalette
 from PySide6.QtCore import Qt
 from PySide6.QtWidgets import (
     QDialogButtonBox,
@@ -19,6 +19,8 @@ from PySide6.QtWidgets import (
     QHBoxLayout, 
     QMessageBox
 )
+
+basedir = os.path.dirname(__file__)
 
 class ScoreAuswahl(QDialog):
     # Mainwindow zentrieren
@@ -40,9 +42,14 @@ class ScoreAuswahl(QDialog):
         # config.ini lesen
         configIni = configparser.ConfigParser()
         configIni.read(os.path.join(configPath, "config.ini"))
+        self.version = configIni["Allgemein"]["version"]
         self.trendverzeichnis = configIni["Allgemein"]["trendverzeichnis"]
         
-        self.setWindowTitle("ScoreGDT - Score auswählen")
+        jahr = datetime.datetime.now().year
+        copyrightJahre = "2024"
+        if jahr > 2024:
+            copyrightJahre = "2024-" + str(jahr)
+        self.setWindowTitle("ScoreGDT V" + self.version + " (\u00a9 Fabian Treusch - GDT-Tools " + copyrightJahre + ") - Score auswählen")
         minimumWidth = 1100
         self.setMinimumWidth(minimumWidth)
         self.buttonBox = QDialogButtonBox(QDialogButtonBox.StandardButton.Ok | QDialogButtonBox.StandardButton.Cancel)
@@ -137,6 +144,10 @@ class ScoreAuswahl(QDialog):
         
         frameLayoutV.addLayout(trendLayout)
         frameLayoutV.addWidget(scrollArea)
+        favoritenVerwaltenButton = QPushButton("Score-Favoriten verwalten")
+        favoritenVerwaltenButton.setFont(self.fontNormal)
+        favoritenVerwaltenButton.clicked.connect(self.favoritenVerwaltenButtonClicked)
+        frameLayoutV.addWidget(favoritenVerwaltenButton)
         frameLayoutV.addWidget(self.buttonBox)
         self.setLayout(frameLayoutV)
         
@@ -194,6 +205,11 @@ class ScoreAuswahl(QDialog):
         for rb in self.radioButtonsScore:
             anzahlCheckedRadioButtons += int(rb.isChecked())
         return anzahlCheckedRadioButtons
+    
+    def favoritenVerwaltenButtonClicked(self):
+        self.scoresPfad = os.path.join(basedir, "scores")
+        df = dialogEinstellungenFavoriten.EinstellungenFavoriten(self.configPath, self.scoresPfad)
+        df.exec()  
     
     def accept(self):
         self.done(1)

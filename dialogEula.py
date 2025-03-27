@@ -1,4 +1,4 @@
-import os
+import os, requests
 from PySide6.QtWidgets import (
     QDialogButtonBox,
     QDialog,
@@ -22,6 +22,20 @@ class Eula(QDialog):
         dialogLayoutV = QVBoxLayout()
         labelAktualisiert = QLabel("ScoreGDT wurde erfolgreich auf Version " + neueVersion + " aktualisiert.")
         labelAktualisiert.setStyleSheet("font-weight:bold")
+        response = requests.get("https://api.github.com/repos/retconx/scoregdt/releases/latest")
+        body = response.json()["body"]
+        aenderungen = str.split(body, "###")[1]
+        aenderungenListe = str.split(aenderungen, "\r\n- ")
+        datum = aenderungenListe[0].strip()
+        aenderungenText = ""
+        for i in range(len(aenderungenListe)):
+            if i > 0:
+                aenderungenText += "\u00b7 " + aenderungenListe[i]
+                if i < len(aenderungenListe) - 1:
+                    aenderungenText += "\n"
+        labelAenderungen = QLabel("Änderungen vom " + datum + ":")
+        labelAenderungen.setStyleSheet("font-weight:bold")
+        self.labelAenderungenListe = QLabel(aenderungenText)
         labelBestaetigung = QLabel("Bitte bestätigen Sie, dass Sie die folgende Lizenzvereinbarung gelesen haben und dieser zustimmen.")
         text = ""
         self.textEditEula = QTextEdit()
@@ -36,6 +50,8 @@ class Eula(QDialog):
         if neueVersion != "":
             dialogLayoutV.addWidget(labelAktualisiert)
             dialogLayoutV.addSpacing(10)
+            dialogLayoutV.addWidget(labelAenderungen)
+            dialogLayoutV.addWidget(self.labelAenderungenListe)
         dialogLayoutV.addWidget(labelBestaetigung, alignment=Qt.AlignmentFlag.AlignCenter)
         dialogLayoutV.addSpacing(10)
         dialogLayoutV.addWidget(self.textEditEula)
