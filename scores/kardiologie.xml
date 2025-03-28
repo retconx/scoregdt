@@ -114,6 +114,60 @@
             </beurteilung>
         </auswertung>
     </score>
+    <score name="CHA₂DS₂-VA-Score" gruppe="Kardiologie" gdtname="CHA2DS2-VA-Score">
+        <information>Abschätzung des Schlaganfallrisikos bei Vorhofflimmern</information>
+        <quelle autor="ESC Task Force">2024 ESC Guidelines for the diagnosis and management of atrial fibrillation developed in collaboration with the European Association for Cardio-Thoracic Surgery (EACTS)</quelle>
+        <part typ="Frame" id="0" titel="" zeile="0" spalte="0">
+            <widget id="100" typ="CheckBox" titel="Congestive Heart Failure">
+                <wert>1</wert>
+                <erklaerung>Herzinsuffizienz</erklaerung>
+            </widget>
+            <widget id="101" typ="CheckBox" titel="Hypertension">
+                <wert>1</wert>
+            </widget>
+            <widget id="102" buttongroup="alter" typ="CheckBox" titel="Age &#x2265; 75" alterspruefung="True" altersregel="GROESSERGLEICHALS75">
+                <wert>2</wert>
+                <erklaerung>Alter &#x2265; 75 Jahre</erklaerung>
+            </widget>
+            <widget id="103" typ="CheckBox" titel="Diabetes mellitus">
+                <wert>1</wert>
+            </widget>
+            <widget id="104" typ="CheckBox" titel="Stroke">
+                <wert>2</wert>
+                <erklaerung>Schlaganfall, TIA, Thromboembolie</erklaerung>
+            </widget>
+            <widget id="105" typ="CheckBox" titel="Vascular disease">
+                <wert>1</wert>
+                <erklaerung>pAVK, Herzinfarkt, schwere Aortensklerose</erklaerung>
+            </widget>
+            <widget id="106" buttongroup="alter" typ="CheckBox" titel="Age 65-74" alterspruefung="True" altersregel="GROESSERGLEICHALS65 UND KLEINERALS75">
+                <wert>1</wert>
+                <erklaerung>Alter 65-74 Jahre</erklaerung>
+            </widget>
+        </part>
+        <berechnung>
+            <formel>$id{100} + $id{101} + $id{102} + $id{103} + $id{104} + $id{105} + $id{106}</formel>
+            <ergebniseinheit>Punkte</ergebniseinheit>
+            <variablen />
+        </berechnung>
+        <auswertung>
+            <beurteilung>
+                <ergebnisbereich>0 Punkte</ergebnisbereich>
+                <beschreibung>Keine orale Antikoagulation empfohlen</beschreibung>
+                <regel>ISTGLEICH 0</regel>
+            </beurteilung>
+            <beurteilung>
+                <ergebnisbereich>1 Punkt</ergebnisbereich>
+                <beschreibung>Orale Antikoagulation erwägen</beschreibung>
+                <regel>ISTGLEICH 1</regel>
+            </beurteilung>
+            <beurteilung>
+                <ergebnisbereich>&#x2265; 2 Punkte</ergebnisbereich>
+                <beschreibung>Orale Antikoagulation indiziert</beschreibung>
+                <regel>GROESSERGLEICHALS 2</regel>
+            </beurteilung>
+        </auswertung>
+    </score>
     <score name="SCORE2" gruppe="Kardiologie">
         <information>Abschätzung des Risikos für ein kardiovaskuläres Ereignis in den nächsten 10 Jahren</information>
         <quelle autor="SCORE2 working group">SCORE2 risk prediction algorithms: new models to estimate 10-year risk of cardiovascular disease in Europe</quelle>
