@@ -1,0 +1,250 @@
+<?xml version='1.0' encoding='utf-8'?>
+<root>
+	<score name="MAGIC" gruppe="Geriatrie">
+        <information>Geriatrisches Basisassessment</information>
+        <quelle autor="Junius-Walker et al.">&#x22;It's MAGIC&#x22; - development of a manageable geriatric assessment for general practice use</quelle>
+        <part typ="GroupBox" id="0" titel="Leistungsfähigkeit" erklaerung="Hatten Sie während der letzten zwei Wochen Schwierigkeiten, Ihre&#xa;alltäglichen Arbeiten innerhalb und außerhalb des Hauses zu erledigen?" zeile="0" spalte="0">
+            <widget id="100" typ="ComboBox" titel="Alltagsschwierigkeiten">
+                <items>
+                    <item wert="0">Überhaupt keine</item>
+                    <item wert="0">Wenig</item>
+                    <item wert="1">Einige</item>
+                    <item wert="1">Viele</item>
+                    <item wert="1">Nichts geschafft</item>
+                </items>  
+            </widget>
+        </part>
+        <part typ="GroupBox" id="1" titel="Sehen" zeile="0" spalte="1">
+            <widget id="106" typ="CheckBox" titel="Probleme, Zeitungsschrift zu erkennen&#xa;(auch mit Brille)">
+                <wert>1</wert>
+            </widget>
+            <widget id="107" typ="CheckBox" titel="Probleme, Personen auf der anderen Straßenseite&#xa;zu erkennen (auch mit Brille)">
+                <wert>1</wert>
+            </widget>
+        </part>
+        <part typ="GroupBox" id="2" titel="Hören" zeile="0" spalte="2">
+            <widget id="108" typ="CheckBox" titel="Es fällt schwer, Gespräche zu verstehen (auch mit Hörgerät)">
+                <wert>1</wert>
+            </widget>
+        </part>
+        <part typ="GroupBox" id="3" titel="Sturz in den letzten sechs Monaten" zeile="1" spalte="0">
+            <widget id="109" typ="RadioButton" titel="&#x2264;1 mal" checked="True">
+                <wert>0</wert>
+            </widget>
+            <widget id="110" typ="RadioButton" titel="&#x2265;2 mal">
+                <wert>1</wert>
+            </widget>
+        </part>
+        <part typ="GroupBox" id="4" titel="Inkontinenz" zeile="1" spalte="1">
+            <widget id="111" typ="ComboBox" titel="Inkontinenz beim Husten, Niesen, Lachen, Laufen, Bücken">
+                <items>
+                    <item wert="0">Nie</item>
+                    <item wert="0">Selten</item>
+                    <item wert="1">Manchmal</item>
+                    <item wert="1">Oft</item>
+                    <item wert="1">Immer</item>
+                </items>
+            </widget>
+            <widget id="112" typ="ComboBox" titel="Toilette wird nicht rechtzeitig erreicht">
+                <items>
+                    <item wert="0">Nie</item>
+                    <item wert="0">Selten</item>
+                    <item wert="1">Manchmal</item>
+                    <item wert="1">Oft</item>
+                    <item wert="1">Immer</item>
+                </items>
+            </widget>
+        </part>
+        <part typ="GroupBox" id="5" titel="Depressivität" zeile="1" spalte="2">
+            <widget id="113" typ="CheckBox" titel="Niedergeschlagen, depressiv, hoffnungslos&#xa;in den letzten vier Wochen">
+                <wert>1</wert>
+            </widget>
+            <widget id="114" typ="CheckBox" titel="Weniger Interesse oder Freude daran, etwas zu unternehmen&#xa;in den letzten vier Wochen">
+                <wert>1</wert>
+            </widget>
+        </part>
+        <part typ="GroupBox" id="6" titel="Soziales Umfeld" zeile="2" spalte="0">
+            <widget id="115" typ="ComboBox" titel="Person, die sich zuverlässig im Notfall kümmert (z. B. Sturz)">
+                <items>
+                    <item wert="0">Ja</item>
+                    <item wert="1">Nein</item>
+                    <item wert="1">Fraglich</item>
+                </items>
+            </widget>
+            <widget id="116" typ="ComboBox" titel="Person, auf die man sich sicher verlassen bzw.&#xa;der man sich zuverlässig anvertrauen kann">
+                <items>
+                    <item wert="0">Ja</item>
+                    <item wert="1">Nein</item>
+                    <item wert="1">Fraglich</item>
+                </items>
+            </widget>
+        </part>
+        <part typ="GroupBox" id="7" titel="Impfungen" zeile="2" spalte="1">
+            <widget id="117" typ="CheckBox" titel="Dokumentierte Impfung gegen Grippe innerhalb des letzten Jahres">
+                <wert>1</wert>
+            </widget>
+            <widget id="118" typ="CheckBox" titel="Dokumentierte Impfung gegen Tetanus innerhalb der letzten zehn Jahre">
+                <wert>1</wert>
+            </widget>
+            <widget id="119" typ="CheckBox" titel="Dokumentierte Impfung gegen Diphterie innerhalb der letzten zehn Jahre">
+                <wert>1</wert>
+            </widget>
+        </part>
+        <part typ="GroupBox" id="8" titel="Uhrentest nach Shulman (11:10 Uhr)" erklaerung="1: Alle Ziffern richtig eingezeichnet, Uhrzeit richtig angegeben&#xa;2: Ungleichmäßige Ziffernabstände, Ziffern außerhalb des Ziffernblatts, Ziffern auf dem Kopf, Hilfslinien gezeichnet&#xa;3: Nur ein Uhrzeiger, Uhrzeit als Text geschrieben, keine Uhrzeit angegeben&#xa;4: Sehr ungleichmäßige Ziffernabstände, keine Ziffern, &#x3e; 12 Ziffern, Ziffern entgegen dem Uhrzeigersinn&#xa;5: Wie 4, nur stärker ausgeprägt&#xa;6: Keine Uhr gezeichnet bzw. Darstellung ohne Ähnlichkeit mit einer Uhr" zeile="2" spalte="2">
+            <widget id="120" typ="ComboBox" titel="Uhrentest-Punkte">
+                <items>
+                    <item wert="0">1: Perfekt, kein Demenzhinweis</item>
+                    <item wert="0">2: Leichte visuell-räumliche Fehler</item>
+                    <item wert="1">3: Fehlerhafte Uhrzeit trotz richtiger Uhr</item>
+                    <item wert="1">4: Mittelgradige visuell-räumliche Orientierungsprobleme</item>
+                    <item wert="1">5: Schwergradige visuell-räumliche Orientierungsprobleme</item>
+                    <item wert="1">6: Keine Uhr dargestellt</item>
+                </items>  
+            </widget>
+        </part>
+        <berechnung>
+            <formel>$id{100} + $var{sehen} + $id{108} + $id{109} + $var{inko} + $var{depressiv} + $var{sozial} + $var{impf} + $id{120} </formel>
+            <ergebniseinheit>von 9 Problembereichen</ergebniseinheit>
+            <variablen>
+                <variable name="sehen">
+                    <bedingung>
+                        <regel>$id{106} ISTGLEICH 0</regel>
+                        <regel>$id{107} ISTGLEICH 0</regel>
+                        <wert>0</wert>
+                    </bedingung>
+                    <bedingung>
+                        <regel>$id{106} ISTGLEICH 0</regel>
+                        <regel>$id{107} ISTGLEICH 1</regel>
+                        <wert>1</wert>
+                    </bedingung>
+                    <bedingung>
+                        <regel>$id{106} ISTGLEICH 1</regel>
+                        <regel>$id{107} ISTGLEICH 0</regel>
+                        <wert>1</wert>
+                    </bedingung>
+                    <bedingung>
+                        <regel>$id{106} ISTGLEICH 1</regel>
+                        <regel>$id{107} ISTGLEICH 1</regel>
+                        <wert>1</wert>
+                    </bedingung>
+                </variable>
+                <variable name="inko">
+                    <bedingung>
+                        <regel>$id{111} ISTGLEICH 0</regel>
+                        <regel>$id{112} ISTGLEICH 0</regel>
+                        <wert>0</wert>
+                    </bedingung>
+                    <bedingung>
+                        <regel>$id{111} ISTGLEICH 0</regel>
+                        <regel>$id{112} ISTGLEICH 1</regel>
+                        <wert>1</wert>
+                    </bedingung>
+                    <bedingung>
+                        <regel>$id{111} ISTGLEICH 1</regel>
+                        <regel>$id{112} ISTGLEICH 0</regel>
+                        <wert>1</wert>
+                    </bedingung>
+                    <bedingung>
+                        <regel>$id{111} ISTGLEICH 1</regel>
+                        <regel>$id{112} ISTGLEICH 1</regel>
+                        <wert>1</wert>
+                    </bedingung>
+                </variable>
+                <variable name="depressiv">
+                    <bedingung>
+                        <regel>$id{113} ISTGLEICH 0</regel>
+                        <regel>$id{114} ISTGLEICH 0</regel>
+                        <wert>0</wert>
+                    </bedingung>
+                    <bedingung>
+                        <regel>$id{113} ISTGLEICH 0</regel>
+                        <regel>$id{114} ISTGLEICH 1</regel>
+                        <wert>1</wert>
+                    </bedingung>
+                    <bedingung>
+                        <regel>$id{113} ISTGLEICH 1</regel>
+                        <regel>$id{114} ISTGLEICH 0</regel>
+                        <wert>1</wert>
+                    </bedingung>
+                    <bedingung>
+                        <regel>$id{113} ISTGLEICH 1</regel>
+                        <regel>$id{114} ISTGLEICH 1</regel>
+                        <wert>1</wert>
+                    </bedingung>
+                </variable>
+                <variable name="sozial">
+                    <bedingung>
+                        <regel>$id{115} ISTGLEICH 0</regel>
+                        <regel>$id{116} ISTGLEICH 0</regel>
+                        <wert>0</wert>
+                    </bedingung>
+                    <bedingung>
+                        <regel>$id{115} ISTGLEICH 1</regel>
+                        <regel>$id{116} ISTGLEICH 0</regel>
+                        <wert>1</wert>
+                    </bedingung>
+                    <bedingung>
+                        <regel>$id{115} ISTGLEICH 0</regel>
+                        <regel>$id{116} ISTGLEICH 1</regel>
+                        <wert>1</wert>
+                    </bedingung>
+                    <bedingung>
+                        <regel>$id{115} ISTGLEICH 1</regel>
+                        <regel>$id{116} ISTGLEICH 1</regel>
+                        <wert>1</wert>
+                    </bedingung>
+                </variable>
+                <variable name="impf">
+                    <bedingung>
+                        <regel>$id{117} ISTGLEICH 0</regel>
+                        <regel>$id{118} ISTGLEICH 0</regel>
+                        <regel>$id{119} ISTGLEICH 0</regel>
+                        <wert>0</wert>
+                    </bedingung>
+                    <bedingung>
+                        <regel>$id{117} ISTGLEICH 0</regel>
+                        <regel>$id{118} ISTGLEICH 0</regel>
+                        <regel>$id{119} ISTGLEICH 1</regel>
+                        <wert>1</wert>
+                    </bedingung>
+                    <bedingung>
+                        <regel>$id{117} ISTGLEICH 0</regel>
+                        <regel>$id{118} ISTGLEICH 1</regel>
+                        <regel>$id{119} ISTGLEICH 0</regel>
+                        <wert>1</wert>
+                    </bedingung>
+                    <bedingung>
+                        <regel>$id{117} ISTGLEICH 0</regel>
+                        <regel>$id{118} ISTGLEICH 1</regel>
+                        <regel>$id{119} ISTGLEICH 1</regel>
+                        <wert>1</wert>
+                    </bedingung>
+                    <bedingung>
+                        <regel>$id{117} ISTGLEICH 1</regel>
+                        <regel>$id{118} ISTGLEICH 0</regel>
+                        <regel>$id{119} ISTGLEICH 0</regel>
+                        <wert>1</wert>
+                    </bedingung>
+                    <bedingung>
+                        <regel>$id{117} ISTGLEICH 1</regel>
+                        <regel>$id{118} ISTGLEICH 0</regel>
+                        <regel>$id{119} ISTGLEICH 1</regel>
+                        <wert>1</wert>
+                    </bedingung>
+                    <bedingung>
+                        <regel>$id{117} ISTGLEICH 1</regel>
+                        <regel>$id{118} ISTGLEICH 1</regel>
+                        <regel>$id{119} ISTGLEICH 0</regel>
+                        <wert>1</wert>
+                    </bedingung>
+                    <bedingung>
+                        <regel>$id{117} ISTGLEICH 1</regel>
+                        <regel>$id{118} ISTGLEICH 1</regel>
+                        <regel>$id{119} ISTGLEICH 1</regel>
+                        <wert>1</wert>
+                    </bedingung>
+                </variable>
+            </variablen>
+        </berechnung>
+    </score>
+</root>

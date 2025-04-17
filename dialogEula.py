@@ -33,6 +33,7 @@ class Eula(QDialog):
                 aenderungenText += "\u00b7 " + aenderungenListe[i]
                 if i < len(aenderungenListe) - 1:
                     aenderungenText += "\n"
+        aenderungenText = aenderungenText.replace("_", "\"")
         labelAenderungen = QLabel("Änderungen vom " + datum + ":")
         labelAenderungen.setStyleSheet("font-weight:bold")
         self.labelAenderungenListe = QLabel(aenderungenText)
