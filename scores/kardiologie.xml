@@ -12747,4 +12747,913 @@
             </beurteilung>  
         </auswertung>
     </score>
+    <score name="RF-CL-Modell" gruppe ="Kardiologie">
+        <information>Abschätzung der risikofaktorgewichteten klinische Prätestwahrscheinlichkeit für das Vorliegen eines&#xa;stabilen obstruktiven Koronarsyndroms (Alter 30 - 80 Jahre)</information>
+        <quelle autor="Winther et al.">Validation of the European Society of Cardiology pre-test probability model for obstructive coronary artery disease</quelle>
+        <part id="0" typ="GroupBox" titel="Persönliche Daten" zeile="0" spalte="0" geschlechtpruefung="True">
+            <widget id="100" typ="RadioButton" titel="Weiblich" checked="True">
+                <wert>0</wert>   
+            </widget>
+            <widget id="101" typ="RadioButton" titel="Männlich">
+                <wert>1</wert>   
+            </widget>   
+            <widget id="102" typ="LineEdit" titel="Alter" alterspruefung="True">
+                <regex>^\d+$</regex>  
+                <zahlengrenze regelart="GROESSERGLEICHALS">30</zahlengrenze>
+                <zahlengrenze regelart="KLEINERGLEICHALS">80</zahlengrenze>
+                <einheit>Jahre</einheit>
+            </widget>
+        </part>
+        <part id="2" typ="GroupBox" titel="Brustschmerz-Charakteristik" zeile="1" spalte="0">
+            <widget id="103" typ="CheckBox" titel="Engegefühl retrosternal, in Hals, Kiefer, Schulter oder Arm">
+                <wert>1</wert>
+            </widget>       
+            <widget id="104" typ="CheckBox" titel="Zunahme durch körperlichen oder emotionalen Stress">
+                <wert>1</wert>
+            </widget>       
+            <widget id="105" typ="CheckBox" titel="Besserung innerhalb von fünf Minuten durch Ruhe oder Nitrate">
+                <wert>1</wert>
+            </widget>       
+        </part>
+        <part id="3" typ="GroupBox" titel="Dyspnoe-Charakteristik" zeile="1" spalte="1">
+            <widget id="106" typ="CheckBox" titel="Kurzatmigkeit und/oder Probleme beim Luftholen mit Zunahme durch körperliche Anstrengung">
+                <wert>2</wert>
+            </widget>       
+        </part>
+        <part id="4" typ="GroupBox" titel="Hauptsymptom" zeile="2" spalte="0">
+            <widget id="107" typ="RadioButton" titel="Brustschmerz" checked="True">
+                <wert>0</wert>   
+            </widget>
+            <widget id="108" typ="RadioButton" titel="Atemnot">
+                <wert>1</wert>   
+            </widget>   
+        </part>
+        <part id="5" typ="GroupBox" titel="Risikofaktoren" zeile="2" spalte="1">
+            <widget id="109" typ="CheckBox" titel="Arterielle Hypertonie">
+                <wert>1</wert>
+            </widget>
+            <widget id="110" typ="CheckBox" titel="Dyslipoproteinämie">
+                <wert>1</wert>
+            </widget>
+            <widget id="111" typ="CheckBox" titel="Diabetes mellitus">
+                <wert>1</wert>
+            </widget>
+            <widget id="112" typ="CheckBox" titel="Positive Familienanamnese: erstgradige Verwandtschaft mit KHK&#xa;(männlich &#x3c; 55, weiblich &#x3c; 65 Jahre)">
+                <wert>1</wert>
+            </widget>
+            <widget id="113" typ="CheckBox" titel="Nikotin (aktuell oder früher)">
+                <wert>1</wert>
+            </widget>
+        </part>
+        <berechnung>
+            <formel dezimalstellen="0">$var{erg}</formel>
+            <ergebniseinheit>%</ergebniseinheit>
+            <variablen>
+                <variable name="brustschmerz">$id{103} + $id{104} + $id{105}</variable>
+                <variable name="atemnot">$id{106}</variable>
+                <variable name="symptomScore">
+                    <bedingung>
+                        <regel>$id{107} ISTGLEICH 0</regel>
+                        <wert>$var{brustschmerz}</wert>
+                    </bedingung>
+                    <bedingung>
+                        <regel>$id{107} ISTGLEICH 1</regel>
+                        <wert>$var{atemnot}</wert>
+                    </bedingung>
+                </variable>
+                <variable name="anzahlVrf">$id{109} + $id{110} + $id{111} + $id{112} + $id{113}</variable>
+                <variable name="erg">
+                     <bedingung>
+                        <regel>$var{symptomScore} KLEINERGLEICHALS 1</regel>
+                        <regel>$id{100} ISTGLEICH 0</regel>
+                        <regel>$var{anzahlVrf} GROESSERGLEICHALS 0</regel>
+                        <regel>$var{anzahlVrf} KLEINERGLEICHALS 1</regel>
+                        <regel>$id{102} GROESSERGLEICHALS 30</regel>
+                        <regel>$id{102} KLEINERGLEICHALS 39</regel>
+                        <wert>0</wert>
+                    </bedingung>
+                    <bedingung>
+                        <regel>$var{symptomScore} KLEINERGLEICHALS 1</regel>
+                        <regel>$id{100} ISTGLEICH 0</regel>
+                        <regel>$var{anzahlVrf} GROESSERGLEICHALS 0</regel>
+                        <regel>$var{anzahlVrf} KLEINERGLEICHALS 1</regel>
+                        <regel>$id{102} GROESSERGLEICHALS 40</regel>
+                        <regel>$id{102} KLEINERGLEICHALS 49</regel>
+                        <wert>1</wert>
+                    </bedingung>
+                    <bedingung>
+                        <regel>$var{symptomScore} KLEINERGLEICHALS 1</regel>
+                        <regel>$id{100} ISTGLEICH 0</regel>
+                        <regel>$var{anzahlVrf} GROESSERGLEICHALS 0</regel>
+                        <regel>$var{anzahlVrf} KLEINERGLEICHALS 1</regel>
+                        <regel>$id{102} GROESSERGLEICHALS 50</regel>
+                        <regel>$id{102} KLEINERGLEICHALS 59</regel>
+                        <wert>1</wert>
+                    </bedingung>
+                    <bedingung>
+                        <regel>$var{symptomScore} KLEINERGLEICHALS 1</regel>
+                        <regel>$id{100} ISTGLEICH 0</regel>
+                        <regel>$var{anzahlVrf} GROESSERGLEICHALS 0</regel>
+                        <regel>$var{anzahlVrf} KLEINERGLEICHALS 1</regel>
+                        <regel>$id{102} GROESSERGLEICHALS 60</regel>
+                        <regel>$id{102} KLEINERGLEICHALS 69</regel>
+                        <wert>2</wert>
+                    </bedingung>
+                    <bedingung>
+                        <regel>$var{symptomScore} KLEINERGLEICHALS 1</regel>
+                        <regel>$id{100} ISTGLEICH 0</regel>
+                        <regel>$var{anzahlVrf} GROESSERGLEICHALS 0</regel>
+                        <regel>$var{anzahlVrf} KLEINERGLEICHALS 1</regel>
+                        <regel>$id{102} GROESSERGLEICHALS 70</regel>
+                        <regel>$id{102} KLEINERGLEICHALS 80</regel>
+                        <wert>4</wert>
+                    </bedingung>
+                    <bedingung>
+                        <regel>$var{symptomScore} KLEINERGLEICHALS 1</regel>
+                        <regel>$id{100} ISTGLEICH 0</regel>
+                        <regel>$var{anzahlVrf} GROESSERGLEICHALS 2</regel>
+                        <regel>$var{anzahlVrf} KLEINERGLEICHALS 3</regel>
+                        <regel>$id{102} GROESSERGLEICHALS 30</regel>
+                        <regel>$id{102} KLEINERGLEICHALS 39</regel>
+                        <wert>1</wert>
+                    </bedingung>
+                    <bedingung>
+                        <regel>$var{symptomScore} KLEINERGLEICHALS 1</regel>
+                        <regel>$id{100} ISTGLEICH 0</regel>
+                        <regel>$var{anzahlVrf} GROESSERGLEICHALS 2</regel>
+                        <regel>$var{anzahlVrf} KLEINERGLEICHALS 3</regel>
+                        <regel>$id{102} GROESSERGLEICHALS 40</regel>
+                        <regel>$id{102} KLEINERGLEICHALS 49</regel>
+                        <wert>1</wert>
+                    </bedingung>
+                    <bedingung>
+                        <regel>$var{symptomScore} KLEINERGLEICHALS 1</regel>
+                        <regel>$id{100} ISTGLEICH 0</regel>
+                        <regel>$var{anzahlVrf} GROESSERGLEICHALS 2</regel>
+                        <regel>$var{anzahlVrf} KLEINERGLEICHALS 3</regel>
+                        <regel>$id{102} GROESSERGLEICHALS 50</regel>
+                        <regel>$id{102} KLEINERGLEICHALS 59</regel>
+                        <wert>2</wert>
+                    </bedingung>
+                    <bedingung>
+                        <regel>$var{symptomScore} KLEINERGLEICHALS 1</regel>
+                        <regel>$id{100} ISTGLEICH 0</regel>
+                        <regel>$var{anzahlVrf} GROESSERGLEICHALS 2</regel>
+                        <regel>$var{anzahlVrf} KLEINERGLEICHALS 3</regel>
+                        <regel>$id{102} GROESSERGLEICHALS 60</regel>
+                        <regel>$id{102} KLEINERGLEICHALS 69</regel>
+                        <wert>4</wert>
+                    </bedingung>
+                    <bedingung>
+                        <regel>$var{symptomScore} KLEINERGLEICHALS 1</regel>
+                        <regel>$id{100} ISTGLEICH 0</regel>
+                        <regel>$var{anzahlVrf} GROESSERGLEICHALS 2</regel>
+                        <regel>$var{anzahlVrf} KLEINERGLEICHALS 3</regel>
+                        <regel>$id{102} GROESSERGLEICHALS 70</regel>
+                        <regel>$id{102} KLEINERGLEICHALS 80</regel>
+                        <wert>7</wert>
+                    </bedingung>
+                    <bedingung>
+                        <regel>$var{symptomScore} KLEINERGLEICHALS 1</regel>
+                        <regel>$id{100} ISTGLEICH 0</regel>
+                        <regel>$var{anzahlVrf} GROESSERGLEICHALS 4</regel>
+                        <regel>$var{anzahlVrf} KLEINERGLEICHALS 5</regel>
+                        <regel>$id{102} GROESSERGLEICHALS 30</regel>
+                        <regel>$id{102} KLEINERGLEICHALS 39</regel>
+                        <wert>2</wert>
+                    </bedingung>
+                    <bedingung>
+                        <regel>$var{symptomScore} KLEINERGLEICHALS 1</regel>
+                        <regel>$id{100} ISTGLEICH 0</regel>
+                        <regel>$var{anzahlVrf} GROESSERGLEICHALS 4</regel>
+                        <regel>$var{anzahlVrf} KLEINERGLEICHALS 5</regel>
+                        <regel>$id{102} GROESSERGLEICHALS 40</regel>
+                        <regel>$id{102} KLEINERGLEICHALS 49</regel>
+                        <wert>3</wert>
+                    </bedingung>
+                    <bedingung>
+                        <regel>$var{symptomScore} KLEINERGLEICHALS 1</regel>
+                        <regel>$id{100} ISTGLEICH 0</regel>
+                        <regel>$var{anzahlVrf} GROESSERGLEICHALS 4</regel>
+                        <regel>$var{anzahlVrf} KLEINERGLEICHALS 5</regel>
+                        <regel>$id{102} GROESSERGLEICHALS 50</regel>
+                        <regel>$id{102} KLEINERGLEICHALS 59</regel>
+                        <wert>5</wert>
+                    </bedingung>
+                    <bedingung>
+                        <regel>$var{symptomScore} KLEINERGLEICHALS 1</regel>
+                        <regel>$id{100} ISTGLEICH 0</regel>
+                        <regel>$var{anzahlVrf} GROESSERGLEICHALS 4</regel>
+                        <regel>$var{anzahlVrf} KLEINERGLEICHALS 5</regel>
+                        <regel>$id{102} GROESSERGLEICHALS 60</regel>
+                        <regel>$id{102} KLEINERGLEICHALS 69</regel>
+                        <wert>7</wert>
+                    </bedingung>
+                    <bedingung>
+                        <regel>$var{symptomScore} KLEINERGLEICHALS 1</regel>
+                        <regel>$id{100} ISTGLEICH 0</regel>
+                        <regel>$var{anzahlVrf} GROESSERGLEICHALS 4</regel>
+                        <regel>$var{anzahlVrf} KLEINERGLEICHALS 5</regel>
+                        <regel>$id{102} GROESSERGLEICHALS 70</regel>
+                        <regel>$id{102} KLEINERGLEICHALS 80</regel>
+                        <wert>11</wert>
+                    </bedingung>
+                    <bedingung>
+                        <regel>$var{symptomScore} KLEINERGLEICHALS 1</regel>
+                        <regel>$id{100} ISTGLEICH 1</regel>
+                        <regel>$var{anzahlVrf} GROESSERGLEICHALS 0</regel>
+                        <regel>$var{anzahlVrf} KLEINERGLEICHALS 1</regel>
+                        <regel>$id{102} GROESSERGLEICHALS 30</regel>
+                        <regel>$id{102} KLEINERGLEICHALS 39</regel>
+                        <wert>1</wert>
+                    </bedingung>
+                    <bedingung>
+                        <regel>$var{symptomScore} KLEINERGLEICHALS 1</regel>
+                        <regel>$id{100} ISTGLEICH 1</regel>
+                        <regel>$var{anzahlVrf} GROESSERGLEICHALS 0</regel>
+                        <regel>$var{anzahlVrf} KLEINERGLEICHALS 1</regel>
+                        <regel>$id{102} GROESSERGLEICHALS 40</regel>
+                        <regel>$id{102} KLEINERGLEICHALS 49</regel>
+                        <wert>2</wert>
+                    </bedingung>
+                    <bedingung>
+                        <regel>$var{symptomScore} KLEINERGLEICHALS 1</regel>
+                        <regel>$id{100} ISTGLEICH 1</regel>
+                        <regel>$var{anzahlVrf} GROESSERGLEICHALS 0</regel>
+                        <regel>$var{anzahlVrf} KLEINERGLEICHALS 1</regel>
+                        <regel>$id{102} GROESSERGLEICHALS 50</regel>
+                        <regel>$id{102} KLEINERGLEICHALS 59</regel>
+                        <wert>4</wert>
+                    </bedingung>
+                    <bedingung>
+                        <regel>$var{symptomScore} KLEINERGLEICHALS 1</regel>
+                        <regel>$id{100} ISTGLEICH 1</regel>
+                        <regel>$var{anzahlVrf} GROESSERGLEICHALS 0</regel>
+                        <regel>$var{anzahlVrf} KLEINERGLEICHALS 1</regel>
+                        <regel>$id{102} GROESSERGLEICHALS 60</regel>
+                        <regel>$id{102} KLEINERGLEICHALS 69</regel>
+                        <wert>8</wert>
+                    </bedingung>
+                    <bedingung>
+                        <regel>$var{symptomScore} KLEINERGLEICHALS 1</regel>
+                        <regel>$id{100} ISTGLEICH 1</regel>
+                        <regel>$var{anzahlVrf} GROESSERGLEICHALS 0</regel>
+                        <regel>$var{anzahlVrf} KLEINERGLEICHALS 1</regel>
+                        <regel>$id{102} GROESSERGLEICHALS 70</regel>
+                        <regel>$id{102} KLEINERGLEICHALS 80</regel>
+                        <wert>15</wert>
+                    </bedingung>
+                    <bedingung>
+                        <regel>$var{symptomScore} KLEINERGLEICHALS 1</regel>
+                        <regel>$id{100} ISTGLEICH 1</regel>
+                        <regel>$var{anzahlVrf} GROESSERGLEICHALS 2</regel>
+                        <regel>$var{anzahlVrf} KLEINERGLEICHALS 3</regel>
+                        <regel>$id{102} GROESSERGLEICHALS 30</regel>
+                        <regel>$id{102} KLEINERGLEICHALS 39</regel>
+                        <wert>2</wert>
+                    </bedingung>
+                    <bedingung>
+                        <regel>$var{symptomScore} KLEINERGLEICHALS 1</regel>
+                        <regel>$id{100} ISTGLEICH 1</regel>
+                        <regel>$var{anzahlVrf} GROESSERGLEICHALS 2</regel>
+                        <regel>$var{anzahlVrf} KLEINERGLEICHALS 3</regel>
+                        <regel>$id{102} GROESSERGLEICHALS 40</regel>
+                        <regel>$id{102} KLEINERGLEICHALS 49</regel>
+                        <wert>4</wert>
+                    </bedingung>
+                    <bedingung>
+                        <regel>$var{symptomScore} KLEINERGLEICHALS 1</regel>
+                        <regel>$id{100} ISTGLEICH 1</regel>
+                        <regel>$var{anzahlVrf} GROESSERGLEICHALS 2</regel>
+                        <regel>$var{anzahlVrf} KLEINERGLEICHALS 3</regel>
+                        <regel>$id{102} GROESSERGLEICHALS 50</regel>
+                        <regel>$id{102} KLEINERGLEICHALS 59</regel>
+                        <wert>7</wert>
+                    </bedingung>
+                    <bedingung>
+                        <regel>$var{symptomScore} KLEINERGLEICHALS 1</regel>
+                        <regel>$id{100} ISTGLEICH 1</regel>
+                        <regel>$var{anzahlVrf} GROESSERGLEICHALS 2</regel>
+                        <regel>$var{anzahlVrf} KLEINERGLEICHALS 3</regel>
+                        <regel>$id{102} GROESSERGLEICHALS 60</regel>
+                        <regel>$id{102} KLEINERGLEICHALS 69</regel>
+                        <wert>12</wert>
+                    </bedingung>
+                    <bedingung>
+                        <regel>$var{symptomScore} KLEINERGLEICHALS 1</regel>
+                        <regel>$id{100} ISTGLEICH 1</regel>
+                        <regel>$var{anzahlVrf} GROESSERGLEICHALS 2</regel>
+                        <regel>$var{anzahlVrf} KLEINERGLEICHALS 3</regel>
+                        <regel>$id{102} GROESSERGLEICHALS 70</regel>
+                        <regel>$id{102} KLEINERGLEICHALS 80</regel>
+                        <wert>19</wert>
+                    </bedingung>
+                    <bedingung>
+                        <regel>$var{symptomScore} KLEINERGLEICHALS 1</regel>
+                        <regel>$id{100} ISTGLEICH 1</regel>
+                        <regel>$var{anzahlVrf} GROESSERGLEICHALS 4</regel>
+                        <regel>$var{anzahlVrf} KLEINERGLEICHALS 5</regel>
+                        <regel>$id{102} GROESSERGLEICHALS 30</regel>
+                        <regel>$id{102} KLEINERGLEICHALS 39</regel>
+                        <wert>5</wert>
+                    </bedingung>
+                    <bedingung>
+                        <regel>$var{symptomScore} KLEINERGLEICHALS 1</regel>
+                        <regel>$id{100} ISTGLEICH 1</regel>
+                        <regel>$var{anzahlVrf} GROESSERGLEICHALS 4</regel>
+                        <regel>$var{anzahlVrf} KLEINERGLEICHALS 5</regel>
+                        <regel>$id{102} GROESSERGLEICHALS 40</regel>
+                        <regel>$id{102} KLEINERGLEICHALS 49</regel>
+                        <wert>8</wert>
+                    </bedingung>
+                    <bedingung>
+                        <regel>$var{symptomScore} KLEINERGLEICHALS 1</regel>
+                        <regel>$id{100} ISTGLEICH 1</regel>
+                        <regel>$var{anzahlVrf} GROESSERGLEICHALS 4</regel>
+                        <regel>$var{anzahlVrf} KLEINERGLEICHALS 5</regel>
+                        <regel>$id{102} GROESSERGLEICHALS 50</regel>
+                        <regel>$id{102} KLEINERGLEICHALS 59</regel>
+                        <wert>12</wert>
+                    </bedingung>
+                    <bedingung>
+                        <regel>$var{symptomScore} KLEINERGLEICHALS 1</regel>
+                        <regel>$id{100} ISTGLEICH 1</regel>
+                        <regel>$var{anzahlVrf} GROESSERGLEICHALS 4</regel>
+                        <regel>$var{anzahlVrf} KLEINERGLEICHALS 5</regel>
+                        <regel>$id{102} GROESSERGLEICHALS 60</regel>
+                        <regel>$id{102} KLEINERGLEICHALS 69</regel>
+                        <wert>17</wert>
+                    </bedingung>
+                    <bedingung>
+                        <regel>$var{symptomScore} KLEINERGLEICHALS 1</regel>
+                        <regel>$id{100} ISTGLEICH 1</regel>
+                        <regel>$var{anzahlVrf} GROESSERGLEICHALS 4</regel>
+                        <regel>$var{anzahlVrf} KLEINERGLEICHALS 5</regel>
+                        <regel>$id{102} GROESSERGLEICHALS 70</regel>
+                        <regel>$id{102} KLEINERGLEICHALS 80</regel>
+                        <wert>24</wert>
+                    </bedingung>
+                    <bedingung>
+                        <regel>$var{symptomScore} ISTGLEICH 2</regel>
+                        <regel>$id{100} ISTGLEICH 0</regel>
+                        <regel>$var{anzahlVrf} GROESSERGLEICHALS 0</regel>
+                        <regel>$var{anzahlVrf} KLEINERGLEICHALS 1</regel>
+                        <regel>$id{102} GROESSERGLEICHALS 30</regel>
+                        <regel>$id{102} KLEINERGLEICHALS 39</regel>
+                        <wert>0</wert>
+                    </bedingung>
+                    <bedingung>
+                        <regel>$var{symptomScore} ISTGLEICH 2</regel>
+                        <regel>$id{100} ISTGLEICH 0</regel>
+                        <regel>$var{anzahlVrf} GROESSERGLEICHALS 0</regel>
+                        <regel>$var{anzahlVrf} KLEINERGLEICHALS 1</regel>
+                        <regel>$id{102} GROESSERGLEICHALS 40</regel>
+                        <regel>$id{102} KLEINERGLEICHALS 49</regel>
+                        <wert>1</wert>
+                    </bedingung>
+                    <bedingung>
+                        <regel>$var{symptomScore} ISTGLEICH 2</regel>
+                        <regel>$id{100} ISTGLEICH 0</regel>
+                        <regel>$var{anzahlVrf} GROESSERGLEICHALS 0</regel>
+                        <regel>$var{anzahlVrf} KLEINERGLEICHALS 1</regel>
+                        <regel>$id{102} GROESSERGLEICHALS 50</regel>
+                        <regel>$id{102} KLEINERGLEICHALS 59</regel>
+                        <wert>2</wert>
+                    </bedingung>
+                    <bedingung>
+                        <regel>$var{symptomScore} ISTGLEICH 2</regel>
+                        <regel>$id{100} ISTGLEICH 0</regel>
+                        <regel>$var{anzahlVrf} GROESSERGLEICHALS 0</regel>
+                        <regel>$var{anzahlVrf} KLEINERGLEICHALS 1</regel>
+                        <regel>$id{102} GROESSERGLEICHALS 60</regel>
+                        <regel>$id{102} KLEINERGLEICHALS 69</regel>
+                        <wert>3</wert>
+                    </bedingung>
+                    <bedingung>
+                        <regel>$var{symptomScore} ISTGLEICH 2</regel>
+                        <regel>$id{100} ISTGLEICH 0</regel>
+                        <regel>$var{anzahlVrf} GROESSERGLEICHALS 0</regel>
+                        <regel>$var{anzahlVrf} KLEINERGLEICHALS 1</regel>
+                        <regel>$id{102} GROESSERGLEICHALS 70</regel>
+                        <regel>$id{102} KLEINERGLEICHALS 80</regel>
+                        <wert>6</wert>
+                    </bedingung>
+                    <bedingung>
+                        <regel>$var{symptomScore} ISTGLEICH 2</regel>
+                        <regel>$id{100} ISTGLEICH 0</regel>
+                        <regel>$var{anzahlVrf} GROESSERGLEICHALS 2</regel>
+                        <regel>$var{anzahlVrf} KLEINERGLEICHALS 3</regel>
+                        <regel>$id{102} GROESSERGLEICHALS 30</regel>
+                        <regel>$id{102} KLEINERGLEICHALS 39</regel>
+                        <wert>1</wert>
+                    </bedingung>
+                    <bedingung>
+                        <regel>$var{symptomScore} ISTGLEICH 2</regel>
+                        <regel>$id{100} ISTGLEICH 0</regel>
+                        <regel>$var{anzahlVrf} GROESSERGLEICHALS 2</regel>
+                        <regel>$var{anzahlVrf} KLEINERGLEICHALS 3</regel>
+                        <regel>$id{102} GROESSERGLEICHALS 40</regel>
+                        <regel>$id{102} KLEINERGLEICHALS 49</regel>
+                        <wert>2</wert>
+                    </bedingung>
+                    <bedingung>
+                        <regel>$var{symptomScore} ISTGLEICH 2</regel>
+                        <regel>$id{100} ISTGLEICH 0</regel>
+                        <regel>$var{anzahlVrf} GROESSERGLEICHALS 2</regel>
+                        <regel>$var{anzahlVrf} KLEINERGLEICHALS 3</regel>
+                        <regel>$id{102} GROESSERGLEICHALS 50</regel>
+                        <regel>$id{102} KLEINERGLEICHALS 59</regel>
+                        <wert>3</wert>
+                    </bedingung>
+                    <bedingung>
+                        <regel>$var{symptomScore} ISTGLEICH 2</regel>
+                        <regel>$id{100} ISTGLEICH 0</regel>
+                        <regel>$var{anzahlVrf} GROESSERGLEICHALS 2</regel>
+                        <regel>$var{anzahlVrf} KLEINERGLEICHALS 3</regel>
+                        <regel>$id{102} GROESSERGLEICHALS 60</regel>
+                        <regel>$id{102} KLEINERGLEICHALS 69</regel>
+                        <wert>6</wert>
+                    </bedingung>
+                    <bedingung>
+                        <regel>$var{symptomScore} ISTGLEICH 2</regel>
+                        <regel>$id{100} ISTGLEICH 0</regel>
+                        <regel>$var{anzahlVrf} GROESSERGLEICHALS 2</regel>
+                        <regel>$var{anzahlVrf} KLEINERGLEICHALS 3</regel>
+                        <regel>$id{102} GROESSERGLEICHALS 70</regel>
+                        <regel>$id{102} KLEINERGLEICHALS 80</regel>
+                        <wert>10</wert>
+                    </bedingung>
+                    <bedingung>
+                        <regel>$var{symptomScore} ISTGLEICH 2</regel>
+                        <regel>$id{100} ISTGLEICH 0</regel>
+                        <regel>$var{anzahlVrf} GROESSERGLEICHALS 4</regel>
+                        <regel>$var{anzahlVrf} KLEINERGLEICHALS 5</regel>
+                        <regel>$id{102} GROESSERGLEICHALS 30</regel>
+                        <regel>$id{102} KLEINERGLEICHALS 39</regel>
+                        <wert>3</wert>
+                    </bedingung>
+                    <bedingung>
+                        <regel>$var{symptomScore} ISTGLEICH 2</regel>
+                        <regel>$id{100} ISTGLEICH 0</regel>
+                        <regel>$var{anzahlVrf} GROESSERGLEICHALS 4</regel>
+                        <regel>$var{anzahlVrf} KLEINERGLEICHALS 5</regel>
+                        <regel>$id{102} GROESSERGLEICHALS 40</regel>
+                        <regel>$id{102} KLEINERGLEICHALS 49</regel>
+                        <wert>5</wert>
+                    </bedingung>
+                    <bedingung>
+                        <regel>$var{symptomScore} ISTGLEICH 2</regel>
+                        <regel>$id{100} ISTGLEICH 0</regel>
+                        <regel>$var{anzahlVrf} GROESSERGLEICHALS 4</regel>
+                        <regel>$var{anzahlVrf} KLEINERGLEICHALS 5</regel>
+                        <regel>$id{102} GROESSERGLEICHALS 50</regel>
+                        <regel>$id{102} KLEINERGLEICHALS 59</regel>
+                        <wert>7</wert>
+                    </bedingung>
+                    <bedingung>
+                        <regel>$var{symptomScore} ISTGLEICH 2</regel>
+                        <regel>$id{100} ISTGLEICH 0</regel>
+                        <regel>$var{anzahlVrf} GROESSERGLEICHALS 4</regel>
+                        <regel>$var{anzahlVrf} KLEINERGLEICHALS 5</regel>
+                        <regel>$id{102} GROESSERGLEICHALS 60</regel>
+                        <regel>$id{102} KLEINERGLEICHALS 69</regel>
+                        <wert>11</wert>
+                    </bedingung>
+                    <bedingung>
+                        <regel>$var{symptomScore} ISTGLEICH 2</regel>
+                        <regel>$id{100} ISTGLEICH 0</regel>
+                        <regel>$var{anzahlVrf} GROESSERGLEICHALS 4</regel>
+                        <regel>$var{anzahlVrf} KLEINERGLEICHALS 5</regel>
+                        <regel>$id{102} GROESSERGLEICHALS 70</regel>
+                        <regel>$id{102} KLEINERGLEICHALS 80</regel>
+                        <wert>16</wert>
+                    </bedingung>
+                    <bedingung>
+                        <regel>$var{symptomScore} ISTGLEICH 2</regel>
+                        <regel>$id{100} ISTGLEICH 1</regel>
+                        <regel>$var{anzahlVrf} GROESSERGLEICHALS 0</regel>
+                        <regel>$var{anzahlVrf} KLEINERGLEICHALS 1</regel>
+                        <regel>$id{102} GROESSERGLEICHALS 30</regel>
+                        <regel>$id{102} KLEINERGLEICHALS 39</regel>
+                        <wert>2</wert>
+                    </bedingung>
+                    <bedingung>
+                        <regel>$var{symptomScore} ISTGLEICH 2</regel>
+                        <regel>$id{100} ISTGLEICH 1</regel>
+                        <regel>$var{anzahlVrf} GROESSERGLEICHALS 0</regel>
+                        <regel>$var{anzahlVrf} KLEINERGLEICHALS 1</regel>
+                        <regel>$id{102} GROESSERGLEICHALS 40</regel>
+                        <regel>$id{102} KLEINERGLEICHALS 49</regel>
+                        <wert>3</wert>
+                    </bedingung>
+                    <bedingung>
+                        <regel>$var{symptomScore} ISTGLEICH 2</regel>
+                        <regel>$id{100} ISTGLEICH 1</regel>
+                        <regel>$var{anzahlVrf} GROESSERGLEICHALS 0</regel>
+                        <regel>$var{anzahlVrf} KLEINERGLEICHALS 1</regel>
+                        <regel>$id{102} GROESSERGLEICHALS 50</regel>
+                        <regel>$id{102} KLEINERGLEICHALS 59</regel>
+                        <wert>6</wert>
+                    </bedingung>
+                    <bedingung>
+                        <regel>$var{symptomScore} ISTGLEICH 2</regel>
+                        <regel>$id{100} ISTGLEICH 1</regel>
+                        <regel>$var{anzahlVrf} GROESSERGLEICHALS 0</regel>
+                        <regel>$var{anzahlVrf} KLEINERGLEICHALS 1</regel>
+                        <regel>$id{102} GROESSERGLEICHALS 60</regel>
+                        <regel>$id{102} KLEINERGLEICHALS 69</regel>
+                        <wert>12</wert>
+                    </bedingung>
+                    <bedingung>
+                        <regel>$var{symptomScore} ISTGLEICH 2</regel>
+                        <regel>$id{100} ISTGLEICH 1</regel>
+                        <regel>$var{anzahlVrf} GROESSERGLEICHALS 0</regel>
+                        <regel>$var{anzahlVrf} KLEINERGLEICHALS 1</regel>
+                        <regel>$id{102} GROESSERGLEICHALS 70</regel>
+                        <regel>$id{102} KLEINERGLEICHALS 80</regel>
+                        <wert>22</wert>
+                    </bedingung>
+                    <bedingung>
+                        <regel>$var{symptomScore} ISTGLEICH 2</regel>
+                        <regel>$id{100} ISTGLEICH 1</regel>
+                        <regel>$var{anzahlVrf} GROESSERGLEICHALS 2</regel>
+                        <regel>$var{anzahlVrf} KLEINERGLEICHALS 3</regel>
+                        <regel>$id{102} GROESSERGLEICHALS 30</regel>
+                        <regel>$id{102} KLEINERGLEICHALS 39</regel>
+                        <wert>4</wert>
+                    </bedingung>
+                    <bedingung>
+                        <regel>$var{symptomScore} ISTGLEICH 2</regel>
+                        <regel>$id{100} ISTGLEICH 1</regel>
+                        <regel>$var{anzahlVrf} GROESSERGLEICHALS 2</regel>
+                        <regel>$var{anzahlVrf} KLEINERGLEICHALS 3</regel>
+                        <regel>$id{102} GROESSERGLEICHALS 40</regel>
+                        <regel>$id{102} KLEINERGLEICHALS 49</regel>
+                        <wert>6</wert>
+                    </bedingung>
+                    <bedingung>
+                        <regel>$var{symptomScore} ISTGLEICH 2</regel>
+                        <regel>$id{100} ISTGLEICH 1</regel>
+                        <regel>$var{anzahlVrf} GROESSERGLEICHALS 2</regel>
+                        <regel>$var{anzahlVrf} KLEINERGLEICHALS 3</regel>
+                        <regel>$id{102} GROESSERGLEICHALS 50</regel>
+                        <regel>$id{102} KLEINERGLEICHALS 59</regel>
+                        <wert>11</wert>
+                    </bedingung>
+                    <bedingung>
+                        <regel>$var{symptomScore} ISTGLEICH 2</regel>
+                        <regel>$id{100} ISTGLEICH 1</regel>
+                        <regel>$var{anzahlVrf} GROESSERGLEICHALS 2</regel>
+                        <regel>$var{anzahlVrf} KLEINERGLEICHALS 3</regel>
+                        <regel>$id{102} GROESSERGLEICHALS 60</regel>
+                        <regel>$id{102} KLEINERGLEICHALS 69</regel>
+                        <wert>17</wert>
+                    </bedingung>
+                    <bedingung>
+                        <regel>$var{symptomScore} ISTGLEICH 2</regel>
+                        <regel>$id{100} ISTGLEICH 1</regel>
+                        <regel>$var{anzahlVrf} GROESSERGLEICHALS 2</regel>
+                        <regel>$var{anzahlVrf} KLEINERGLEICHALS 3</regel>
+                        <regel>$id{102} GROESSERGLEICHALS 70</regel>
+                        <regel>$id{102} KLEINERGLEICHALS 80</regel>
+                        <wert>27</wert>
+                    </bedingung>
+                    <bedingung>
+                        <regel>$var{symptomScore} ISTGLEICH 2</regel>
+                        <regel>$id{100} ISTGLEICH 1</regel>
+                        <regel>$var{anzahlVrf} GROESSERGLEICHALS 4</regel>
+                        <regel>$var{anzahlVrf} KLEINERGLEICHALS 5</regel>
+                        <regel>$id{102} GROESSERGLEICHALS 30</regel>
+                        <regel>$id{102} KLEINERGLEICHALS 39</regel>
+                        <wert>8</wert>
+                    </bedingung>
+                    <bedingung>
+                        <regel>$var{symptomScore} ISTGLEICH 2</regel>
+                        <regel>$id{100} ISTGLEICH 1</regel>
+                        <regel>$var{anzahlVrf} GROESSERGLEICHALS 4</regel>
+                        <regel>$var{anzahlVrf} KLEINERGLEICHALS 5</regel>
+                        <regel>$id{102} GROESSERGLEICHALS 40</regel>
+                        <regel>$id{102} KLEINERGLEICHALS 49</regel>
+                        <wert>12</wert>
+                    </bedingung>
+                    <bedingung>
+                        <regel>$var{symptomScore} ISTGLEICH 2</regel>
+                        <regel>$id{100} ISTGLEICH 1</regel>
+                        <regel>$var{anzahlVrf} GROESSERGLEICHALS 4</regel>
+                        <regel>$var{anzahlVrf} KLEINERGLEICHALS 5</regel>
+                        <regel>$id{102} GROESSERGLEICHALS 50</regel>
+                        <regel>$id{102} KLEINERGLEICHALS 59</regel>
+                        <wert>17</wert>
+                    </bedingung>
+                    <bedingung>
+                        <regel>$var{symptomScore} ISTGLEICH 2</regel>
+                        <regel>$id{100} ISTGLEICH 1</regel>
+                        <regel>$var{anzahlVrf} GROESSERGLEICHALS 4</regel>
+                        <regel>$var{anzahlVrf} KLEINERGLEICHALS 5</regel>
+                        <regel>$id{102} GROESSERGLEICHALS 60</regel>
+                        <regel>$id{102} KLEINERGLEICHALS 69</regel>
+                        <wert>25</wert>
+                    </bedingung>
+                    <bedingung>
+                        <regel>$var{symptomScore} ISTGLEICH 2</regel>
+                        <regel>$id{100} ISTGLEICH 1</regel>
+                        <regel>$var{anzahlVrf} GROESSERGLEICHALS 4</regel>
+                        <regel>$var{anzahlVrf} KLEINERGLEICHALS 5</regel>
+                        <regel>$id{102} GROESSERGLEICHALS 70</regel>
+                        <regel>$id{102} KLEINERGLEICHALS 80</regel>
+                        <wert>34</wert>
+                    </bedingung>
+                    <bedingung>
+                        <regel>$var{symptomScore} ISTGLEICH 3</regel>
+                        <regel>$id{100} ISTGLEICH 0</regel>
+                        <regel>$var{anzahlVrf} GROESSERGLEICHALS 0</regel>
+                        <regel>$var{anzahlVrf} KLEINERGLEICHALS 1</regel>
+                        <regel>$id{102} GROESSERGLEICHALS 30</regel>
+                        <regel>$id{102} KLEINERGLEICHALS 39</regel>
+                        <wert>2</wert>
+                    </bedingung>
+                    <bedingung>
+                        <regel>$var{symptomScore} ISTGLEICH 3</regel>
+                        <regel>$id{100} ISTGLEICH 0</regel>
+                        <regel>$var{anzahlVrf} GROESSERGLEICHALS 0</regel>
+                        <regel>$var{anzahlVrf} KLEINERGLEICHALS 1</regel>
+                        <regel>$id{102} GROESSERGLEICHALS 40</regel>
+                        <regel>$id{102} KLEINERGLEICHALS 49</regel>
+                        <wert>4</wert>
+                    </bedingung>
+                    <bedingung>
+                        <regel>$var{symptomScore} ISTGLEICH 3</regel>
+                        <regel>$id{100} ISTGLEICH 0</regel>
+                        <regel>$var{anzahlVrf} GROESSERGLEICHALS 0</regel>
+                        <regel>$var{anzahlVrf} KLEINERGLEICHALS 1</regel>
+                        <regel>$id{102} GROESSERGLEICHALS 50</regel>
+                        <regel>$id{102} KLEINERGLEICHALS 59</regel>
+                        <wert>6</wert>
+                    </bedingung>
+                    <bedingung>
+                        <regel>$var{symptomScore} ISTGLEICH 3</regel>
+                        <regel>$id{100} ISTGLEICH 0</regel>
+                        <regel>$var{anzahlVrf} GROESSERGLEICHALS 0</regel>
+                        <regel>$var{anzahlVrf} KLEINERGLEICHALS 1</regel>
+                        <regel>$id{102} GROESSERGLEICHALS 60</regel>
+                        <regel>$id{102} KLEINERGLEICHALS 69</regel>
+                        <wert>10</wert>
+                    </bedingung>
+                    <bedingung>
+                        <regel>$var{symptomScore} ISTGLEICH 3</regel>
+                        <regel>$id{100} ISTGLEICH 0</regel>
+                        <regel>$var{anzahlVrf} GROESSERGLEICHALS 0</regel>
+                        <regel>$var{anzahlVrf} KLEINERGLEICHALS 1</regel>
+                        <regel>$id{102} GROESSERGLEICHALS 70</regel>
+                        <regel>$id{102} KLEINERGLEICHALS 80</regel>
+                        <wert>16</wert>
+                    </bedingung>
+                    <bedingung>
+                        <regel>$var{symptomScore} ISTGLEICH 3</regel>
+                        <regel>$id{100} ISTGLEICH 0</regel>
+                        <regel>$var{anzahlVrf} GROESSERGLEICHALS 2</regel>
+                        <regel>$var{anzahlVrf} KLEINERGLEICHALS 3</regel>
+                        <regel>$id{102} GROESSERGLEICHALS 30</regel>
+                        <regel>$id{102} KLEINERGLEICHALS 39</regel>
+                        <wert>5</wert>
+                    </bedingung>
+                    <bedingung>
+                        <regel>$var{symptomScore} ISTGLEICH 3</regel>
+                        <regel>$id{100} ISTGLEICH 0</regel>
+                        <regel>$var{anzahlVrf} GROESSERGLEICHALS 2</regel>
+                        <regel>$var{anzahlVrf} KLEINERGLEICHALS 3</regel>
+                        <regel>$id{102} GROESSERGLEICHALS 40</regel>
+                        <regel>$id{102} KLEINERGLEICHALS 49</regel>
+                        <wert>7</wert>
+                    </bedingung>
+                    <bedingung>
+                        <regel>$var{symptomScore} ISTGLEICH 3</regel>
+                        <regel>$id{100} ISTGLEICH 0</regel>
+                        <regel>$var{anzahlVrf} GROESSERGLEICHALS 2</regel>
+                        <regel>$var{anzahlVrf} KLEINERGLEICHALS 3</regel>
+                        <regel>$id{102} GROESSERGLEICHALS 50</regel>
+                        <regel>$id{102} KLEINERGLEICHALS 59</regel>
+                        <wert>10</wert>
+                    </bedingung>
+                    <bedingung>
+                        <regel>$var{symptomScore} ISTGLEICH 3</regel>
+                        <regel>$id{100} ISTGLEICH 0</regel>
+                        <regel>$var{anzahlVrf} GROESSERGLEICHALS 2</regel>
+                        <regel>$var{anzahlVrf} KLEINERGLEICHALS 3</regel>
+                        <regel>$id{102} GROESSERGLEICHALS 60</regel>
+                        <regel>$id{102} KLEINERGLEICHALS 69</regel>
+                        <wert>14</wert>
+                    </bedingung>
+                    <bedingung>
+                        <regel>$var{symptomScore} ISTGLEICH 3</regel>
+                        <regel>$id{100} ISTGLEICH 0</regel>
+                        <regel>$var{anzahlVrf} GROESSERGLEICHALS 2</regel>
+                        <regel>$var{anzahlVrf} KLEINERGLEICHALS 3</regel>
+                        <regel>$id{102} GROESSERGLEICHALS 70</regel>
+                        <regel>$id{102} KLEINERGLEICHALS 80</regel>
+                        <wert>19</wert>
+                    </bedingung>
+                    <bedingung>
+                        <regel>$var{symptomScore} ISTGLEICH 3</regel>
+                        <regel>$id{100} ISTGLEICH 0</regel>
+                        <regel>$var{anzahlVrf} GROESSERGLEICHALS 4</regel>
+                        <regel>$var{anzahlVrf} KLEINERGLEICHALS 5</regel>
+                        <regel>$id{102} GROESSERGLEICHALS 30</regel>
+                        <regel>$id{102} KLEINERGLEICHALS 39</regel>
+                        <wert>10</wert>
+                    </bedingung>
+                    <bedingung>
+                        <regel>$var{symptomScore} ISTGLEICH 3</regel>
+                        <regel>$id{100} ISTGLEICH 0</regel>
+                        <regel>$var{anzahlVrf} GROESSERGLEICHALS 4</regel>
+                        <regel>$var{anzahlVrf} KLEINERGLEICHALS 5</regel>
+                        <regel>$id{102} GROESSERGLEICHALS 40</regel>
+                        <regel>$id{102} KLEINERGLEICHALS 49</regel>
+                        <wert>12</wert>
+                    </bedingung>
+                    <bedingung>
+                        <regel>$var{symptomScore} ISTGLEICH 3</regel>
+                        <regel>$id{100} ISTGLEICH 0</regel>
+                        <regel>$var{anzahlVrf} GROESSERGLEICHALS 4</regel>
+                        <regel>$var{anzahlVrf} KLEINERGLEICHALS 5</regel>
+                        <regel>$id{102} GROESSERGLEICHALS 50</regel>
+                        <regel>$id{102} KLEINERGLEICHALS 59</regel>
+                        <wert>15</wert>
+                    </bedingung>
+                    <bedingung>
+                        <regel>$var{symptomScore} ISTGLEICH 3</regel>
+                        <regel>$id{100} ISTGLEICH 0</regel>
+                        <regel>$var{anzahlVrf} GROESSERGLEICHALS 4</regel>
+                        <regel>$var{anzahlVrf} KLEINERGLEICHALS 5</regel>
+                        <regel>$id{102} GROESSERGLEICHALS 60</regel>
+                        <regel>$id{102} KLEINERGLEICHALS 69</regel>
+                        <wert>19</wert>
+                    </bedingung>
+                    <bedingung>
+                        <regel>$var{symptomScore} ISTGLEICH 3</regel>
+                        <regel>$id{100} ISTGLEICH 0</regel>
+                        <regel>$var{anzahlVrf} GROESSERGLEICHALS 4</regel>
+                        <regel>$var{anzahlVrf} KLEINERGLEICHALS 5</regel>
+                        <regel>$id{102} GROESSERGLEICHALS 70</regel>
+                        <regel>$id{102} KLEINERGLEICHALS 80</regel>
+                        <wert>23</wert>
+                    </bedingung>
+                    <bedingung>
+                        <regel>$var{symptomScore} ISTGLEICH 3</regel>
+                        <regel>$id{100} ISTGLEICH 1</regel>
+                        <regel>$var{anzahlVrf} GROESSERGLEICHALS 0</regel>
+                        <regel>$var{anzahlVrf} KLEINERGLEICHALS 1</regel>
+                        <regel>$id{102} GROESSERGLEICHALS 30</regel>
+                        <regel>$id{102} KLEINERGLEICHALS 39</regel>
+                        <wert>9</wert>
+                    </bedingung>
+                    <bedingung>
+                        <regel>$var{symptomScore} ISTGLEICH 3</regel>
+                        <regel>$id{100} ISTGLEICH 1</regel>
+                        <regel>$var{anzahlVrf} GROESSERGLEICHALS 0</regel>
+                        <regel>$var{anzahlVrf} KLEINERGLEICHALS 1</regel>
+                        <regel>$id{102} GROESSERGLEICHALS 40</regel>
+                        <regel>$id{102} KLEINERGLEICHALS 49</regel>
+                        <wert>14</wert>
+                    </bedingung>
+                    <bedingung>
+                        <regel>$var{symptomScore} ISTGLEICH 3</regel>
+                        <regel>$id{100} ISTGLEICH 1</regel>
+                        <regel>$var{anzahlVrf} GROESSERGLEICHALS 0</regel>
+                        <regel>$var{anzahlVrf} KLEINERGLEICHALS 1</regel>
+                        <regel>$id{102} GROESSERGLEICHALS 50</regel>
+                        <regel>$id{102} KLEINERGLEICHALS 59</regel>
+                        <wert>21</wert>
+                    </bedingung>
+                    <bedingung>
+                        <regel>$var{symptomScore} ISTGLEICH 3</regel>
+                        <regel>$id{100} ISTGLEICH 1</regel>
+                        <regel>$var{anzahlVrf} GROESSERGLEICHALS 0</regel>
+                        <regel>$var{anzahlVrf} KLEINERGLEICHALS 1</regel>
+                        <regel>$id{102} GROESSERGLEICHALS 60</regel>
+                        <regel>$id{102} KLEINERGLEICHALS 69</regel>
+                        <wert>32</wert>
+                    </bedingung>
+                    <bedingung>
+                        <regel>$var{symptomScore} ISTGLEICH 3</regel>
+                        <regel>$id{100} ISTGLEICH 1</regel>
+                        <regel>$var{anzahlVrf} GROESSERGLEICHALS 0</regel>
+                        <regel>$var{anzahlVrf} KLEINERGLEICHALS 1</regel>
+                        <regel>$id{102} GROESSERGLEICHALS 70</regel>
+                        <regel>$id{102} KLEINERGLEICHALS 80</regel>
+                        <wert>44</wert>
+                    </bedingung>
+                    <bedingung>
+                        <regel>$var{symptomScore} ISTGLEICH 3</regel>
+                        <regel>$id{100} ISTGLEICH 1</regel>
+                        <regel>$var{anzahlVrf} GROESSERGLEICHALS 2</regel>
+                        <regel>$var{anzahlVrf} KLEINERGLEICHALS 3</regel>
+                        <regel>$id{102} GROESSERGLEICHALS 30</regel>
+                        <regel>$id{102} KLEINERGLEICHALS 39</regel>
+                        <wert>14</wert>
+                    </bedingung>
+                    <bedingung>
+                        <regel>$var{symptomScore} ISTGLEICH 3</regel>
+                        <regel>$id{100} ISTGLEICH 1</regel>
+                        <regel>$var{anzahlVrf} GROESSERGLEICHALS 2</regel>
+                        <regel>$var{anzahlVrf} KLEINERGLEICHALS 3</regel>
+                        <regel>$id{102} GROESSERGLEICHALS 40</regel>
+                        <regel>$id{102} KLEINERGLEICHALS 49</regel>
+                        <wert>20</wert>
+                    </bedingung>
+                    <bedingung>
+                        <regel>$var{symptomScore} ISTGLEICH 3</regel>
+                        <regel>$id{100} ISTGLEICH 1</regel>
+                        <regel>$var{anzahlVrf} GROESSERGLEICHALS 2</regel>
+                        <regel>$var{anzahlVrf} KLEINERGLEICHALS 3</regel>
+                        <regel>$id{102} GROESSERGLEICHALS 50</regel>
+                        <regel>$id{102} KLEINERGLEICHALS 59</regel>
+                        <wert>27</wert>
+                    </bedingung>
+                    <bedingung>
+                        <regel>$var{symptomScore} ISTGLEICH 3</regel>
+                        <regel>$id{100} ISTGLEICH 1</regel>
+                        <regel>$var{anzahlVrf} GROESSERGLEICHALS 2</regel>
+                        <regel>$var{anzahlVrf} KLEINERGLEICHALS 3</regel>
+                        <regel>$id{102} GROESSERGLEICHALS 60</regel>
+                        <regel>$id{102} KLEINERGLEICHALS 69</regel>
+                        <wert>35</wert>
+                    </bedingung>
+                    <bedingung>
+                        <regel>$var{symptomScore} ISTGLEICH 3</regel>
+                        <regel>$id{100} ISTGLEICH 1</regel>
+                        <regel>$var{anzahlVrf} GROESSERGLEICHALS 2</regel>
+                        <regel>$var{anzahlVrf} KLEINERGLEICHALS 3</regel>
+                        <regel>$id{102} GROESSERGLEICHALS 70</regel>
+                        <regel>$id{102} KLEINERGLEICHALS 80</regel>
+                        <wert>44</wert>
+                    </bedingung>
+                    <bedingung>
+                        <regel>$var{symptomScore} ISTGLEICH 3</regel>
+                        <regel>$id{100} ISTGLEICH 1</regel>
+                        <regel>$var{anzahlVrf} GROESSERGLEICHALS 4</regel>
+                        <regel>$var{anzahlVrf} KLEINERGLEICHALS 5</regel>
+                        <regel>$id{102} GROESSERGLEICHALS 30</regel>
+                        <regel>$id{102} KLEINERGLEICHALS 39</regel>
+                        <wert>22</wert>
+                    </bedingung>
+                    <bedingung>
+                        <regel>$var{symptomScore} ISTGLEICH 3</regel>
+                        <regel>$id{100} ISTGLEICH 1</regel>
+                        <regel>$var{anzahlVrf} GROESSERGLEICHALS 4</regel>
+                        <regel>$var{anzahlVrf} KLEINERGLEICHALS 5</regel>
+                        <regel>$id{102} GROESSERGLEICHALS 40</regel>
+                        <regel>$id{102} KLEINERGLEICHALS 49</regel>
+                        <wert>27</wert>
+                    </bedingung>
+                    <bedingung>
+                        <regel>$var{symptomScore} ISTGLEICH 3</regel>
+                        <regel>$id{100} ISTGLEICH 1</regel>
+                        <regel>$var{anzahlVrf} GROESSERGLEICHALS 4</regel>
+                        <regel>$var{anzahlVrf} KLEINERGLEICHALS 5</regel>
+                        <regel>$id{102} GROESSERGLEICHALS 50</regel>
+                        <regel>$id{102} KLEINERGLEICHALS 59</regel>
+                        <wert>33</wert>
+                    </bedingung>
+                    <bedingung>
+                        <regel>$var{symptomScore} ISTGLEICH 3</regel>
+                        <regel>$id{100} ISTGLEICH 1</regel>
+                        <regel>$var{anzahlVrf} GROESSERGLEICHALS 4</regel>
+                        <regel>$var{anzahlVrf} KLEINERGLEICHALS 5</regel>
+                        <regel>$id{102} GROESSERGLEICHALS 60</regel>
+                        <regel>$id{102} KLEINERGLEICHALS 69</regel>
+                        <wert>39</wert>
+                    </bedingung>
+                    <bedingung>
+                        <regel>$var{symptomScore} ISTGLEICH 3</regel>
+                        <regel>$id{100} ISTGLEICH 1</regel>
+                        <regel>$var{anzahlVrf} GROESSERGLEICHALS 4</regel>
+                        <regel>$var{anzahlVrf} KLEINERGLEICHALS 5</regel>
+                        <regel>$id{102} GROESSERGLEICHALS 70</regel>
+                        <regel>$id{102} KLEINERGLEICHALS 80</regel>
+                        <wert>45</wert>
+                    </bedingung>
+                </variable>
+            </variablen>
+        </berechnung>
+        <auswertung>
+            <beurteilung>
+                <ergebnisbereich>&#x2264; 5%</ergebnisbereich>
+                <beschreibung>Sehr geringe Wahrscheinlichkeit für obstruktive KHK</beschreibung>
+                <regel>KLEINERGLEICHALS 5</regel>
+            </beurteilung> 
+            <beurteilung>
+                <ergebnisbereich>&#x3e; 5% - 15%</ergebnisbereich>
+                <beschreibung>Geringe Wahrscheinlichkeit für obstruktive KHK</beschreibung>
+                <regel>GROESSERALS 5</regel>
+                <regel>KLEINERGLEICHALS 15</regel>
+            </beurteilung> 
+            <beurteilung>
+                <ergebnisbereich>&#x3e; 15% - 50%</ergebnisbereich>
+                <beschreibung>Moderate Wahrscheinlichkeit für obstruktive KHK</beschreibung>
+                <regel>GROESSERALS 15</regel>
+                <regel>KLEINERGLEICHALS 50</regel>
+            </beurteilung> 
+        </auswertung>
+    </score>
 </root>
