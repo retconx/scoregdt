@@ -374,4 +374,47 @@
             </beurteilung>
         </auswertung>
     </score>
+    <score name="Ganzoni-Gleichung" gruppe="Gastroenterologie">
+        <information>Berechnung des Eisenbedarfs</information>
+        <quelle autor="Ganzoni et al.">Eisen-Dextran intravenös: therapeutische und experimentelle Möglichkeiten</quelle>
+        <part id="0" typ="Frame" zeile="0" spalte="0">
+            <widget id="100" typ="LineEdit" titel="Körpergewicht" gewichtpruefung="True">
+                <regex>^\d+([.,]\d)?$</regex>  
+                <einheit>kg</einheit>
+            </widget>
+            <widget id="101" typ="LineEdit" titel="Ist-Hämoglobin">
+                <regex>^\d+([.,]\d)?$</regex>  
+                <einheit>g/dl</einheit>
+                <konvert gruppe="haemoglobin" berechnungseinheit="False" button="True">
+                    <einheit>g/l</einheit>
+                    <strukturformel />
+                </konvert>
+            </widget>
+            <widget id="102" typ="LineEdit" titel="Ziel-Hämoglobin">
+                <regex>^\d+([.,]\d)?$</regex>  
+                <einheit>g/dl</einheit>
+                <konvert gruppe="haemoglobin" berechnungseinheit="False" button="False">
+                    <einheit>g/l</einheit>
+                    <strukturformel />
+                </konvert>
+            </widget>
+        </part>
+        <berechnung>
+            <formel dezimalstellen="1">$id{100} * ($id{102} - $id{101}) * 2.4 + $var{speichereisen}</formel>
+            <ergebniseinheit>mg Eisen</ergebniseinheit>
+            <variablen>
+                <variable name="speichereisen">
+                    <bedingung>
+                        <regel>$id{100} KLEINERALS 35</regel>
+                        <wert>$id{100} * 15</wert>
+                    </bedingung>
+                    <bedingung>
+                        <regel>$id{100} GROESSERGLEICHALS 35</regel>
+                        <wert>500</wert>
+                    </bedingung>
+                </variable>
+            </variablen>
+        </berechnung>
+        <auswertung />
+    </score>
 </root>

@@ -18,6 +18,7 @@ class Konvertierungseinheiten(Enum):
     MGpDL_MMpL = 10 # mg/dl - mmol/l
     MGpDL_MYMpL = 10000 # mg/dl - µmol/l
     MGpL_MGpDL = 0.1 # mg/l - mg/dl
+    GpDL_GpL = 10 # g/l - g/dl
     PROZ_MMpM = 1 # % - mmol/mol (HbA1c)
 
 @staticmethod
@@ -25,7 +26,7 @@ def einheitenKonvertieren(formel:str, menge:float, einheiten:Konvertierungseinhe
     """
     Konvertiert in die entsprechenden Konvertierungseinheiten
     Parameter: 
-        formel:str c- hemische Strukturformel im Formal C27-H46-O 
+        formel:str chemische Strukturformel im Formal C27-H46-O 
         menge:float
         einheiten:Konvertierungseinheiten - in einander zu konvertierende Einheiten
         linksNachRechts:bool - True konvertiert erste in zweite, False zweite in erste
@@ -71,6 +72,8 @@ def getKonvertierungseinheiten(einheiten:list):
         ke = Konvertierungseinheiten.MGpDL_MYMpL
     elif einheiten[0] == "mg/l" and einheiten[1] == "mg/dl":
         ke = Konvertierungseinheiten.MGpL_MGpDL
+    elif einheiten[0] == "g/dl" and einheiten[1] == "g/l":
+        ke = Konvertierungseinheiten.GpDL_GpL
     elif einheiten[0] == "%" and einheiten[1] == "mmol/mol":
         ke = Konvertierungseinheiten.PROZ_MMpM
     return ke
