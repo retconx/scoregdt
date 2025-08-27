@@ -194,19 +194,19 @@
         <auswertung>
             <beurteilung>
                 <ergebnisbereich>Frakturrisiko 3 bis &#x3c; 5% / 3 Jahre</ergebnisbereich>
-                <beschreibung>Eine spezifische medikamentöse Therapie sollte in Betracht gezogen werden</beschreibung>
+                <beschreibung>Eine spezifische medikamentöse Therapie sollte in Betracht gezogen werden.</beschreibung>
                 <regel>GROESSERGLEICHALS 3</regel>
                 <regel>KLEINERALS 5</regel>
             </beurteilung>
             <beurteilung>
                 <ergebnisbereich>Frakturrisiko 5 bis &#x3c; 10% / 3 Jahre</ergebnisbereich>
-                <beschreibung>Eine spezifische medikamentöse Therapie soll empfohlen werden</beschreibung>
+                <beschreibung>Eine spezifische medikamentöse Therapie soll empfohlen werden.</beschreibung>
                 <regel>GROESSERGLEICHALS 5</regel>
                 <regel>KLEINERALS 10</regel>
             </beurteilung>
             <beurteilung>
                 <ergebnisbereich>Frakturrisiko &#x2265; 10% / 3 Jahre</ergebnisbereich>
-                <beschreibung>Eine spezifische medikamentöse Therapie mit Osteoanablikum soll empfohlen werden</beschreibung>
+                <beschreibung>Eine spezifische medikamentöse Therapie mit Osteoanabolikum soll empfohlen werden.</beschreibung>
                 <regel>GROESSERGLEICHALS 10</regel>
             </beurteilung>
 		</auswertung>

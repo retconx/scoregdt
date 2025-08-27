@@ -1347,6 +1347,7 @@ class MainWindow(QMainWindow):
                             formularOk = False
                             break
         if formularOk :
+            self.pdfZeilen = [] # für PDF-Alternative
             #try:
             # $var{...}-Werte auslesen
             berechnungElement = self.scoreRoot.find("berechnung") # type: ignore
@@ -1407,7 +1408,6 @@ class MainWindow(QMainWindow):
                     mb = QMessageBox(QMessageBox.Icon.Warning, "Hinweis von ScoreGDT", "Der Score kann nicht berechnet werden, da für die folgenden Variablen keine Regel zutrifft:\n- " + str.join("\n- ", variablenMitNichtErfuelltenRegeln), QMessageBox.StandardButton.Ok)
                     mb.exec()
                 # PDF-Alternative
-                self.pdfZeilen = []
                 pdfElement = self.scoreRoot.find("pdf") # type: ignore
                 if pdfElement != None: # type: ignore
                     for zeileElement in pdfElement.findall("zeile"):
