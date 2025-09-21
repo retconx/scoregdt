@@ -416,4 +416,66 @@
             </variablen>
         </berechnung>
     </score>
+    <score name="Fatty Liver Index" gruppe="Gastroenterologie">
+        <information>Abschätzung der Wahrscheinlichkeit des Vorliegens einer Fettleber</information>
+        <quelle autor="Bedogni et al.">The Fatty Liver Index: a simple and accurate predictor of hepatic steatosis in the general population</quelle>
+        <part id="0" typ="GroupBox" titel="Body-Mass-Index (BMI)" zeile="0" spalte="0">
+            <widget id="100" typ="LineEdit" titel="Körpergewicht" gewichtpruefung="True">
+                <regex>^\d+([.,]\d)?$</regex>  
+                <einheit>kg</einheit>
+            </widget>
+            <widget id="101" typ="LineEdit" titel="Körpergröße" groessepruefung="True">
+                <regex>^\d+([.,]\d)?$</regex>  
+                <einheit>cm</einheit>
+            </widget>
+        </part>
+        <part id="1" typ="Frame" zeile="0" spalte="1">
+            <widget id="102" typ="LineEdit" titel="Taillenumfang">
+                <regex>^\d+([.,]\d)?$</regex>  
+                <einheit>cm</einheit>
+            </widget>
+        </part>
+        <part id="2" typ="Frame" zeile="1" spalte="0">
+            <widget id="103" typ="LineEdit" titel="Gamma-GT">
+                <regex>^\d+([.,]\d)?$</regex>  
+                <einheit>U/l</einheit>
+            </widget>
+        </part>
+        <part id="3" typ="Frame" zeile="1" spalte="1">
+            <widget id="104" typ="LineEdit" titel="Triglyceride">
+                <regex>^\d+([.,]\d\d?)?$</regex>  
+                <einheit>mg/dl</einheit>
+                <konvert gruppe="triglyzeride" berechnungseinheit="False" button="True">
+                    <einheit sondertyp="triglyceride">mmol/l</einheit>
+                    <strukturformel />
+                </konvert>
+            </widget>
+        </part>
+        <berechnung>
+            <formel dezimalstellen="0">e ^ $var{y} / (1 + e ^ $var{y}) * 100</formel>
+            <ergebniseinheit>Punkte</ergebniseinheit>
+            <variablen>
+                <variable name="bmi">$id{100} / $id{101} / $id{101} * 10000</variable>
+                <variable name="y">0.953 * ln($id{104}) + 0.139 * $var{bmi} + 0.718 * ln($id{103}) + 0.053 * $id{102} - 15.745</variable>
+            </variablen>
+        </berechnung>
+        <auswertung>
+			<beurteilung>
+                <ergebnisbereich>&#x3c; 30 Punkte</ergebnisbereich>
+                <beschreibung>Geringe Wahrscheinlichkeit für Fettleber</beschreibung>
+                <regel>KLEINERALS 30</regel>
+            </beurteilung>
+			<beurteilung>
+                <ergebnisbereich>30 - &#x3c; 60 Punkte</ergebnisbereich>
+                <beschreibung>Intermediäre Wahrscheinlichkeit für Fettleber</beschreibung>
+                <regel>GROESSERGLEICHALS 30</regel>
+                <regel>KLEINERALS 60</regel>
+            </beurteilung>
+			<beurteilung>
+                <ergebnisbereich>&#x2265; 60 Punkte</ergebnisbereich>
+                <beschreibung>Hohe Wahrscheinlichkeit für Fettleber</beschreibung>
+                <regel>GROESSERGLEICHALS 60</regel>
+            </beurteilung>
+        </auswertung>
+    </score>
 </root>

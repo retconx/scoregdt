@@ -638,7 +638,8 @@ class MainWindow(QMainWindow):
                                     mitButton = str(konvertElement.get("button")) == "True" # type: ignore
                                     konvertEinheit = str(konvertElement.find("einheit").text) # type: ignore
                                     konvertStrukturformel = str(konvertElement.find("strukturformel").text) # type: ignore
-                                    self.einheitToggles[self.widgets[len(self.widgets) - 1].getId()] = class_widgets.EinheitToggle(self.widgets[len(self.widgets) - 1], konvertgruppe, [widgetEinheit, konvertEinheit], konvertStrukturformel, zahlengrenzen, konvertIstBerechnungseinheit, mitButton)
+                                    konvertSondertyp = str(konvertElement.find("einheit").get("sondertyp")) # type: ignore
+                                    self.einheitToggles[self.widgets[len(self.widgets) - 1].getId()] = class_widgets.EinheitToggle(self.widgets[len(self.widgets) - 1], konvertgruppe, [widgetEinheit, konvertEinheit, konvertSondertyp], konvertStrukturformel, zahlengrenzen, konvertIstBerechnungseinheit, mitButton)
                             elif widgetTyp == class_widgets.WidgetTyp.RADIOBUTTON.value:
                                 checked = str(widgetElement.get("checked")) == "True" and partElement.get("geschlechtpruefung") == None
                                 altersregel = str(widgetElement.get("altersregel"))

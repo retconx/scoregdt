@@ -20,6 +20,7 @@ class Konvertierungseinheiten(Enum):
     MGpL_MGpDL = 0.1 # mg/l - mg/dl
     GpDL_GpL = 10 # g/l - g/dl
     PROZ_MMpM = 1 # % - mmol/mol (HbA1c)
+    TrigMGpDL_TrigMMpL = 0.0113 # Triglyzeride mg/dl - mmol/l
 
 @staticmethod
 def einheitenKonvertieren(formel:str, menge:float, einheiten:Konvertierungseinheiten, linksNachRechts:bool):
@@ -66,8 +67,10 @@ def einheitenKonvertieren(formel:str, menge:float, einheiten:Konvertierungseinhe
 @staticmethod
 def getKonvertierungseinheiten(einheiten:list):
     ke = Konvertierungseinheiten.GpL_MpL
-    if einheiten[0] == "mg/dl" and einheiten[1] == "mmol/l":
+    if len(einheiten) == 2 and einheiten[0] == "mg/dl" and einheiten[1] == "mmol/l":
         ke = Konvertierungseinheiten.MGpDL_MMpL
+    elif len(einheiten) == 3 and einheiten[0] == "mg/dl" and einheiten[1] == "mmol/l" and einheiten[2] == "triglyceride":
+        ke = Konvertierungseinheiten.TrigMGpDL_TrigMMpL
     elif einheiten[0] == "mg/dl" and einheiten[1] == "µmol/l":
         ke = Konvertierungseinheiten.MGpDL_MYMpL
     elif einheiten[0] == "mg/l" and einheiten[1] == "mg/dl":
