@@ -67,10 +67,10 @@ def einheitenKonvertieren(formel:str, menge:float, einheiten:Konvertierungseinhe
 @staticmethod
 def getKonvertierungseinheiten(einheiten:list):
     ke = Konvertierungseinheiten.GpL_MpL
-    if len(einheiten) == 2 and einheiten[0] == "mg/dl" and einheiten[1] == "mmol/l":
-        ke = Konvertierungseinheiten.MGpDL_MMpL
-    elif len(einheiten) == 3 and einheiten[0] == "mg/dl" and einheiten[1] == "mmol/l" and einheiten[2] == "triglyceride":
+    if einheiten[0] == "mg/dl" and einheiten[1] == "mmol/l" and einheiten[2] == "triglyceride":
         ke = Konvertierungseinheiten.TrigMGpDL_TrigMMpL
+    elif einheiten[0] == "mg/dl" and einheiten[1] == "mmol/l":
+        ke = Konvertierungseinheiten.MGpDL_MMpL
     elif einheiten[0] == "mg/dl" and einheiten[1] == "µmol/l":
         ke = Konvertierungseinheiten.MGpDL_MYMpL
     elif einheiten[0] == "mg/l" and einheiten[1] == "mg/dl":

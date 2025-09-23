@@ -4463,7 +4463,7 @@
 		</auswertung>
     </score>
     <score name="SCORE2-OP" gruppe="Kardiologie">
-        <information>Abschätzung des Risikos für ein kardiovaskuläres Ereignis in den nächsten 10 Jahren für ältere PatientInnen</information>
+        <information>Abschätzung des Risikos für ein kardiovaskuläres Ereignis in den nächsten 10 Jahren für Ältere (ab 70 Jahre)</information>
         <quelle autor="SCORE2-OP working group">SCORE2-OP risk prediction algorithms: estimating incident cardiovascular event risk in older persons in four geographical risk regions</quelle>
         <part typ="Frame" id="0" titel="" zeile="0" spalte="0">
             <widget id="100" typ="LineEdit" titel="Alter" alterspruefung="True">
