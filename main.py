@@ -704,9 +704,14 @@ class MainWindow(QMainWindow):
                 labelScoreName.setCursor(Qt.CursorShape.WhatsThisCursor)
             # Definitionen
             if self.scoreRoot.find("begriffsdefinitionen") != None: # type: ignore
-                groupBoxBegriffsdefinitionen = QGroupBox("Begriffsdefinitionen")
-                groupBoxBegriffsdefinitionen.setFont(self.fontBold)
                 begriffsdefinitionenElement = self.scoreRoot.find("begriffsdefinitionen") # type: ignore
+                groupBoxName ="Begriffsdefinitionen"
+                if begriffsdefinitionenElement.get("name") != None: # type: ignore
+                    groupBoxName = str(
+                        
+                        begriffsdefinitionenElement.get("name")) # type: ignore
+                groupBoxBegriffsdefinitionen = QGroupBox(groupBoxName)
+                groupBoxBegriffsdefinitionen.setFont(self.fontBold)
                 zeile = 0
                 for definitionElement in begriffsdefinitionenElement.findall("definition"): # type: ignore
                     bezeichnungLabel = QLabel(str(definitionElement.get("bezeichnung")) + ":")
@@ -1687,13 +1692,15 @@ class MainWindow(QMainWindow):
                     elif widget.getTyp() == class_widgets.WidgetTyp.COMBOBOX:
                         test = gdt.GdtTest("ScoreGDT" + "_" + widget.getId(), self.fuerGdtBereinigen(widget.getTitel()), self.fuerGdtBereinigen(widget.getItemText(widget.getQt().currentIndex())), self.fuerGdtBereinigen(widget.getEinheit())) # type: ignore
                     elif widget.getTyp() == class_widgets.WidgetTyp.CHECKBOX:
+                        patternZahl = r"^\d+$"
                         wert = "0"
                         if widget.getQt().isChecked():
                             wert = widget.getWert().replace(".", ",").replace(",0", "")
-                        if wert == "0":
-                            wert = "Nein"
-                        elif wert == "1":
-                            wert = "Ja"
+                        if re.match(patternZahl, wert) != None:
+                            if wert == "0":
+                                wert = "Nein"
+                            else:
+                                wert = "Ja"
                         test = gdt.GdtTest("ScoreGDT" + "_" + widget.getId(), self.fuerGdtBereinigen(widget.getTitel()), wert, self.fuerGdtBereinigen(widget.getEinheit())) # type: ignore
                     else:
                         test = gdt.GdtTest("ScoreGDT" + "_" + widget.getId(), self.fuerGdtBereinigen(widget.getTitel()), widget.getWert().replace(".", ",").replace(",0", ""), self.fuerGdtBereinigen(widget.getEinheit())) # type: ignore

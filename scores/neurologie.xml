@@ -958,5 +958,246 @@
             <zeile partid="5" einheit="Punkte">wortlisteWiederholtKorrigiert</zeile>
         </pdf>
     </score>
-
+    <score name="Neuropathie-Symptom-Score (NSS)" gruppe="Neurologie">
+        <information>Beurteilung DSPN-typischer Symptome (Diabetische sensomotorische Polyneuropathie)</information>
+        <quelle autor="Young et al.">A multicentre study of the prevalence of diabetic peripheral neuropathy in the United Kingdom hospital clinic population</quelle>
+        <part id="0" typ="GroupBox" titel="Symptomatik an Fuß/Unterschenkel" zeile="0" spalte="0">
+            <widget id="100" typ="CheckBox" titel="Brennen">
+                <wert>2</wert>
+            </widget>
+            <widget id="101" typ="CheckBox" titel="Taubheitsgefühl">
+                <wert>2</wert>
+            </widget>
+            <widget id="102" typ="CheckBox" titel="Parästhesien">
+                <wert>2</wert>
+            </widget>
+            <widget id="103" typ="CheckBox" titel="Schwächegefühl">
+                <wert>1</wert>
+            </widget>
+            <widget id="104" typ="CheckBox" titel="Krämpfe">
+                <wert>1</wert>
+            </widget>
+            <widget id="105" typ="CheckBox" titel="Schmerzen">
+                <wert>1</wert>
+            </widget>
+        </part>
+        <part id="1" typ="GroupBox" titel="Lokalisation" zeile="0" spalte="1">
+            <widget id="106" typ="CheckBox" titel="Füße">
+                <wert>2</wert>
+            </widget>
+            <widget id="107" typ="CheckBox" titel="Unterschenkel">
+                <wert>1</wert>
+            </widget>
+            <widget id="108" typ="CheckBox" titel="Andere Lokalisation">
+                <wert>0</wert>
+            </widget>
+        </part>
+        <part id="2" typ="GroupBox" titel="Exazerbation" zeile="1" spalte="0">
+            <widget id="109" typ="CheckBox" titel="Nur nachts vorhanden">
+                <wert>2</wert>
+            </widget>
+            <widget id="110" typ="CheckBox" titel="Tagsüber und nachts vorhanden">
+                <wert>1</wert>
+            </widget>
+            <widget id="111" typ="CheckBox" titel="Nur tagsüber vorhanden">
+                <wert>0</wert>
+            </widget>
+            <widget id="112" typ="CheckBox" titel="Druch Symptome aus Schlaf geweckt">
+                <wert>1</wert>
+            </widget>
+        </part>
+        <part id="3" typ="GroupBox" titel="Symptombesserung beim" zeile="1" spalte="1">
+            <widget id="113" typ="CheckBox" titel="Gehen">
+                <wert>2</wert>
+            </widget>
+            <widget id="114" typ="CheckBox" titel="Stehen">
+                <wert>1</wert>
+            </widget>
+            <widget id="115" typ="CheckBox" titel="Sitzen oder Hinlegen">
+                <wert>0</wert>
+            </widget>
+        </part>
+        <berechnung>
+            <formel>$var{symp1} + $var{symp2} + $var{lok} + $var{exa} + $var{bess}</formel>
+            <ergebniseinheit>Punkte</ergebniseinheit>
+            <variablen>
+                <variable name="symp1summe">$id{100} + $id{101} + $id{102}</variable>
+                <variable name="symp2summe">$id{103} + $id{104} + $id{105}</variable>
+                <variable name="loksumme">$id{106} + $id{107} + $id{108}</variable>
+                <variable name="exasumme">$id{109} + $id{110} + $id{111} + $id{112}</variable>
+                <variable name="besssumme">$id{113} + $id{114} + $id{115}</variable>
+                <variable name="symp1">
+                    <bedingung>
+                        <regel>$var{symp1summe} KLEINERGLEICHALS 2</regel>
+                        <wert>$var{symp1summe}</wert>
+                    </bedingung>
+                    <bedingung>
+                        <regel>$var{symp1summe} GROESSERALS 2</regel>
+                        <wert>2</wert>
+                    </bedingung>
+                </variable>
+                <variable name="symp2">
+                    <bedingung>
+                        <regel>$var{symp2summe} KLEINERGLEICHALS 1</regel>
+                        <wert>$var{symp2summe}</wert>
+                    </bedingung>
+                    <bedingung>
+                        <regel>$var{symp2summe} GROESSERALS 1</regel>
+                        <wert>1</wert>
+                    </bedingung>
+                </variable>
+                <variable name="lok">
+                    <bedingung>
+                        <regel>$var{loksumme} KLEINERGLEICHALS 2</regel>
+                        <wert>$var{loksumme}</wert>
+                    </bedingung>
+                    <bedingung>
+                        <regel>$var{loksumme} GROESSERALS 2</regel>
+                        <wert>2</wert>
+                    </bedingung>
+                </variable>
+                <variable name="exa">
+                    <bedingung>
+                        <regel>$var{exasumme} KLEINERGLEICHALS 3</regel>
+                        <wert>$var{exasumme}</wert>
+                    </bedingung>
+                    <bedingung>
+                        <regel>$var{exasumme} GROESSERALS 3</regel>
+                        <wert>3</wert>
+                    </bedingung>
+                </variable>
+                <variable name="bess">
+                    <bedingung>
+                        <regel>$var{besssumme} KLEINERGLEICHALS 2</regel>
+                        <wert>$var{besssumme}</wert>
+                    </bedingung>
+                    <bedingung>
+                        <regel>$var{besssumme} GROESSERALS 2</regel>
+                        <wert>2</wert>
+                    </bedingung>
+                </variable>
+            </variablen>
+        </berechnung>
+        <auswertung>
+            <beurteilung>
+                <ergebnisbereich>0-2 Punkte</ergebnisbereich>
+                <beschreibung>Keine DSPN-typischen Symptome</beschreibung>
+                <regel>KLEINERGLEICHALS 2</regel>
+            </beurteilung>  
+            <beurteilung>
+                <ergebnisbereich>&#x2265; 3 Punkte</ergebnisbereich>
+                <beschreibung>DSPN-typische Symptome vorhanden</beschreibung>
+                <regel>GROESSERGLEICHALS 3</regel>
+            </beurteilung>  
+        </auswertung>
+    </score>
+    <score name="Neuropathie-Defizit-Score (NDS)" gruppe="Neurologie">
+        <information>Abschätzung der Wahrscheinlichkeit des Vorliegens einer DSPN (Diabetische sensomotorische Polyneuropathie)</information>
+        <quelle autor="Young et al.">A multicentre study of the prevalence of diabetic peripheral neuropathy in the United Kingdom hospital clinic population</quelle>
+        <begriffsdefinitionen name="Altersabhängige Grenzwerte bei der Vibrationsempfindung">
+            <definition bezeichnung="&#x2264; 39 Jahre">&#x3c; 5/8</definition>
+            <definition bezeichnung="40 - 59 Jahre">&#x3c; 4,5/8</definition>
+            <definition bezeichnung="60 - 74 Jahre">&#x3c; 4/8</definition>
+            <definition bezeichnung="&#x2265; 75 Jahre">&#x3c; 3,5/8</definition>
+        </begriffsdefinitionen>
+        <part id="0" typ="GroupBox" titel="Achillessehnenreflex links" zeile="0" spalte="0" erklaerung="Mit Trömner-Hammer">
+            <widget id="100" typ="RadioButton" titel="Unauffällig (vorhanden)" checked="True">
+                <wert>0</wert>
+            </widget>
+            <widget id="101" typ="RadioButton" titel="Abgeschwächt (vorhanden mit Bahnung)">
+                <wert>1</wert>
+            </widget>
+            <widget id="102" typ="RadioButton" titel="Fehlend">
+                <wert>2</wert>
+            </widget>
+        </part>
+        <part id="1" typ="GroupBox" titel="Achillessehnenreflex rechts" zeile="0" spalte="1" erklaerung="Mit Trömner-Hammer">
+            <widget id="103" typ="RadioButton" titel="Unauffällig (vorhanden)" checked="True">
+                <wert>0</wert>
+            </widget>
+            <widget id="104" typ="RadioButton" titel="Abgeschwächt (vorhanden mit Bahnung)">
+                <wert>1</wert>
+            </widget>
+            <widget id="105" typ="RadioButton" titel="Fehlend">
+                <wert>2</wert>
+            </widget>
+        </part>
+        <part id="2" typ="GroupBox" titel="Vibrationsempfindung links" zeile="1" spalte="0" erklaerung="Mit Stimmgabel nach Rydel-Seiffer dorsal am Großzehen-Interphalangealgelenk">
+            <widget id="106" typ="RadioButton" titel="Unauffällig (vorhanden)" checked="True">
+                <wert>0</wert>
+            </widget>
+            <widget id="107" typ="RadioButton" titel="Abgeschwächt oder fehlend">
+                <wert>1</wert>
+            </widget>
+        </part>
+        <part id="3" typ="GroupBox" titel="Vibrationsempfindung rechts" zeile="1" spalte="1" erklaerung="Mit Stimmgabel nach Rydel-Seiffer dorsal am Großzehen-Interphalangealgelenk">
+            <widget id="108" typ="RadioButton" titel="Unauffällig (vorhanden)" checked="True">
+                <wert>0</wert>
+            </widget>
+            <widget id="109" typ="RadioButton" titel="Abgeschwächt oder fehlend">
+                <wert>1</wert>
+            </widget>
+        </part>
+        <part id="4" typ="GroupBox" titel="Schmerzempfindung links" zeile="2" spalte="0" erklaerung="Mit spitzem Gegenstand, 10 Versuche am distalen Fußrücken">
+            <widget id="110" typ="RadioButton" titel="Unauffällig (vorhanden)" checked="True">
+                <wert>0</wert>
+            </widget>
+            <widget id="111" typ="RadioButton" titel="Abgeschwächt oder fehlend (&#x2265; 10 Versuche falsch erkannt)">
+                <wert>1</wert>
+            </widget>
+        </part>
+        <part id="5" typ="GroupBox" titel="Schmerzempfindung rechts" zeile="2" spalte="1" erklaerung="Mit kaltem Gegenstand, 10 Versuche am distalen Fußrücken">
+            <widget id="112" typ="RadioButton" titel="Unauffällig (vorhanden)" checked="True">
+                <wert>0</wert>
+            </widget>
+            <widget id="113" typ="RadioButton" titel="Abgeschwächt oder fehlend (&#x2265; 10 Versuche falsch erkannt)">
+                <wert>1</wert>
+            </widget>
+        </part>
+        <part id="6" typ="GroupBox" titel="Temperaturempfindung links" zeile="3" spalte="0" erklaerung="Mit spitzem Gegenstand, 10 Versuche am distalen Fußrücken">
+            <widget id="114" typ="RadioButton" titel="Unauffällig (vorhanden)" checked="True">
+                <wert>0</wert>
+            </widget>
+            <widget id="115" typ="RadioButton" titel="Abgeschwächt oder fehlend (&#x2265; 2 Versuche falsch erkannt)">
+                <wert>1</wert>
+            </widget>
+        </part>
+        <part id="7" typ="GroupBox" titel="Temperaturempfindung rechts" zeile="3" spalte="1" erklaerung="Mit kaltem Gegenstand, 10 Versuche am distalen Fußrücken">
+            <widget id="116" typ="RadioButton" titel="Unauffällig (vorhanden)" checked="True">
+                <wert>0</wert>
+            </widget>
+            <widget id="117" typ="RadioButton" titel="Abgeschwächt oder fehlend (&#x2265; 2 Versuche falsch erkannt)">
+                <wert>1</wert>
+            </widget>
+        </part>
+        <berechnung>
+            <formel>$id{100} + $id{103} + $id{106} + $id{108} + $id{110} + $id{112} + $id{114} + $id{116}</formel>
+            <ergebniseinheit>Punkte</ergebniseinheit>
+            <variablen />
+        </berechnung>
+        <auswertung>
+            <beurteilung>
+                <ergebnisbereich>0-2 Punkte</ergebnisbereich>
+                <beschreibung>Keine neuropathischen Defizite</beschreibung>
+                <regel>KLEINERGLEICHALS 2</regel>
+            </beurteilung>  
+            <beurteilung>
+                <ergebnisbereich>3 - 5 Punkte</ergebnisbereich>
+                <beschreibung>Leichte neuropathische Defizite vorhanden</beschreibung>
+                <regel>GROESSERGLEICHALS 3</regel>
+                <regel>KLEINERGLEICHALS 5</regel>
+            </beurteilung> 
+            <beurteilung>
+                <ergebnisbereich>6 - 8 Punkte</ergebnisbereich>
+                <beschreibung>Mäßige europathische Defizite vorhanden</beschreibung>
+                <regel>GROESSERGLEICHALS 6</regel>
+                <regel>KLEINERGLEICHALS 8</regel>
+            </beurteilung> 
+            <beurteilung>
+                <ergebnisbereich>9 - 10 Punkte</ergebnisbereich>
+                <beschreibung>Schwere europathische Defizite vorhanden</beschreibung>
+                <regel>GROESSERGLEICHALS 9</regel>
+            </beurteilung> 
+        </auswertung>
+    </score>
 </root>
