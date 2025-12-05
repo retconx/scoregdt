@@ -1142,19 +1142,19 @@
             <widget id="110" typ="RadioButton" titel="Unauffällig (vorhanden)" checked="True">
                 <wert>0</wert>
             </widget>
-            <widget id="111" typ="RadioButton" titel="Abgeschwächt oder fehlend (&#x2265; 10 Versuche falsch erkannt)">
+            <widget id="111" typ="RadioButton" titel="Abgeschwächt oder fehlend (&#x2265; 3 Versuche falsch erkannt)">
                 <wert>1</wert>
             </widget>
         </part>
-        <part id="5" typ="GroupBox" titel="Schmerzempfindung rechts" zeile="2" spalte="1" erklaerung="Mit kaltem Gegenstand, 10 Versuche am distalen Fußrücken">
+        <part id="5" typ="GroupBox" titel="Schmerzempfindung rechts" zeile="2" spalte="1" erklaerung="Mit spitzem Gegenstand, 10 Versuche am distalen Fußrücken">
             <widget id="112" typ="RadioButton" titel="Unauffällig (vorhanden)" checked="True">
                 <wert>0</wert>
             </widget>
-            <widget id="113" typ="RadioButton" titel="Abgeschwächt oder fehlend (&#x2265; 10 Versuche falsch erkannt)">
+            <widget id="113" typ="RadioButton" titel="Abgeschwächt oder fehlend (&#x2265; 3 Versuche falsch erkannt)">
                 <wert>1</wert>
             </widget>
         </part>
-        <part id="6" typ="GroupBox" titel="Temperaturempfindung links" zeile="3" spalte="0" erklaerung="Mit spitzem Gegenstand, 10 Versuche am distalen Fußrücken">
+        <part id="6" typ="GroupBox" titel="Temperaturempfindung links" zeile="3" spalte="0" erklaerung="Mit kaltem Gegenstand, 3 Versuche am distalen Fußrücken">
             <widget id="114" typ="RadioButton" titel="Unauffällig (vorhanden)" checked="True">
                 <wert>0</wert>
             </widget>
@@ -1162,7 +1162,7 @@
                 <wert>1</wert>
             </widget>
         </part>
-        <part id="7" typ="GroupBox" titel="Temperaturempfindung rechts" zeile="3" spalte="1" erklaerung="Mit kaltem Gegenstand, 10 Versuche am distalen Fußrücken">
+        <part id="7" typ="GroupBox" titel="Temperaturempfindung rechts" zeile="3" spalte="1" erklaerung="Mit kaltem Gegenstand, 3 Versuche am distalen Fußrücken">
             <widget id="116" typ="RadioButton" titel="Unauffällig (vorhanden)" checked="True">
                 <wert>0</wert>
             </widget>
