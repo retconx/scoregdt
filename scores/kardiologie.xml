@@ -4479,7 +4479,7 @@
                 <einheit>mmHg</einheit>
             </widget>
             <widget id="102" typ="LineEdit" titel="Non-HDL-Cholesterin">
-                <regex>^\d+$</regex>  
+                <regex>^\d+([.,]\d)?$</regex>  
                 <zahlengrenze regelart="GROESSERGLEICHALS">116</zahlengrenze>
                 <zahlengrenze regelart="KLEINERGLEICHALS">267</zahlengrenze>
                 <einheit>mg/dl</einheit>
