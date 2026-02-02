@@ -562,30 +562,30 @@
         <auswertung>
             <beurteilung>
                 <ergebnisbereich>&#x3c; 5 Punkte</ergebnisbereich>
-                <beschreibung>Minimale depressive Symptomatik</beschreibung>
+                <beschreibung>Keine Depression bzw. klinisch unauffällig oder remittiert</beschreibung>
                 <regel>KLEINERALS 5</regel>
             </beurteilung>   
             <beurteilung>
                 <ergebnisbereich>5-9 Punkte</ergebnisbereich>
-                <beschreibung>Milde depressive Symptomatik</beschreibung>
+                <beschreibung>Unterschwellige/leichte Depression</beschreibung>
                 <regel>GROESSERGLEICHALS 5</regel>
                 <regel>KLEINERGLEICHALS 9</regel>
             </beurteilung>   
             <beurteilung>
                 <ergebnisbereich>10-14 Punkte</ergebnisbereich>
-                <beschreibung>Leichtgradige depressive Symptomatik</beschreibung>
+                <beschreibung>Mittelgradige Depression</beschreibung>
                 <regel>GROESSERGLEICHALS 10</regel>
                 <regel>KLEINERGLEICHALS 14</regel>
             </beurteilung>   
             <beurteilung>
                 <ergebnisbereich>15-19 Punkte</ergebnisbereich>
-                <beschreibung>Mittelgradige depressive Symptomatik</beschreibung>
+                <beschreibung>Ausgeprägte Depression</beschreibung>
                 <regel>GROESSERGLEICHALS 15</regel>
                 <regel>KLEINERGLEICHALS 19</regel>
             </beurteilung>   
             <beurteilung>
                 <ergebnisbereich>20-27 Punkte</ergebnisbereich>
-                <beschreibung>Schwergradige depressive Symptomatik</beschreibung>
+                <beschreibung>Schwere Depression</beschreibung>
                 <regel>GROESSERGLEICHALS 20</regel>
             </beurteilung>   
         </auswertung>
