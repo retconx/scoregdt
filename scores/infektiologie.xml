@@ -256,4 +256,61 @@
             </beurteilung> 
         </auswertung>
     </score>
+    <score name="PEN-FAST" gruppe="Infektiologie" altersregel="GROESSERGLEICHALS 18">
+        <information>Abschätzung des Risikos einer echten Penicillinallergie bei Erwachsenen mit anamnestisch&#xa;berichteter allergischer Reaktion</information>
+        <quelle autor="Trubiano et al.">Development and Validation of a Penicillin Allergy Clinical Decision Rule</quelle>
+        <part typ="GroupBox" id="0" titel="&#x2264;5 Jahre seit letzter Reaktion" zeile="0" spalte="0">
+            <widget id="100" typ="RadioButton" titel="Nein" checked="True">
+                <wert>0</wert>
+            </widget>
+            <widget id="101" typ="RadioButton" titel="Ja/Nicht bekannt">
+                <wert>2</wert>
+            </widget>
+        </part>
+        <part typ="GroupBox" id="1" titel="Anaphylaxie, Angioödem oder schwere Hautreaktion" zeile="1" spalte="0">
+            <widget id="102" typ="RadioButton" titel="Nein" checked="True">
+                <wert>0</wert>
+            </widget>
+            <widget id="103" typ="RadioButton" titel="Ja">
+                <wert>2</wert>
+            </widget>
+        </part>
+        <part typ="GroupBox" id="2" titel="Reaktion medizinisch behandlungsbedürftig" zeile="2" spalte="0">
+            <widget id="104" typ="RadioButton" titel="Nein" checked="True">
+                <wert>0</wert>
+            </widget>
+            <widget id="105" typ="RadioButton" titel="Ja/Nicht bekannt">
+                <wert>1</wert>
+            </widget>
+        </part>
+        <berechnung>
+            <formel>$id{100} + $id{102} + $id{104}</formel>
+            <ergebniseinheit>Punkte</ergebniseinheit>
+            <variablen />
+        </berechnung>
+        <auswertung>
+            <beurteilung>
+                <ergebnisbereich>0 Punkte</ergebnisbereich>
+                <beschreibung>Sehr geringes Risiko für Penicillinallergie (&#x3c;1%) - direkte orale Testung erwägen</beschreibung>
+                <regel>ISTGLEICH 0</regel>
+            </beurteilung> 
+            <beurteilung>
+                <ergebnisbereich>1 - 2 Punkte</ergebnisbereich>
+                <beschreibung>Geringes Risiko für Penicillinallergie (5%) - direkte orale Testung erwägen</beschreibung>
+                <regel>GROESSERGLEICHALS 1</regel>
+                <regel>KLEINERGLEICHALS 2</regel>
+            </beurteilung> 
+            <beurteilung>
+                <ergebnisbereich>3 Punkte</ergebnisbereich>
+                <beschreibung>Mäßiges Risiko für Penicillinallergie (20%) - allergische Abklärung empfohlen</beschreibung>
+                <regel>ISTGLEICH 3</regel>
+            </beurteilung> 
+            <beurteilung>
+                <ergebnisbereich>4 - 5 Punkte</ergebnisbereich>
+                <beschreibung>Hohes Risiko für Penicillinallergie (50%) - allergische Abklärung empfohlen</beschreibung>
+                <regel>GROESSERGLEICHALS 4</regel>
+                <regel>KLEINERGLEICHALS 5</regel>
+            </beurteilung> 
+        </auswertung>
+    </score>
 </root>

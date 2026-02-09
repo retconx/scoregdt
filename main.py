@@ -948,7 +948,6 @@ class MainWindow(QMainWindow):
                     groupBoxAuswertungLayoutG.setHorizontalSpacing(20)
                     groupBoxAuswertungLayoutG.addWidget(tempLabelBeschreibung, i, 1)
                     i += 1
-
             datumBenutzerLayoutG = QGridLayout()
             labelDokumentiertAm = QLabel("Dokumentiert am:")
             labelDokumentiertAm.setFont(self.fontNormal)
