@@ -302,12 +302,12 @@
             </beurteilung> 
             <beurteilung>
                 <ergebnisbereich>3 Punkte</ergebnisbereich>
-                <beschreibung>Mäßiges Risiko für Penicillinallergie (20%) - allergische Abklärung empfohlen</beschreibung>
+                <beschreibung>Mäßiges Risiko für Penicillinallergie (20%) - allergologische Abklärung empfohlen</beschreibung>
                 <regel>ISTGLEICH 3</regel>
             </beurteilung> 
             <beurteilung>
                 <ergebnisbereich>4 - 5 Punkte</ergebnisbereich>
-                <beschreibung>Hohes Risiko für Penicillinallergie (50%) - allergische Abklärung empfohlen</beschreibung>
+                <beschreibung>Hohes Risiko für Penicillinallergie (50%) - allergologische Abklärung empfohlen</beschreibung>
                 <regel>GROESSERGLEICHALS 4</regel>
                 <regel>KLEINERGLEICHALS 5</regel>
             </beurteilung> 

@@ -20,7 +20,7 @@ class EinstellungenProgrammerweiterungen(QDialog):
 
         #config.ini lesen
         configIni = configparser.ConfigParser()
-        configIni.read(os.path.join(configPath, "config.ini"))
+        configIni.read(os.path.join(configPath, "config.ini"), encoding="utf-8")
         self.lanr = configIni["Erweiterungen"]["lanr"]
         self.lizenzschluessel = gdttoolsL.GdtToolsLizenzschluessel.dekrypt(configIni["Erweiterungen"]["lizenzschluessel"])
 

@@ -21,7 +21,7 @@ class EinstellungenImportExport(QDialog):
 
         #config.ini lesen
         self.configIni = configparser.ConfigParser()
-        self.configIni.read(os.path.join(configPath, "config.ini"))
+        self.configIni.read(os.path.join(configPath, "config.ini"), encoding="utf-8")
 
         self.setWindowTitle("Einstellungen im-/ exportieren")
         self.buttonBox = QDialogButtonBox(QDialogButtonBox.StandardButton.Ok | QDialogButtonBox.StandardButton.Cancel)
