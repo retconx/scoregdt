@@ -93,7 +93,7 @@
         <part typ="GroupBox" id="8" titel="Uhrentest nach Shulman (11:10 Uhr)" erklaerung="1: Alle Ziffern richtig eingezeichnet, Uhrzeit richtig angegeben&#xa;2: Ungleichmäßige Ziffernabstände, Ziffern außerhalb des Ziffernblatts, Ziffern auf dem Kopf, Hilfslinien gezeichnet&#xa;3: Nur ein Uhrzeiger, Uhrzeit als Text geschrieben, keine Uhrzeit angegeben&#xa;4: Sehr ungleichmäßige Ziffernabstände, keine Ziffern, &#x3e; 12 Ziffern, Ziffern entgegen dem Uhrzeigersinn&#xa;5: Wie 4, nur stärker ausgeprägt&#xa;6: Keine Uhr gezeichnet bzw. Darstellung ohne Ähnlichkeit mit einer Uhr" zeile="2" spalte="2">
             <widget id="120" typ="ComboBox" titel="Uhrentest-Punkte">
                 <items>
-                    <item wert="0">1: Perfekt, kein Demenzhinweis</item>
+                    <item wert="0">1: Korrekte Darstellung der Uhr</item>
                     <item wert="0">2: Leichte visuell-räumliche Fehler</item>
                     <item wert="1">3: Fehlerhafte Uhrzeit trotz richtiger Uhr</item>
                     <item wert="1">4: Mittelgradige visuell-räumliche Orientierungsprobleme</item>
@@ -246,5 +246,66 @@
                 </variable>
             </variablen>
         </berechnung>
+    </score>
+    <score name="Uhrentest (Shulman)" gruppe="Geriatrie">
+        <information>Früherkennung einer Demenz</information>
+        <quelle autor="Shulman et al.">Clock-drawing and dementia in the community. A longitudinal study.</quelle>
+        <part id="1" typ="GroupBox" titel="Einzeichnen der Uhrzeit 11:10 Uhr in einen vorgegebenen Kreis" zeile="0" spalte="0">
+            <widget id="100" typ="RadioButton" titel="Alle Ziffern richtig eingezeichnet, Uhrzeit richtig angegeben" zeile="0" spalte="0" checked="True">
+                <wert>1</wert>
+            </widget>
+            <widget id="101" typ="RadioButton" titel="Ungleichmäßige Ziffernabstände, Ziffern außerhalb des Ziffernblatts, Ziffern auf dem Kopf, Hilfslinien gezeichnet" zeile="1" spalte="0">
+                <wert>2</wert>
+            </widget>
+            <widget id="102" typ="RadioButton" titel="Nur ein Uhrzeiger, Uhrzeit als Text geschrieben, keine Uhrzeit angegeben" zeile="2" spalte="0">
+                <wert>3</wert>
+            </widget>
+            <widget id="103" typ="RadioButton" titel="Sehr ungleichmäßige Ziffernabstände, keine Ziffern, &#x3e; 12 Ziffern, Ziffern entgegen dem Uhrzeigersinn" zeile="3" spalte="0">
+                <wert>4</wert>
+            </widget>
+            <widget id="104" typ="RadioButton" titel="Wie 4, nur stärker ausgeprägt" zeile="4" spalte="0">
+                <wert>5</wert>
+            </widget>
+            <widget id="105" typ="RadioButton" titel="Keine Uhr gezeichnet bzw. Darstellung ohne Ähnlichkeit mit einer Uhr" zeile="5" spalte="0">
+                <wert>6</wert>
+            </widget>
+        </part>
+        <berechnung>
+            <formel>$id{100}</formel>
+            <ergebniseinheit>Punkte</ergebniseinheit>
+            <variablen />
+        </berechnung>
+        <auswertung>
+            <beurteilung>
+                <ergebnisbereich>1 Punkt</ergebnisbereich>
+                <beschreibung>Korrekte Darstellung der Uhr sowie der Uhrzeit</beschreibung>
+                <regel>ISTGLEICH 1</regel>
+            </beurteilung>
+            <beurteilung>
+                <ergebnisbereich>2 Punkte</ergebnisbereich>
+                <beschreibung>Leichte visuell-räumliche Fehler</beschreibung>
+                <regel>ISTGLEICH 2</regel>
+            </beurteilung>
+            <beurteilung>
+                <ergebnisbereich>3 Punkte</ergebnisbereich>
+                <beschreibung>Fehlerhafte Uhrzeit trotz richtiger Uhr</beschreibung>
+                <regel>ISTGLEICH 3</regel>
+            </beurteilung>
+            <beurteilung>
+                <ergebnisbereich>4 Punkte</ergebnisbereich>
+                <beschreibung>Mittelgradige visuell-räumliche Orientierungsprobleme</beschreibung>
+                <regel>ISTGLEICH 4</regel>
+            </beurteilung>
+            <beurteilung>
+                <ergebnisbereich>5 Punkte</ergebnisbereich>
+                <beschreibung>Schwergradige visuell-räumliche Orientierungsprobleme</beschreibung>
+                <regel>ISTGLEICH 5</regel>
+            </beurteilung>
+            <beurteilung>
+                <ergebnisbereich>6 Punkte</ergebnisbereich>
+                <beschreibung>Keine Uhr dargestellt</beschreibung>
+                <regel>ISTGLEICH 6</regel>
+            </beurteilung>
+        </auswertung>
     </score>
 </root>
