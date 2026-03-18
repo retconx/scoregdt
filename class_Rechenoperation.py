@@ -102,15 +102,15 @@ class Rechenoperation:
                         positionInFormel += 1
                     ergebnisformatierung = "{:." + str(dezimalstellenIntern) + "f}"
                     if einoperand != "":
-                        if dezimalstellenIntern == -1:
-                            einoperandErgebnis = str(self.moeglicheEinoperandenOperationen[einoperandOperation](float(einoperand)))
-                        else:
-                            einoperandErgebnis = ergebnisformatierung.format(self.moeglicheEinoperandenOperationen[einoperandOperation](float(einoperand)))
+                        # if dezimalstellenIntern == -1:
+                        #     einoperandErgebnis = str(self.moeglicheEinoperandenOperationen[einoperandOperation](float(einoperand)))
+                        # else:
+                        einoperandErgebnis = ergebnisformatierung.format(self.moeglicheEinoperandenOperationen[einoperandOperation](float(einoperand)))
                     else:
-                        if dezimalstellenIntern == -1:
-                            einoperandErgebnis = str(self.moeglicheEinoperandenOperationen[einoperandOperation])  
-                        else:
-                            einoperandErgebnis = ergebnisformatierung.format(self.moeglicheEinoperandenOperationen[einoperandOperation])  
+                        # if dezimalstellenIntern == -1:
+                        #     einoperandErgebnis = str(self.moeglicheEinoperandenOperationen[einoperandOperation])  
+                        # else:
+                        einoperandErgebnis = ergebnisformatierung.format(self.moeglicheEinoperandenOperationen[einoperandOperation])  
                     formel = formel[:startposEinoperandOperation] + einoperandErgebnis + formel[endposEinoperandOperation + len(einoperand):]
                     operationDurchgefuehrt = True
                 positionInFormel += 1
@@ -150,6 +150,7 @@ class Rechenoperation:
         Return:
             Ergebnis:str (String einer Float-Zahl)
         """
+        ergebnisformatierung = ""
         for moeglicheOperationsGruppe in self.moeglicheOperationen:
             moeglicheOperationInFormel = True
             while moeglicheOperationInFormel:
@@ -176,17 +177,19 @@ class Rechenoperation:
                         for i in range(operationszaehler):
                             ersetzungStartPos += len(self.operanden[i]) + len(self.operationen[i])
                         ersetzungLaenge = len(self.operanden[operationszaehler]) + len(self.operationen[operationszaehler]) + len(self.operanden[operationszaehler + 1])
-                        if dezimalstellenIntern == -1:
-                            tempErgebnisString = str(tempErgebnis)
-                            if tempErgebnis == 0 and tempErgebnisString.startswith("-"):
-                                tempErgebnisString = tempErgebnisString[1:]
-                            formel = formel[:ersetzungStartPos] + tempErgebnisString + formel[ersetzungStartPos + ersetzungLaenge:]
-                        else:
-                            tempErgebnisString = ergebnisformatierung.format(tempErgebnis)
-                            if tempErgebnis == 0 and tempErgebnisString.startswith("-"):
-                                tempErgebnisString = tempErgebnisString[1:]
-                            ergebnisformatierung = "{:." + str(dezimalstellenIntern) + "f}"
-                            formel = formel[:ersetzungStartPos] + tempErgebnisString + formel[ersetzungStartPos + ersetzungLaenge:]
+                        # if dezimalstellenIntern == -1:
+                        #     tempErgebnisString = str(tempErgebnis)
+                        #     if tempErgebnis == 0 and tempErgebnisString.startswith("-"):
+                        #         tempErgebnisString = tempErgebnisString[1:]
+                        #     formel = formel[:ersetzungStartPos] + tempErgebnisString + formel[ersetzungStartPos + ersetzungLaenge:]
+                        # else:
+                        # tempErgebnisString = ergebnisformatierung.format(tempErgebnis)
+                        ergebnisformatierung = "{:." + str(dezimalstellenIntern) + "f}"
+                        tempErgebnisString = ergebnisformatierung.format(tempErgebnis)
+                        # tempErgebnisString = str(tempErgebnis)
+                        if tempErgebnis == 0 and tempErgebnisString.startswith("-"):
+                            tempErgebnisString = tempErgebnisString[1:]
+                        formel = formel[:ersetzungStartPos] + tempErgebnisString + formel[ersetzungStartPos + ersetzungLaenge:]
                         break
                     operationszaehler += 1   
                 formel = self.__aktualisiereFormel(formel, dezimalstellenIntern) 
@@ -201,6 +204,11 @@ class Rechenoperation:
         return formel
     
     def __call__(self, dezimalstellenErgebnis:int, dezimalstellenIntern:int):
+        # dezimalstellen -1 = "unbegrenzt" bzw. auf 30 begrenzt um wissenschaftliche Schreibweise zu vermeiden
+        if dezimalstellenErgebnis == -1:
+            dezimalstellenErgebnis = 30
+        if dezimalstellenIntern == -1:
+            dezimalstellenIntern = 30
         while "(" in self.tempFormel:
             tempFormel = self.tempFormel
             for innerstenKlammerinhalt in self.getInnersteKlammerninhalte(tempFormel):
