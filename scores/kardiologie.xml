@@ -12610,7 +12610,7 @@
         </part>
         <part id="2" typ="GroupBox" titel="Cholesterin" zeile="0" spalte="2">
             <widget id="105" typ="LineEdit" titel="Gesamt-Cholesterin">
-                <regex>^\d+$</regex>
+                <regex>^\d+([.,]\d)?$</regex>
                 <einheit>mg/dl</einheit>
                 <zahlengrenze regelart="GROESSERGLEICHALS">150</zahlengrenze>
                 <zahlengrenze regelart="KLEINERGLEICHALS">200</zahlengrenze>
@@ -12620,7 +12620,7 @@
                 </konvert>
             </widget>
             <widget id="106" typ="LineEdit" titel="HDL-Cholesterin">
-                <regex>^\d+$</regex>
+                <regex>^\d+([.,]\d)?$</regex>
                 <einheit>mg/dl</einheit>
                 <zahlengrenze regelart="GROESSERGLEICHALS">20</zahlengrenze>
                 <zahlengrenze regelart="KLEINERGLEICHALS">60</zahlengrenze>
