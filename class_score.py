@@ -5,7 +5,7 @@ class Score:
     @staticmethod
     def namenEindeutig(scoreverzeichnispfad:str):
         """
-        Prüft, ob die Score-IDs eindeutig sind
+        Prüft, ob die Score-Namen eindeutig sind
         Parameter:
             Score-Verzeichnispfad:str
         Return:

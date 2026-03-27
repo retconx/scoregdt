@@ -298,7 +298,8 @@ class MainWindow(QMainWindow):
         configIniBase = configparser.ConfigParser()
         try:
             configIniBase.read(os.path.join(basedir, "config.ini"), encoding="utf-8")
-            if versionVeraltet(self.version, configIniBase["Allgemein"]["version"]):
+            versionNeu = configIniBase["Allgemein"]["version"]
+            if versionVeraltet(self.version, versionNeu):
                 # Version aktualisieren
                 self.configIni["Allgemein"]["version"] = configIniBase["Allgemein"]["version"]
                 self.configIni["Allgemein"]["releasedatum"] = configIniBase["Allgemein"]["releasedatum"] 
@@ -330,13 +331,12 @@ class MainWindow(QMainWindow):
                     self.configIni["Allgemein"]["trendverzeichnis"] = ""
                 ## /config.ini aktualisieren
                 ## scores.xml löschen (ab 1.8.0)
-                try:
-                    os.unlink(os.path.join(self.scoresPfad, "scores.xml"))
-                    logger.logger.info(os.path.join(self.scoresPfad, "scores.xml") + " gelöscht")
-                except:
-                    pass
+                # try:
+                #     os.unlink(os.path.join(self.scoresPfad, "scores.xml"))
+                #     logger.logger.info(os.path.join(self.scoresPfad, "scores.xml") + " gelöscht")
+                # except:
+                #     pass
                 ## /scores.xml löschen
-
                 with open(os.path.join(self.configPath, "config.ini"), "w", encoding="utf-8") as configfile:
                     self.configIni.write(configfile)
                 self.version = self.configIni["Allgemein"]["version"]

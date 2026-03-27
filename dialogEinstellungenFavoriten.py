@@ -136,23 +136,14 @@ class EinstellungenFavoriten(QDialog):
                     if nameItem.checkState(0) == Qt.CheckState.Checked:
                         favoritenNamen.append(nameItem.text(0))
             try:
-                logger.logger.info("1")
                 favoritenElement = ElementTree.Element("favoriten")
-                logger.logger.info("2")
                 tree = ElementTree.ElementTree(favoritenElement)
-                logger.logger.info("3")
                 for favorit in favoritenNamen:
-                    logger.logger.info("4")
                     favoritElement = ElementTree.Element("favorit")
-                    logger.logger.info("5")
                     favoritElement.text = favorit
-                    logger.logger.info("6")
                     favoritenElement.append(favoritElement)
-                    logger.logger.info("7")
                 ElementTree.indent(tree)
-                logger.logger.info("8")
                 tree.write(os.path.join(self.configPfad, "favoriten.xml"), "utf-8", True)
-                logger.logger.info("9")
                 mb = QMessageBox(QMessageBox.Icon.Question, "Hinweis von ScoreGDT", "Favoriten erfolgreich gespeichert.\n Soll ScoreGDT neu gestartet werden?", QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No)
                 mb.setDefaultButton(QMessageBox.StandardButton.Yes)
                 mb.button(QMessageBox.StandardButton.Yes).setText("Ja")

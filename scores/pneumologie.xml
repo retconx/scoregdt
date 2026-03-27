@@ -455,7 +455,7 @@
             </beurteilung>
         </auswertung>   
     </score>
-    <score name="Lungenkrebsscreening-Einschlussriterien" gruppe="Pneumologie" altersregel="GROESSERGLEICHALS50_KLEINERGLEICHALS75">
+    <score name="Lungenkrebsscreening-Einschlusskriterien" gruppe="Pneumologie" altersregel="GROESSERGLEICHALS50_KLEINERGLEICHALS75">
         <information>Prüfung der Einschlusskriterien für das Lungenkrebsscreening</information>
         <quelle autor="Bundesministerium für Justiz und Verbraucherschutz">Verordnung über die Zulässigkeit der Anwendung der Niedrigdosis-Computertomographie zur Früherkennung von Lungenkrebs bei rauchenden Personen</quelle>
         <part id="0" typ="GroupBox" titel="Letzte Lungen-/ Thorax-Computertomographie" zeile="0" spalte="1">
