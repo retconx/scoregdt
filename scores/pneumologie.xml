@@ -458,12 +458,18 @@
     <score name="Lungenkrebsscreening-Einschlusskriterien" gruppe="Pneumologie" altersregel="GROESSERGLEICHALS50_KLEINERGLEICHALS75">
         <information>Prüfung der Einschlusskriterien für das Lungenkrebsscreening</information>
         <quelle autor="Bundesministerium für Justiz und Verbraucherschutz">Verordnung über die Zulässigkeit der Anwendung der Niedrigdosis-Computertomographie zur Früherkennung von Lungenkrebs bei rauchenden Personen</quelle>
-        <part id="0" typ="GroupBox" titel="Letzte Lungen-/ Thorax-Computertomographie" zeile="0" spalte="1">
+        <part id="0" typ="Frame" titel="" zeile="0" spalte="0">
+            <widget id="104" typ="LineEdit" titel="Alter" alterspruefung="True">
+                <regex>^\d+$</regex>  
+                <einheit>Jahre</einheit>
+            </widget>
+        </part>
+        <part id="1" typ="GroupBox" titel="Letzte Lungen-/ Thorax-Computertomographie" zeile="1" spalte="0">
             <widget id="100" typ="CheckBox" titel="&#x2265; 1 Jahr oder noch nie">
                 <wert>1</wert>
             </widget>
         </part>
-        <part id="1" typ="GroupBox" titel="Zigarettenkonsum" zeile="1" spalte="1">
+        <part id="2" typ="GroupBox" titel="Zigarettenkonsum" zeile="2" spalte="0">
             <widget id="101" typ="LineEdit" titel="Dauer inklusive &#x2264; 10 Jahre Unterbrechung">
                 <regex>^\d+?$</regex>
                 <einheit>Jahre</einheit>
@@ -474,9 +480,24 @@
             </widget>
         </part>
         <berechnung>
-            <formel>$id{100} + $var{mind25} + $var{py15}</formel>
+            <formel>$var{alter} + $id{100} + $var{mind25} + $var{py15}</formel>
             <ergebniseinheit>Punkte</ergebniseinheit>
             <variablen>
+                <variable name="alter">
+                    <bedingung>
+                        <regel>$id{104} GROESSERGLEICHALS 50</regel>
+                        <regel>$id{104} KLEINERGLEICHALS 75</regel>
+                        <wert>1</wert>
+                    </bedingung>
+                    <bedingung>
+                        <regel>$id{104} KLEINERALS 50</regel>
+                        <wert>0</wert>
+                    </bedingung>
+                    <bedingung>
+                        <regel>$id{104} GROESSERALS 75</regel>
+                        <wert>0</wert>
+                    </bedingung>
+                </variable>
                 <variable name="mind25">
                     <bedingung>
                         <regel>$id{101} GROESSERGLEICHALS 25</regel>
@@ -502,14 +523,14 @@
         </berechnung>
         <auswertung>
             <beurteilung>
-                <ergebnisbereich>0 - 2 Punkte</ergebnisbereich>
+                <ergebnisbereich>0 - 3 Punkte</ergebnisbereich>
                 <beschreibung>Einschlusskriterien nicht erfüllt</beschreibung>
-                <regel>KLEINERGLEICHALS 2</regel>
+                <regel>KLEINERGLEICHALS 3</regel>
             </beurteilung>
             <beurteilung>
-                <ergebnisbereich>3 Punkte</ergebnisbereich>
+                <ergebnisbereich>4 Punkte</ergebnisbereich>
                 <beschreibung>Einschlusskriterien erfüllt</beschreibung>
-                <regel>ISTGLEICH 3</regel>
+                <regel>ISTGLEICH 4</regel>
             </beurteilung>
         </auswertung> 
     </score>
