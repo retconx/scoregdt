@@ -474,9 +474,19 @@
             </widget>
         </part>
         <berechnung>
-            <formel>$id{100} + $var{py15}</formel>
+            <formel>$id{100} + $var{mind25} + $var{py15}</formel>
             <ergebniseinheit>Punkte</ergebniseinheit>
             <variablen>
+                <variable name="mind25">
+                    <bedingung>
+                        <regel>$id{101} GROESSERGLEICHALS 25</regel>
+                        <wert>1</wert>
+                    </bedingung>
+                    <bedingung>
+                        <regel>$id{101} KLEINERALS 25</regel>
+                        <wert>0</wert>
+                    </bedingung>
+                </variable>
                 <variable name="packyears">$id{102} / 20 * $id{101}</variable>
                 <variable name="py15">  
                     <bedingung>
@@ -484,12 +494,7 @@
                         <wert>1</wert>
                     </bedingung>
                     <bedingung>
-                        <regel>$id{101} GROESSERGLEICHALS 25</regel>
-                        <wert>1</wert>
-                    </bedingung>
-                    <bedingung>
                         <regel>$var{packyears} KLEINERALS 15</regel>
-                        <regel>$id{101} KLEINERALS 25</regel>
                         <wert>0</wert>
                     </bedingung>
                 </variable>
@@ -497,14 +502,14 @@
         </berechnung>
         <auswertung>
             <beurteilung>
-                <ergebnisbereich>0 - 1 Punkte</ergebnisbereich>
+                <ergebnisbereich>0 - 2 Punkte</ergebnisbereich>
                 <beschreibung>Einschlusskriterien nicht erfüllt</beschreibung>
-                <regel>KLEINERGLEICHALS 1</regel>
+                <regel>KLEINERGLEICHALS 2</regel>
             </beurteilung>
             <beurteilung>
-                <ergebnisbereich>2 Punkte</ergebnisbereich>
+                <ergebnisbereich>3 Punkte</ergebnisbereich>
                 <beschreibung>Einschlusskriterien erfüllt</beschreibung>
-                <regel>ISTGLEICH 2</regel>
+                <regel>ISTGLEICH 3</regel>
             </beurteilung>
         </auswertung> 
     </score>
