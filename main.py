@@ -1873,7 +1873,7 @@ class MainWindow(QMainWindow):
             else:
                 downloadPath = os.path.expanduser("~/Downloads")
             try:
-                if shutil.copytree(os.path.join(basedir, "log"), os.path.join(downloadPath, "Log_ScoreGDT"), dirs_exist_ok=True):
+                if shutil.copytree(os.path.join(basedir, "log"), os.path.join(downloadPath, "Log_ScoreGDT"),    dirs_exist_ok=True):
                     shutil.make_archive(os.path.join(downloadPath, "Log_ScoreGDT"), "zip", root_dir=os.path.join(downloadPath, "Log_ScoreGDT"))
                     shutil.rmtree(os.path.join(downloadPath, "Log_ScoreGDT"))
                     mb = QMessageBox(QMessageBox.Icon.Warning, "Hinweis von ScoreGDT", "Das Log-Verzeichnis wurde in den Ordner " + downloadPath + " kopiert.", QMessageBox.StandardButton.Ok)

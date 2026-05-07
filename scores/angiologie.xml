@@ -60,4 +60,138 @@
             </beurteilung>
 		</auswertung>
     </score>
+    <score name="TRiP (cast)-Score" gruppe="Angiologie">
+        <information>Abschätzung des Dreimonats-Thromboserisikos bei Immobilisierung der unteren Extremität nach Trauma</information>
+        <quelle autor="Nemeth et al.">Clinical risk assessment model to predict venous thromboembolism risk after immobilization for lower-limb trauma</quelle>
+        <part id="0" typ="GroupBox" titel="Trauma" zeile="1" spalte="0">
+            <widget id="100" typ="RadioButton" titel="Niedrig-Risiko-Trauma (unimalleoläre Fraktur, Patellaluxation, Muskelverletzung)" checked="True">
+                <wert>1</wert>
+            </widget>
+            <widget id="101" typ="RadioButton" titel="Miitel-Risiko-Trauma (bi- oder trimalleoläre Fraktur, Patellafraktur)">
+                <wert>2</wert>
+            </widget>
+            <widget id="102" typ="RadioButton" titel="Hoch-Risiko-Trauma (Schienbein- oder Wadenfraktur, Tibiakopffraktur, Achillessehnenriss Fraktur)">
+                <wert>3</wert>
+            </widget>
+        </part>
+        <part id="1" typ="GroupBox" titel="Immobilisierung" zeile="0" spalte="2">
+            <widget id="103" typ="RadioButton" titel="Fuß-Cast mit Plantarunterstützung" checked="True">
+                <wert>0</wert>
+            </widget>
+            <widget id="104" typ="RadioButton" titel="Fuß-Cast ohne Plantarunterstützung oder ohne Knöcheleinschluss">
+                <wert>1</wert>
+            </widget>
+            <widget id="105" typ="RadioButton" titel="Unterschenkel">
+                <wert>2</wert>
+            </widget>
+            <widget id="106" typ="RadioButton" titel="Oberschenkel">
+                <wert>3</wert>
+            </widget>
+        </part>
+        <part id="2" typ="GroupBox" titel="PatientInnendaten" zeile="0" spalte="0">
+            <widget id="107" typ="LineEdit" titel="Alter" alterspruefung="True">
+                <regex>^\d+$</regex>  
+                <einheit>Jahre</einheit>
+            </widget>
+            <widget id="108" typ="LineEdit" titel="Körpergewicht" gewichtpruefung="True">
+                <regex>^\d+([.,]\d)?$</regex>  
+                <einheit>kg</einheit>
+            </widget>
+            <widget id="109" typ="LineEdit" titel="Körpergröße" groessepruefung="True">
+                <regex>^\d+([.,]\d)?$</regex>  
+                <einheit>cm</einheit>
+            </widget>
+        </part>
+        <part typ="GroupBox" id="3" titel="Geschlecht" zeile="0" spalte="1" geschlechtpruefung="True">
+            <widget id="110" typ="RadioButton" titel="Weiblich" checked="True">
+                <wert>0</wert>   
+            </widget>
+            <widget id="111" typ="RadioButton" titel="Männlich">
+                <wert>1</wert>   
+            </widget>
+        </part>
+        <part id="4" typ="GroupBox" titel="Anamnese" zeile="1" spalte="1">
+            <widget id="112" typ="CheckBox" titel="Venöse Thromboembolie in erstgradiger Verwandtschaft">
+                <wert>2</wert>
+            </widget>
+            <widget id="113" typ="CheckBox" titel="Venöse Thromboembolie in Eigenanamnese oder schwere Thrombophilie">
+                <wert>4</wert>
+            </widget>
+            <widget id="114" typ="CheckBox" titel="Aktuell orale Kontrazeption oder östrogenbasierte Hormontherapie">
+                <wert>4</wert>
+            </widget>
+            <widget id="115" typ="CheckBox" titel="Krebsdiagnose innerhalb der letzten fünf Jahre">
+                <wert>3</wert>
+            </widget>
+            <widget id="116" typ="CheckBox" titel="Schwangerschaft oder Wochenbett">
+                <wert>3</wert>
+            </widget>
+            <widget id="117" typ="CheckBox" titel="Andere Mobilitätseinschränkung in den letzten drei Monaten&#xa;(Krankenhausaufenthalt, Bettlägrigkeit, Beinparese, Flug &#x3e; 6 Stunden)">
+                <wert>2</wert>
+            </widget>
+            <widget id="118" typ="CheckBox" titel="Operation in den letzten drei Monaten">
+                <wert>2</wert>
+            </widget>
+            <widget id="119" typ="CheckBox" titel="Komorbidität (Herzinsuffizienz, rheunatoide Arthritis,&#xa;chronsiche Niereninsuffizienz, COPD, CED)">
+                <wert>1</wert>
+            </widget>
+            <widget id="120" typ="CheckBox" titel="Chronisch venöse Insuffizienz (Beinvarikose)">
+                <wert>1</wert>
+            </widget>
+        </part>
+        <berechnung>
+            <formel>$id{100} + $id{103} + $var{alterWert} + $var{bmiWert} + $id{110} + $id{112} + $id{113} + $id{114} + $id{115} + $id{116} + $id{117} + $id{118} + $id{119} + $id{120}</formel>
+            <ergebniseinheit>Punkte</ergebniseinheit>
+            <variablen>
+                <variable name="bmi">$id{108} / $id{109} / $id{109} * 10000</variable>
+                <variable name="alterWert">
+                    <bedingung>
+                        <regel>$id{107} KLEINERALS 35</regel>
+                        <wert>0</wert>
+                    </bedingung>
+                    <bedingung>
+                        <regel>$id{107} GROESSERGLEICHALS 35</regel>
+                        <regel>$id{107} KLEINERALS 55</regel>
+                        <wert>1</wert>
+                    </bedingung>
+                    <bedingung>
+                        <regel>$id{107} GROESSERGLEICHALS 55</regel>
+                        <regel>$id{107} KLEINERALS 75</regel>
+                        <wert>2</wert>
+                    </bedingung>
+                    <bedingung>
+                        <regel>$id{107} GROESSERGLEICHALS 75</regel>
+                        <wert>3</wert>
+                    </bedingung>
+                </variable>
+                <variable name="bmiWert">
+                    <bedingung>
+                        <regel>$var{bmi} KLEINERALS 25</regel>
+                        <wert>0</wert>
+                    </bedingung>
+                    <bedingung>
+                        <regel>$var{bmi} GROESSERGLEICHALS 25</regel>
+                        <regel>$var{bmi} KLEINERALS 35</regel>
+                        <wert>1</wert>
+                    </bedingung>
+                    <bedingung>
+                        <regel>$var{bmi} GROESSERGLEICHALS 35</regel>
+                        <wert>2</wert>
+                    </bedingung>
+                </variable>
+            </variablen>
+        </berechnung>
+        <auswertung>
+            <beurteilung>
+                <ergebnisbereich>&#x3c; 7 Punkte</ergebnisbereich>
+                <beschreibung>Geringes Thromboserisiko (keine Antikoagulation nötig)</beschreibung>
+                <regel>KLEINERALS 7</regel>
+            </beurteilung>
+            <beurteilung>
+                <ergebnisbereich>&#x2265; 7 Punkte</ergebnisbereich>
+                <beschreibung>Hohes Thromboserisiko (Antikoagulation empfohlen)</beschreibung>
+                <regel>GROESSERGLEICHALS 7</regel>
+            </beurteilung>
+		</auswertung>
+    </score>
 </root>
