@@ -1683,18 +1683,18 @@ class MainWindow(QMainWindow):
                 for widget in self.widgets:
                     part = self.getPart(widget.getPartId())
                     partTitel = str(part.getTitel()) # type: ignore
-                    if partTitel == None or partTitel == "":
+                    if partTitel == "None" or partTitel == "":
                         partTitel = ""
                     else:
                         partTitel += ": "
                     test = None
                     if widget.getTyp() == class_widgets.WidgetTyp.LINEEDIT:
-                        test = gdt.GdtTest("ScoreGDT" + "_" + widget.getId(), partTitel + self.fuerGdtBereinigen(widget.getTitel()), widget.getWertOhneFaktor().replace(".", ",").replace(",0", ""), widget.getEinheit(self.einheitToggles)) # type: ignore
+                        test = gdt.GdtTest("ScoreGDT" + "_" + widget.getId(), self.fuerGdtBereinigen(partTitel + widget.getTitel()), widget.getWertOhneFaktor().replace(".", ",").replace(",0", ""), widget.getEinheit(self.einheitToggles)) # type: ignore
                     elif widget.getTyp() == class_widgets.WidgetTyp.RADIOBUTTON:
                         if widget.getQt().isChecked():
-                            test = gdt.GdtTest("ScoreGDT" + "_" + widget.getId(), partTitel[:-2], self.fuerGdtBereinigen(widget.getTitel()), self.fuerGdtBereinigen(widget.getEinheit())) # type: ignore
+                            test = gdt.GdtTest("ScoreGDT" + "_" + widget.getId(), self.fuerGdtBereinigen(partTitel[:-2]), self.fuerGdtBereinigen(widget.getTitel()), self.fuerGdtBereinigen(widget.getEinheit())) # type: ignore
                     elif widget.getTyp() == class_widgets.WidgetTyp.COMBOBOX:
-                        test = gdt.GdtTest("ScoreGDT" + "_" + widget.getId(), partTitel + self.fuerGdtBereinigen(widget.getTitel()), self.fuerGdtBereinigen(widget.getItemText(widget.getQt().currentIndex())), self.fuerGdtBereinigen(widget.getEinheit())) # type: ignore
+                        test = gdt.GdtTest("ScoreGDT" + "_" + widget.getId(), self.fuerGdtBereinigen(partTitel + widget.getTitel()), self.fuerGdtBereinigen(widget.getItemText(widget.getQt().currentIndex())), self.fuerGdtBereinigen(widget.getEinheit())) # type: ignore
                     elif widget.getTyp() == class_widgets.WidgetTyp.CHECKBOX:
                         patternZahl = r"^\d+$"
                         wert = "0"
@@ -1705,9 +1705,9 @@ class MainWindow(QMainWindow):
                                 wert = "Nein"
                             else:
                                 wert = "Ja"
-                        test = gdt.GdtTest("ScoreGDT" + "_" + widget.getId(), partTitel + self.fuerGdtBereinigen(widget.getTitel()), wert, self.fuerGdtBereinigen(widget.getEinheit())) # type: ignore
+                        test = gdt.GdtTest("ScoreGDT" + "_" + widget.getId(), self.fuerGdtBereinigen(partTitel + widget.getTitel()), wert, self.fuerGdtBereinigen(widget.getEinheit())) # type: ignore
                     else:
-                        test = gdt.GdtTest("ScoreGDT" + "_" + widget.getId(), partTitel + self.fuerGdtBereinigen(widget.getTitel()), widget.getWert().replace(".", ",").replace(",0", ""), self.fuerGdtBereinigen(widget.getEinheit())) # type: ignore
+                        test = gdt.GdtTest("ScoreGDT" + "_" + widget.getId(), self.fuerGdtBereinigen(partTitel + widget.getTitel()), widget.getWert().replace(".", ",").replace(",0", ""), self.fuerGdtBereinigen(widget.getEinheit())) # type: ignore
                     if test != None:
                         gd.addTest(test)
                         if self.pdferzeugen and pdf != None and len(self.pdfZeilen) == 0: # type: ignore

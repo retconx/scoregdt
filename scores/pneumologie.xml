@@ -160,7 +160,7 @@
                 <wert>2</wert>
             </widget>
         </part>
-        <part id="8" typ="GroupBox" titel="Immobilität innerhalb der letzten vier Wochen" erklaerung="Operation, Gipsverband an unterer Extremität oder&#13;&#10;Bettlägerigkeit &#x3e; Tage wegen akuter Erkrankung" zeile="2" spalte="2">
+        <part id="8" typ="GroupBox" titel="Immobilität innerhalb der letzten vier Wochen" erklaerung="Operation, Gipsverband an unterer Extremität oder&#xa;Bettlägerigkeit &#x3e; Tage wegen akuter Erkrankung" zeile="2" spalte="2">
             <widget id="115" typ="RadioButton" titel="Nein" checked="True">
                 <wert>0</wert>
             </widget>
@@ -168,7 +168,7 @@
                 <wert>2</wert>
             </widget>
         </part>
-        <part id="9" typ="GroupBox" titel="O₂-Sättigung &#x3c; 95%" gdttitel="O2-Sättigung &#x3c; 95%" zeile="3" spalte="0">
+        <part id="9" typ="GroupBox" titel="O&#x2082;-Sättigung &#x3c; 95%" gdttitel="O2-Sättigung &#x3c; 95%" zeile="3" spalte="0">
             <widget id="117" typ="RadioButton" titel="Nein" checked="True">
                 <wert>0</wert>
             </widget>
