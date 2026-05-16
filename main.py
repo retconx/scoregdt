@@ -9,7 +9,7 @@ import dialogUeberScoreGdt, dialogEinstellungenAllgemein, dialogEinstellungenGdt
 import class_trends, dialogTrendanzeige
 import class_enums, class_score, class_Rechenoperation, scorepdf, molGrammConvert
 from PySide6.QtCore import Qt, QTranslator, QLibraryInfo, QDate, QTime
-from PySide6.QtGui import QFont, QAction, QIcon, QDesktopServices, QPixmap, QPalette, QClipboard
+from PySide6.QtGui import QFont, QAction, QIcon, QDesktopServices, QPixmap, QPalette, QGuiApplication
 from PySide6.QtWidgets import (
     QApplication,
     QSizePolicy,
@@ -1375,7 +1375,6 @@ class MainWindow(QMainWindow):
                         variablen[variablenname] = str(self.berechnung(textMitVarWertErsezt, -1))
                     # Mit Bedinung(en)
                     else: 
-
                         for bedingungElement in variableElement.findall("bedingung"):
                             regelErfuellt = True
                             for regelElement in bedingungElement.findall("regel"):
@@ -1405,7 +1404,26 @@ class MainWindow(QMainWindow):
                 formelMitZahlen = self.ersetzeIdVariablen(formelMitZahlen)
                 ergebnis = self.berechnung(formelMitZahlen, dezimalstellen)
                 logger.logger.info("Teilergebnis: " + str(self.berechnung(formelMitZahlen, dezimalstellen)))
-                if len(variablenMitNichtErfuelltenRegeln) == 0:
+                sonderergebniskriteriumErfuellt = False
+                if berechnungElement.find("sonderergebnis") != None: # type: ignore
+                    sonderergebnisElement = berechnungElement.find("sonderergebnis") # type: ignore
+                    regelErfuellt = True
+                    for regelElement in sonderergebnisElement.findall("regel"): # type: ignore
+                        regel = str(regelElement.text)
+                        regelMitIdWertErsetzt = self.ersetzeIdVariablen(regel)
+                        regelMitVarWertErsetzt = self.ersetzeVariablen(variablen, regelMitIdWertErsetzt)
+                        if not self.regelIstErfuellt(regelMitVarWertErsetzt):
+                            regelErfuellt = False
+                    if regelErfuellt:
+                        sonderergebniskriteriumErfuellt = True
+                        logger.logger.info("Sonderergebnis-Regel " + regel + " erfüllt")
+                        sonderergebnis = str(sonderergebnisElement.find("ergebnis").text) # type: ignore
+                        sonderergebnisMitIdWertErsetzt = self.ersetzeIdVariablen(sonderergebnis)
+                        sonderergebnisMitVarWertErsetzt = self.ersetzeVariablen(variablen, sonderergebnisMitIdWertErsetzt)
+                if sonderergebniskriteriumErfuellt:
+                    self.lineEditScoreErgebnis.setText(str(sonderergebnisMitVarWertErsetzt).replace(".", ","))
+                    logger.logger.info("Sonderergebnis: " + str(sonderergebnisMitVarWertErsetzt).replace(".", ","))
+                elif len(variablenMitNichtErfuelltenRegeln) == 0:
                     self.lineEditScoreErgebnis.setText(str(ergebnis).replace(".", ","))
                     logger.logger.info("Endergebnis: " + str(ergebnis).replace(".", ","))
                     # Auswertung
@@ -1895,7 +1913,7 @@ class MainWindow(QMainWindow):
         gdtname = str(self.scoreRoot.get("name")) # type: ignore
         if self.scoreRoot.get("gdtname") != None: # type: ignore
             gdtname = str(self.scoreRoot.get("gdtname")) # type: ignore
-        clipboard = QClipboard()
+        clipboard = QGuiApplication.clipboard()
         clipboard.setText("stsc:" + gdtname.replace(" ", "_").replace("(", "{").replace(")", "}"))
         mb = QMessageBox(QMessageBox.Icon.Information, "Hinweis von ScoreGDT", "\"" + "stsc:" + gdtname.replace(" ", "_").replace("(", "{").replace(")", "}") + "\" wurde in die Zwischenablage kopiert und kann als Startargument verwendet werden.", QMessageBox.StandardButton.Ok)
         mb.exec()

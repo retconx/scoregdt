@@ -141,4 +141,67 @@
             <variablen/>
         </berechnung>
     </score>
+    <score name="Albumin-Kreatinin-Quotient" gruppe="Nephrologie">
+        <information>Berechnung des Albumin-Kreatinin-Quotienten zur Auswertung des Microalbustix&#xae;</information>
+        <quelle autor="Siemens Healthcare Diagnostics Inc.">Microalbustix&#xae;-Beipackzettel</quelle>
+        <part id="0" typ="GroupBox" titel="Albumin" zeile="0" spalte="1">
+            <widget id="100" typ="RadioButton" titel="10 mg/l" checked="True">
+                <wert>10</wert>
+            </widget>
+            <widget id="101" typ="RadioButton" titel="30 mg/l">
+                <wert>30</wert>
+            </widget>
+            <widget id="102" typ="RadioButton" titel="80 mg/l">
+                <wert>80</wert>
+            </widget>
+            <widget id="103" typ="RadioButton" titel="150 mg/l">
+                <wert>150</wert>
+            </widget>
+        </part>
+        <part id="1" typ="GroupBox" titel="Kreatinin" zeile="0" spalte="0">
+            <widget id="104" typ="RadioButton" titel="10 mg/dl bzw. 0,9 mmol/l" checked="True">
+                <wert>10</wert>
+            </widget>
+            <widget id="105" typ="RadioButton" titel="50 mg/dl bzw. 4,4 mmol/l">
+                <wert>50</wert>
+            </widget>
+            <widget id="106" typ="RadioButton" titel="100 mg/dl bzw. 8,8 mmol/l">
+                <wert>100</wert>
+            </widget>
+            <widget id="107" typ="RadioButton" titel="200 mg/dl bzw. 17,7 mmol/l">
+                <wert>200</wert>
+            </widget>
+            <widget id="108" typ="RadioButton" titel="300 mg/dl bzw. 26,5 mmol/l">
+                <wert>300</wert>
+            </widget>
+        </part>
+        <berechnung>
+            <formel dezimalstellen="0">1000 / ($id{104} * 10) * $id{100}</formel>
+            <ergebniseinheit>mg/g Kreatinin</ergebniseinheit>
+            <variablen/>
+            <sonderergebnis>
+                <regel>$id{100} ISTGLEICH 10</regel>
+                <regel>$id{104} ISTGLEICH 10</regel>
+                <ergebnis>Ungültig (Probe zu verdünnt)</ergebnis>
+            </sonderergebnis>
+        </berechnung>
+        <auswertung>
+            <beurteilung>
+                <ergebnisbereich>&#x3c; 30 mg/g bzw. 3,4 mg/mmol Kreatinin</ergebnisbereich>
+                <beschreibung>Keine Albuminurie (&#x22;Normal&#x22;)</beschreibung>
+                <regel>KLEINERALS 30</regel>
+            </beurteilung>
+            <beurteilung>
+                <ergebnisbereich>&#x2265; 30 - &#x3c; 300 mg/g bzw. 3,4 - 33,9 mg/mmol Kreatinin</ergebnisbereich>
+                <beschreibung>Mikroalbuminurie (&#x22;Abnormal&#x22;)</beschreibung>
+                <regel>GROESSERGLEICHALS 30</regel>
+                <regel>KLEINERALS 300</regel>
+            </beurteilung>
+            <beurteilung>
+                <ergebnisbereich>&#x2265; 300 mg/g bzw. 33,9 mg/mmol Kreatinin</ergebnisbereich>
+                <beschreibung>Makroalbuminurie (&#x22;High Abnormal&#x22;)</beschreibung>
+                <regel>GROESSERGLEICHALS 300</regel>
+            </beurteilung>
+        </auswertung>
+    </score>
 </root>
