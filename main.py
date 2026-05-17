@@ -7,7 +7,7 @@ import gdttoolsL
 import gdt, gdtzeile, class_part, class_widgets, class_score, farbe
 import dialogUeberScoreGdt, dialogEinstellungenAllgemein, dialogEinstellungenGdt, dialogEinstellungenBenutzer, dialogEinstellungenLanrLizenzschluessel, dialogEula, dialogEinstellungenImportExport, dialogScoreAuswahl, dialogEinstellungenFavoriten, dialogStartargumentGenerieren
 import class_trends, dialogTrendanzeige
-import class_enums, class_score, class_Rechenoperation, scorepdf, molGrammConvert
+import class_enums, class_Rechenoperation, scorepdf, molGrammConvert
 from PySide6.QtCore import Qt, QTranslator, QLibraryInfo, QDate, QTime
 from PySide6.QtGui import QFont, QAction, QIcon, QDesktopServices, QPixmap, QPalette, QGuiApplication
 from PySide6.QtWidgets import (
@@ -31,7 +31,6 @@ from PySide6.QtWidgets import (
     QScrollArea
 )
 
-@staticmethod
 def getAktuellesAlterInJahren(gebdat:datetime.date):
     heute = datetime.date.today()
     gebdatDesesJahr = datetime.date(heute.year, gebdat.month, gebdat.day)
@@ -90,8 +89,8 @@ def versionVeraltet(versionAktuell:str, versionVergleich:str):
 # Sicherstellen, dass Icon in Windows angezeigt wird
 try:
     from ctypes import windll # type: ignore
-    mayappid = "gdttools.scoregdt"
-    windll.shell32.SetCurrentProcessExplicitAppUserModelID(mayappid)
+    myappid = "gdttools.scoregdt"
+    windll.shell32.SetCurrentProcessExplicitAppUserModelID(myappid)
 except ImportError:
     pass
 
@@ -127,15 +126,15 @@ class MainWindow(QMainWindow):
         self.configPath = updateSafePath
         self.configIni = configparser.ConfigParser()
         if os.path.exists(os.path.join(updateSafePath, "config.ini")):
-            logger.logger.info("config.ini in " + updateSafePath + " exisitert")
+            logger.logger.info("config.ini in " + updateSafePath + " existert")
             self.configPath = updateSafePath
         elif os.path.exists(os.path.join(basedir, "config.ini")):
-            logger.logger.info("config.ini in " + updateSafePath + " exisitert nicht")
+            logger.logger.info("config.ini in " + updateSafePath + " existert nicht")
             try:
                 if (not os.path.exists(updateSafePath)):
-                    logger.logger.info(updateSafePath + " exisitert nicht")
+                    logger.logger.info(updateSafePath + " existert nicht")
                     os.makedirs(updateSafePath, 0o777)
-                    logger.logger.info(updateSafePath + "erzeugt")
+                    logger.logger.info(updateSafePath + " erzeugt")
                 shutil.copy(os.path.join(basedir, "config.ini"), updateSafePath)
                 logger.logger.info("config.ini von " + basedir + " nach " + updateSafePath + " kopiert")
                 self.configPath = updateSafePath
@@ -160,10 +159,10 @@ class MainWindow(QMainWindow):
         self.kuerzelpraxisedv = self.configIni["GDT"]["kuerzelpraxisedv"]
         self.benutzernamenListe = self.configIni["Benutzer"]["namen"].split("::")
         self.benutzerkuerzelListe = self.configIni["Benutzer"]["kuerzel"].split("::")
-        self.aktuelleBenuztzernummer = int(self.configIni["Benutzer"]["letzter"])
+        self.aktuelleBenutzernummer = int(self.configIni["Benutzer"]["letzter"])
         self.scoresPfad = os.path.join(basedir, "scores")
 
-        ## Nachträglich hinzufefügte Options
+        ## Nachträglich hinzugefügte Options
         # 1.1.1
         self.standardscore = ""
         if self.configIni.has_option("Allgemein", "standardscore"):
@@ -202,7 +201,7 @@ class MainWindow(QMainWindow):
         self.trendverzeichnis = ""
         if self.configIni.has_option("Allgemein", "trendverzeichnis"):
             self.trendverzeichnis = self.configIni["Allgemein"]["trendverzeichnis"]
-        ## /Nachträglich hinzufefügte Options
+        ## /Nachträglich hinzugefügte Options
 
         z = self.configIni["GDT"]["zeichensatz"]
         self.zeichensatz = gdt.GdtZeichensatz.IBM_CP437
@@ -967,8 +966,8 @@ class MainWindow(QMainWindow):
             self.comboBoxBenutzer.addItems(self.benutzernamenListe)
             self.comboBoxBenutzer.currentIndexChanged.connect(self.comboBoxBenutzerIndexChanged)
             aktBenNum = 0
-            if self.aktuelleBenuztzernummer < len(self.benutzernamenListe):
-                aktBenNum = self.aktuelleBenuztzernummer
+            if self.aktuelleBenutzernummer < len(self.benutzernamenListe):
+                aktBenNum = self.aktuelleBenutzernummer
             self.comboBoxBenutzer.setCurrentIndex(aktBenNum)
             layoutPdfErstellenDatenSendenH = QHBoxLayout()
             self.checkBoxPdfErzeugen = QCheckBox("PDF erzeugen")
@@ -1632,7 +1631,7 @@ class MainWindow(QMainWindow):
         self.untersuchungsdatum = datum
 
     def comboBoxBenutzerIndexChanged(self, index):
-        self.aktuelleBenuztzernummer = index
+        self.aktuelleBenutzernummer = index
 
     def fuerGdtBereinigen(self, string:str):
         """
@@ -1789,7 +1788,7 @@ class MainWindow(QMainWindow):
             gd.addZeile("6220", befund)
             if self.erfuellteAuswertungsregel != -1:
                 gd.addZeile("6220", "Beurteilung: " + auswertung)
-            gd.addZeile("6227", "Dokumentiert von: " + self.benutzerkuerzelListe[self.aktuelleBenuztzernummer])
+            gd.addZeile("6227", "Dokumentiert von: " + self.benutzerkuerzelListe[self.aktuelleBenutzernummer])
             # GDT-Datei exportieren
             if not gd.speichern(os.path.join(self.gdtExportVerzeichnis, self.kuerzelpraxisedv + self.kuerzelscoregdt + ".gdt"), self.zeichensatz):
                 logger.logger.error("Fehler bei GDT-Dateiexport nach " + self.gdtExportVerzeichnis + "/" + self.kuerzelpraxisedv + self.kuerzelscoregdt + ".gdt")
@@ -1797,7 +1796,7 @@ class MainWindow(QMainWindow):
                 mb.exec()
             else: 
                 self.configIni["Allgemein"]["pdferzeugen"] = str(self.pdferzeugen)
-                self.configIni["Benutzer"]["letzter"] = str(self.aktuelleBenuztzernummer)
+                self.configIni["Benutzer"]["letzter"] = str(self.aktuelleBenutzernummer)
                 try:
                     with open(os.path.join(self.configPath, "config.ini"), "w", encoding="utf-8") as configfile:
                         self.configIni.write(configfile)
