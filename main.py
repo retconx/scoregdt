@@ -5,7 +5,7 @@ import requests
 import gdttoolsL
 ## /Nur mit Lizenz
 import gdt, gdtzeile, class_part, class_widgets, class_score, farbe
-import dialogUeberScoreGdt, dialogEinstellungenAllgemein, dialogEinstellungenGdt, dialogEinstellungenBenutzer, dialogEinstellungenLanrLizenzschluessel, dialogEula, dialogEinstellungenImportExport, dialogScoreAuswahl, dialogEinstellungenFavoriten
+import dialogUeberScoreGdt, dialogEinstellungenAllgemein, dialogEinstellungenGdt, dialogEinstellungenBenutzer, dialogEinstellungenLanrLizenzschluessel, dialogEula, dialogEinstellungenImportExport, dialogScoreAuswahl, dialogEinstellungenFavoriten, dialogStartargumentGenerieren
 import class_trends, dialogTrendanzeige
 import class_enums, class_score, class_Rechenoperation, scorepdf, molGrammConvert
 from PySide6.QtCore import Qt, QTranslator, QLibraryInfo, QDate, QTime
@@ -114,7 +114,6 @@ class MainWindow(QMainWindow):
 
     def __init__(self):
         super().__init__()
-        self.maxBenutzeranzahl = 20
 
         # config.ini lesen
         ersterStart = False
@@ -454,11 +453,17 @@ class MainWindow(QMainWindow):
                 self.scoreRoot = self.root.find("score")
                 if not gdtLadeFehler:
                     scoreAlsStartargument = False
+                    self.scoregdtId = self.configIni["GDT"]["idscoregdt"]
                     for arg in sys.argv:
                         if re.match(reStartScore, arg) != None: # Score als Startargument
-                            scoreName = class_score.Score.getScoreNameAusGdtName(self.scoresPfad, str(arg[5:]).replace("_", " ").replace("{", "(").replace("}", ")"))
-                            if scoreName == None:
-                                scoreName = str(arg[5:].replace("_", " ").replace("{", "(").replace("}", ")"))
+                            argScoreName = arg[5:]
+                            scoreName = ""
+                            if len(argScoreName) >= 9 and argScoreName[-9] == "_": # ab 1.40.1
+                                self.scoregdtId = argScoreName[-8:]
+                                argScoreName = argScoreName[:-9]
+                            scoreName = str(class_score.Score.getScoreNameAusGdtName(self.scoresPfad, argScoreName.replace("_", " ").replace("{", "(").replace("}", ")"))) # ohne stsc:
+                            if scoreName == "None":
+                                scoreName = argScoreName
                             self.scoreRoot = class_score.Score.getScoreXml(self.scoresPfad, scoreName)
                             if self.scoreRoot != None:
                                 scoreAlsStartargument = True
@@ -470,9 +475,8 @@ class MainWindow(QMainWindow):
                         if scoreAlsStartargument:
                             logger.logger.info("Score " + sys.argv[1] + " als Startargument")
                         elif not ds.buttonTrendAusdruck.isChecked(): # Scoreberechung
-                            if not scoreAlsStartargument:
-                                self.scoreRoot = class_score.Score.getScoreXml(self.scoresPfad, ds.aktuellGewaehlterScore)
-                                logger.logger.info("Score " + ds.aktuellGewaehlterScore + " ausgewählt")
+                            self.scoreRoot = class_score.Score.getScoreXml(self.scoresPfad, ds.aktuellGewaehlterScore)
+                            logger.logger.info("Score " + ds.aktuellGewaehlterScore + " ausgewählt")
                         else: # Trendanzeige
                             ausgewaehlteTrendScores = [rb.text() for rb in ds.radioButtonsScore if rb.isChecked()]
                             try:
@@ -1043,8 +1047,8 @@ class MainWindow(QMainWindow):
             scoreMenuAuswaehlenAction.triggered.connect(self.scoreAuswaehlen)
             scoreMenuFavoritenVerwaltenAction = QAction("Favoriten verwalten", self)
             scoreMenuFavoritenVerwaltenAction.triggered.connect(self.scoreFavoritenVerwalten)
-            scoreGdtNameInClipboardAction = QAction("Scorename als Startargument in die Zwischenablage kopieren", self)
-            scoreGdtNameInClipboardAction.triggered.connect(self.scoreGdtNameInClipboard)
+            startargumentFuerDirektstartGenerierenAction = QAction("Startargument für Programmstart mit Score generieren", self)
+            startargumentFuerDirektstartGenerierenAction.triggered.connect(self.startargumentFuerDirektstartGenerieren)
 
             einstellungenMenu = menubar.addMenu("Einstellungen")
             einstellungenAllgemeinAction = QAction("Allgemeine Einstellungen", self)
@@ -1081,7 +1085,7 @@ class MainWindow(QMainWindow):
             anwendungMenu.addAction(updateAction)
             scoreMenu.addAction(scoreMenuAuswaehlenAction)
             scoreMenu.addAction(scoreMenuFavoritenVerwaltenAction)
-            scoreMenu.addAction(scoreGdtNameInClipboardAction)
+            scoreMenu.addAction(startargumentFuerDirektstartGenerierenAction)
             einstellungenMenu.addAction(einstellungenAllgemeinAction)
             einstellungenMenu.addAction(einstellungenGdtAction)
             einstellungenMenu.addAction(einstellungenBenutzerAction)
@@ -1656,7 +1660,7 @@ class MainWindow(QMainWindow):
             logger.logger.info("Daten senden geklickt")
             self.pdferzeugen = self.checkBoxPdfErzeugen.isChecked()
             # GDT-Datei erzeugen
-            sh = gdt.SatzHeader(gdt.Satzart.DATEN_EINER_UNTERSUCHUNG_UEBERMITTELN_6310, self.configIni["GDT"]["idpraxisedv"], self.configIni["GDT"]["idscoregdt"], self.zeichensatz, "2.10", "Fabian Treusch - GDT-Tools", "ScoreGDT", self.version, self.patId)
+            sh = gdt.SatzHeader(gdt.Satzart.DATEN_EINER_UNTERSUCHUNG_UEBERMITTELN_6310, self.configIni["GDT"]["idpraxisedv"], self.scoregdtId, self.zeichensatz, "2.10", "Fabian Treusch - GDT-Tools", "ScoreGDT", self.version, self.patId)
             gd = gdt.GdtDatei()
             logger.logger.info("GdtDatei-Instanz erzeugt")
             gd.erzeugeGdtDatei(sh.getSatzheader())
@@ -1909,14 +1913,17 @@ class MainWindow(QMainWindow):
         sys.argv.append(appName)
         os.execl(sys.executable, __file__, *sys.argv)
 
-    def scoreGdtNameInClipboard(self, checked):
-        gdtname = str(self.scoreRoot.get("name")) # type: ignore
+    def startargumentFuerDirektstartGenerieren(self, checked):
+        scorename = str(self.scoreRoot.get("name")) # type: ignore
+        gdtname = scorename
         if self.scoreRoot.get("gdtname") != None: # type: ignore
             gdtname = str(self.scoreRoot.get("gdtname")) # type: ignore
-        clipboard = QGuiApplication.clipboard()
-        clipboard.setText("stsc:" + gdtname.replace(" ", "_").replace("(", "{").replace(")", "}"))
-        mb = QMessageBox(QMessageBox.Icon.Information, "Hinweis von ScoreGDT", "\"" + "stsc:" + gdtname.replace(" ", "_").replace("(", "{").replace(")", "}") + "\" wurde in die Zwischenablage kopiert und kann als Startargument verwendet werden.", QMessageBox.StandardButton.Ok)
-        mb.exec()
+        dsg = dialogStartargumentGenerieren.StartargumentGenerieren(self.configPath, scorename)
+        if dsg.exec() == 1:
+            clipboard = QGuiApplication.clipboard()
+            clipboard.setText("stsc:" + gdtname.replace(" ", "_").replace("(", "{").replace(")", "}") + "_" + dsg.lineEditAlternativeGdtId.text())
+            mb = QMessageBox(QMessageBox.Icon.Information, "Hinweis von ScoreGDT", "\"" + "stsc:" + gdtname.replace(" ", "_").replace("(", "{").replace(")", "}") + "_" + dsg.lineEditAlternativeGdtId.text() + "\" wurde in die Zwischenablage kopiert und kann in den GDT-Einstellungen des Praxisverwaltungssystem als Startargument für ScoreGDT angegeben werden.", QMessageBox.StandardButton.Ok)
+            mb.exec()
 
     def scoreFavoritenVerwalten(self, checked):
         df = dialogEinstellungenFavoriten.EinstellungenFavoriten(self.configPath, self.scoresPfad)
@@ -1967,7 +1974,7 @@ class MainWindow(QMainWindow):
         if de.exec() == 1:
             namen = []
             kuerzel = []
-            for i in range(self.maxBenutzeranzahl):
+            for i in range(de.anzahlBenutzerzeilen):
                 if de.lineEditNamen[i].text() != "":
                     namen.append(de.lineEditNamen[i].text())
                     kuerzel.append(de.lineEditKuerzel[i].text())

@@ -1,4 +1,4 @@
-import os, configparser, datetime, sys
+import os, configparser, datetime
 import class_trends, dialogEinstellungenFavoriten
 from xml.etree import ElementTree
 from PySide6.QtGui import QFont, QPalette
