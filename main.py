@@ -7,7 +7,7 @@ import gdttoolsL
 import gdt, gdtzeile, class_part, class_widgets, class_score, farbe
 import dialogUeberScoreGdt, dialogEinstellungenAllgemein, dialogEinstellungenGdt, dialogEinstellungenBenutzer, dialogEinstellungenLanrLizenzschluessel, dialogEula, dialogEinstellungenImportExport, dialogScoreAuswahl, dialogEinstellungenFavoriten, dialogStartargumentGenerieren
 import class_trends, dialogTrendanzeige
-import class_enums, class_Rechenoperation, scorepdf, molGrammConvert
+import class_enums, class_Rechenoperation, scorepdf
 from PySide6.QtCore import Qt, QTranslator, QLibraryInfo, QDate, QTime
 from PySide6.QtGui import QFont, QAction, QIcon, QDesktopServices, QPixmap, QPalette, QGuiApplication
 from PySide6.QtWidgets import (
@@ -126,13 +126,13 @@ class MainWindow(QMainWindow):
         self.configPath = updateSafePath
         self.configIni = configparser.ConfigParser()
         if os.path.exists(os.path.join(updateSafePath, "config.ini")):
-            logger.logger.info("config.ini in " + updateSafePath + " existert")
+            logger.logger.info("config.ini in " + updateSafePath + " existiert")
             self.configPath = updateSafePath
         elif os.path.exists(os.path.join(basedir, "config.ini")):
-            logger.logger.info("config.ini in " + updateSafePath + " existert nicht")
+            logger.logger.info("config.ini in " + updateSafePath + " existiert nicht")
             try:
                 if (not os.path.exists(updateSafePath)):
-                    logger.logger.info(updateSafePath + " existert nicht")
+                    logger.logger.info(updateSafePath + " existiert nicht")
                     os.makedirs(updateSafePath, 0o777)
                     logger.logger.info(updateSafePath + " erzeugt")
                 shutil.copy(os.path.join(basedir, "config.ini"), updateSafePath)
