@@ -36,6 +36,7 @@ class EinstellungenAllgemein(QDialog):
         self.updaterpfad = configIni["Allgemein"]["updaterpfad"]
         self.autoupdate = configIni["Allgemein"]["autoupdate"] == "True"
         self.trendverzeichnis = configIni["Allgemein"]["trendverzeichnis"]
+        self.kommentarAufPdf = configIni["Allgemein"]["kommentaraufpdf"] == "True"
 
         self.setWindowTitle("Allgemeine Einstellungen")
         self.buttonBox = QDialogButtonBox(QDialogButtonBox.StandardButton.Ok | QDialogButtonBox.StandardButton.Cancel)
@@ -86,12 +87,16 @@ class EinstellungenAllgemein(QDialog):
         self.checkBoxZahlengrenzenpruefung = QCheckBox("Bereichsgrenzen erzwingen")
         self.checkBoxZahlengrenzenpruefung.setFont(self.fontNormal)
         self.checkBoxZahlengrenzenpruefung.setChecked(self.bereichsgrenzenerzwingen)
+        self.checkBoxKommentarAufPdf = QCheckBox("Kommentar auf PDF übernehmen")
+        self.checkBoxKommentarAufPdf.setFont(self.fontNormal)
+        self.checkBoxKommentarAufPdf.setChecked(self.kommentarAufPdf)
         groupBoxScoresLayoutG.addWidget(labelStandardAuswahl, 0, 0)
         groupBoxScoresLayoutG.addWidget(self.comboBoxScoreAuswahl, 0, 1, 1, 2)
         groupBoxScoresLayoutG.addWidget(labelTrendverzeichnis, 1, 0)
         groupBoxScoresLayoutG.addWidget(self.lineEditTrendverzeichnis, 1, 1)
         groupBoxScoresLayoutG.addWidget(self.pushButtonTrendverzeichnis, 1, 2)
         groupBoxScoresLayoutG.addWidget(self.checkBoxZahlengrenzenpruefung, 2, 0, 1, 2)
+        groupBoxScoresLayoutG.addWidget(self.checkBoxKommentarAufPdf, 3, 0, 1, 2)
         groupBoxScores.setLayout(groupBoxScoresLayoutG)
 
         # GroupBox Updates

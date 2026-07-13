@@ -201,6 +201,10 @@ class MainWindow(QMainWindow):
         self.trendverzeichnis = ""
         if self.configIni.has_option("Allgemein", "trendverzeichnis"):
             self.trendverzeichnis = self.configIni["Allgemein"]["trendverzeichnis"]
+        # 1.41.0
+        self.kommentarAufPdf = False
+        if self.configIni.has_option("Allgemein", "kommentaraufpdf"):
+            self.kommentarAufPdf = self.configIni["Allgemein"]["kommentaraufpdf"] == "True"
         ## /Nachträglich hinzugefügte Options
 
         z = self.configIni["GDT"]["zeichensatz"]
@@ -327,6 +331,9 @@ class MainWindow(QMainWindow):
                 # 1.21.4 -> 1.22.0
                 if not self.configIni.has_option("Allgemein", "trendverzeichnis"):
                     self.configIni["Allgemein"]["trendverzeichnis"] = ""
+                # 1.40.3 -> 1.41.0
+                if not self.configIni.has_option("Allgemein", "kommentaraufpdf"):
+                    self.configIni["Allgemein"]["kommentaraufpdf"] = "False"
                 ## /config.ini aktualisieren
                 ## scores.xml löschen (ab 1.8.0)
                 # try:
@@ -908,7 +915,7 @@ class MainWindow(QMainWindow):
                     groupBox.setFont(self.fontBold)
                     groupBox.setLayout(partLayout)
                     mainLayoutG.addWidget(groupBox, part.getZeile(), part.getSpalte())
-
+            
             self.pushButtonBerechnen = QPushButton("Score berechnen")
             self.pushButtonBerechnen.setFixedHeight(40)
             self.pushButtonBerechnen.setFont(self.fontBold)
@@ -1016,6 +1023,15 @@ class MainWindow(QMainWindow):
             mainLayoutV.addSpacing(20)
             if auswertungElement != None:
                 mainLayoutV.addWidget(groupBoxAuswertung, alignment=Qt.AlignmentFlag.AlignCenter)
+            # Kommentartextfeld
+            labelKommentar = QLabel("Kommentar:")
+            labelKommentar.setFont(self.fontNormal)
+            self.lineEditKommentar = QLineEdit()
+            self.lineEditKommentar.setFont(self.fontNormal)
+            kommentarfeldLayout = QHBoxLayout()
+            kommentarfeldLayout.addWidget(labelKommentar)
+            kommentarfeldLayout.addWidget(self.lineEditKommentar)
+            mainLayoutV.addLayout(kommentarfeldLayout)
             mainLayoutV.addLayout(datumBenutzerLayoutG)
             mainLayoutV.addLayout(layoutPdfErstellenDatenSendenH)
             ## Nur mit Lizenz
@@ -1774,7 +1790,13 @@ class MainWindow(QMainWindow):
                     pdf.cell(0, 8, new_x="LMARGIN", new_y="NEXT")
                     pdf.cell(0, 8, "Auswertung/Interpretation:", new_x="LMARGIN", new_y="NEXT")
                     pdf.set_font(style="")  
-                    pdf.cell(0, 8, auswertung, new_x="LMARGIN", new_y="NEXT")
+                    pdf.cell(0, 0, auswertung, new_x="LMARGIN", new_y="NEXT")
+                if self.kommentarAufPdf:
+                    pdf.set_font(style="B")
+                    pdf.cell(0, 8, new_x="LMARGIN", new_y="NEXT")
+                    pdf.cell(0, 8, "Kommentar:", new_x="LMARGIN", new_y="NEXT")
+                    pdf.set_font(style="")  
+                    pdf.cell(0, 0, self.lineEditKommentar.text(), new_x="LMARGIN", new_y="NEXT")
                 pdf.set_y(-30)
                 pdf.set_font("dejavu", "I", 10)
                 pdf.cell(0, 8, "Generiert von ScoreGDT V" + self.version + " (\u00a9 GDT-Tools " + str(datetime.date.today().year) + ")", align="R")
@@ -1788,6 +1810,7 @@ class MainWindow(QMainWindow):
             gd.addZeile("6220", befund)
             if self.erfuellteAuswertungsregel != -1:
                 gd.addZeile("6220", "Beurteilung: " + auswertung)
+            gd.addZeile("6227", self.lineEditKommentar.text())
             gd.addZeile("6227", "Dokumentiert von: " + self.benutzerkuerzelListe[self.aktuelleBenutzernummer])
             # GDT-Datei exportieren
             if not gd.speichern(os.path.join(self.gdtExportVerzeichnis, self.kuerzelpraxisedv + self.kuerzelscoregdt + ".gdt"), self.zeichensatz):
@@ -1876,7 +1899,7 @@ class MainWindow(QMainWindow):
     def autoUpdatePruefung(self, checked):
         self.autoupdate = checked
         self.configIni["Allgemein"]["autoupdate"] = str(checked)
-        with open(os.path.join(self.configPath, "config.ini"), "w") as configfile:
+        with open(os.path.join(self.configPath, "config.ini"), "w", encoding="utf-8") as configfile:
             self.configIni.write(configfile)
 
     def ueberScoreGdt(self):
@@ -1934,6 +1957,7 @@ class MainWindow(QMainWindow):
             self.configIni["Allgemein"]["einrichtungsname"] = de.lineEditEinrichtungsname.text()
             self.configIni["Allgemein"]["einrichtunguebernehmen"] = str(de.checkBoxEinrichtungUebernehmen.isChecked())
             self.configIni["Allgemein"]["bereichsgrenzenerzwingen"] = str(de.checkBoxZahlengrenzenpruefung.isChecked())
+            self.configIni["Allgemein"]["kommentaraufpdf"] = str(de.checkBoxKommentarAufPdf.isChecked())
             self.configIni["Allgemein"]["standardscore"] = de.comboBoxScoreAuswahl.currentText()
             self.configIni["Allgemein"]["trendverzeichnis"] = de.lineEditTrendverzeichnis.text()
             self.configIni["Allgemein"]["updaterpfad"] = de.lineEditUpdaterPfad.text()

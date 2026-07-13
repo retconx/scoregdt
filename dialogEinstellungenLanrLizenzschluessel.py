@@ -9,6 +9,7 @@ from PySide6.QtWidgets import (
     QGroupBox,
     QLineEdit,
     QMessageBox,
+    QLabel
 )
 
 reLanr = "^\\d{9}$"
@@ -20,7 +21,7 @@ class EinstellungenProgrammerweiterungen(QDialog):
 
         #config.ini lesen
         configIni = configparser.ConfigParser()
-        configIni.read(os.path.join(configPath, "config.ini"), encoding="utf-8")
+        configIni.read(os.path.join(configPath, "config.ini"))
         self.lanr = configIni["Erweiterungen"]["lanr"]
         self.lizenzschluessel = gdttoolsL.GdtToolsLizenzschluessel.dekrypt(configIni["Erweiterungen"]["lizenzschluessel"])
 
@@ -46,8 +47,14 @@ class EinstellungenProgrammerweiterungen(QDialog):
         groupboxLizenzschluessel.setStyleSheet("font-weight:bold")
         self.lineEditLizenzschluessel = QLineEdit(self.lizenzschluessel)
         self.lineEditLizenzschluessel.setStyleSheet("font-weight:normal")
-        self.lineEditLizenzschluessel.textEdited.connect(self.lineEditLizenzschluesselTextEdited)
+        gueltigBis = gdttoolsL.GdtToolsLizenzschluessel.gueltigBis(self.lizenzschluessel).strftime("%d.%m.%Y")
+        gueltigBisAngabe = "bis " + gueltigBis
+        if gueltigBis == "01.01.1900":
+            gueltigBisAngabe = "unbefristet"
+        labelGueltigBis = QLabel("Gültigkeit: " + gueltigBisAngabe)
+        labelGueltigBis.setStyleSheet("font-weight:normal")
         groupboxLayoutLizenzschluessel.addWidget(self.lineEditLizenzschluessel)
+        groupboxLayoutLizenzschluessel.addWidget(labelGueltigBis)
         groupboxLizenzschluessel.setLayout(groupboxLayoutLizenzschluessel)
         dialogLayoutV.addWidget(groupboxLanr)
         dialogLayoutV.addWidget(groupboxLizenzschluessel)
@@ -64,9 +71,6 @@ class EinstellungenProgrammerweiterungen(QDialog):
         else:
             self.lineEditLanr.setFocus()
             self.lineEditLanr.selectAll()
-
-    def lineEditLizenzschluesselTextEdited(self):
-        self.lineEditLizenzschluessel.setStyleSheet("font-weight:normal;background:rgb(255,255,255)")
 
     def accept(self):
         if self.lineEditLanr.text() == "" and self.lineEditLizenzschluessel.text() == "":
