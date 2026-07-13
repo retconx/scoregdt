@@ -820,7 +820,7 @@ class MainWindow(QMainWindow):
                             widget.getQt().pressed.connect(lambda cb = widget.getQt(): self.buttonGroupCheckBoxPressed(cb))
                             widget.getQt().clicked.connect(lambda checked = False, cb = widget.getQt(): self.buttonGroupCheckBoxClicked(checked, cb))
                         # Prüfen, ob Alterstextfeld
-                        elif widget.getTyp() == class_widgets.WidgetTyp.LINEEDIT and widget.alterspruefungAktiv():
+                        if widget.getTyp() == class_widgets.WidgetTyp.LINEEDIT and widget.alterspruefungAktiv():
                             widget.getQt().setText(str(getAktuellesAlterInJahren(self.geburtsdatumAlsDate)))
                             logger.logger.info("Alter aus GDT-Datei in Lineedit " + widget.getId() + " eingetragen")
                             if widget.zahlengrenzeGesetzt() and not widget.zahlengrenzregelnErfuellt():
@@ -863,7 +863,8 @@ class MainWindow(QMainWindow):
                                     else:
                                         widget.getQt().setFocus()
                                     widget.getQt().selectAll()
-                        elif (widget.getTyp() == class_widgets.WidgetTyp.CHECKBOX or widget.getTyp() == class_widgets.WidgetTyp.RADIOBUTTON) and widget.alterspruefungAktiv():
+                        # Prüfen, ob Alterscheckbox
+                        elif ((widget.getTyp() == class_widgets.WidgetTyp.CHECKBOX or widget.getTyp() == class_widgets.WidgetTyp.RADIOBUTTON)) and widget.alterspruefungAktiv():
                             regelnErfuellt = True
                             for regel in widget.getAltersregeln():
                                 # Prüfen, ob geschlechtsabhängige Regel (Format z.B.: M:GROESSERALS50_W:GROESSERALS60)
