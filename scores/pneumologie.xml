@@ -534,4 +534,97 @@
             </beurteilung>
         </auswertung> 
     </score>
+    <score name="STOP-BANG-Score" gruppe="Pneumologie">
+        <information>Abschätzung der Wahrscheinlichkeit des Vorliegens eines obstruktiven Schlaf-Apnoe-Syndroms</information>
+        <quelle autor="Chung et al.">High STOP-Bang score indicates a high probability of obstructive sleep apnoea</quelle>
+        <part id="0" typ="GroupBox" titel="Fragen an PatientIn" zeile="0" spalte="0">
+            <widget id="100" typ="CheckBox" titel="Lautes Schnarchen (durch geschlossene Tür hörbar)">
+                <wert>1</wert>
+            </widget>
+            <widget id="101" typ="CheckBox" titel="Erhöhte Tagesmüdigkeit">
+                <wert>1</wert>
+            </widget>
+            <widget id="102" typ="CheckBox" titel="Nächtliche Atempausen (z. B. durch PartnerIn beobachtet)">
+                <wert>1</wert>
+            </widget>
+            <widget id="103" typ="CheckBox" titel="Arterielle Hypertonie">
+                <wert>1</wert>
+            </widget>
+        </part>
+        <part id="1" typ="GroupBox" titel="Messwerte" zeile="0" spalte="1">
+            <widget id="104" typ="LineEdit" titel="Körpergewicht" gewichtpruefung="True">
+                <regex>^\d+([.,]\d)?$</regex>  
+                <einheit>kg</einheit>
+            </widget>
+            <widget id="105" typ="LineEdit" titel="Körpergröße" groessepruefung="True">
+                <regex>^\d+([.,]\d)?$</regex>  
+                <einheit>cm</einheit>
+            </widget>
+            <widget id="106" typ="LineEdit" titel="Alter" alterspruefung="True">
+                <regex>^\d+?$</regex>
+                <einheit>Jahre</einheit>
+            </widget>
+            <widget id="107" typ="LineEdit" titel="Halsumfang">
+                <regex>^\d+([.,]\d)?$</regex>
+                <einheit>cm</einheit>
+            </widget>
+        </part>
+        <part id="2" typ="GroupBox" titel="Geschlecht" zeile="0" spalte="2" geschlechtpruefung="True">
+            <widget id="108" typ="RadioButton" titel="Weiblich" checked="True">
+                <wert>0</wert>
+            </widget>
+            <widget id="109" typ="RadioButton" titel="Männlich">
+                <wert>1</wert>
+            </widget>
+        </part>
+        <berechnung>
+            <formel>$id{100} + $id{101} + $id{102} + $id{103} + $var{bmi35} + $var{alter50} + $var{hals40} + $id{108}</formel>
+            <ergebniseinheit>Punkte</ergebniseinheit>
+            <variablen>
+                <variable name="bmi">$id{104} / $id{105} / $id{105} * 10000</variable>
+                <variable name="bmi35">
+                    <bedingung>
+                        <regel>$var{bmi} KLEINERGLEICHALS 35</regel>
+                        <wert>0</wert>
+                    </bedingung>
+                    <bedingung>
+                        <regel>$var{bmi} GROESSERALS 35</regel>
+                        <wert>1</wert>
+                    </bedingung>
+                </variable>
+                <variable name="alter50">
+                    <bedingung>
+                        <regel>$id{106} KLEINERGLEICHALS 50</regel>
+                        <wert>0</wert>
+                    </bedingung>
+                    <bedingung>
+                        <regel>$id{106} GROESSERALS 50</regel>
+                        <wert>1</wert>
+                    </bedingung>
+                </variable>
+                <variable name="hals40">
+                    <bedingung>
+                        <regel>$id{107} KLEINERGLEICHALS 40</regel>
+                        <wert>0</wert>
+                    </bedingung>
+                    <bedingung>
+                        <regel>$id{107} GROESSERALS 40</regel>
+                        <wert>1</wert>
+                    </bedingung>
+                </variable>
+            </variablen>
+        </berechnung>
+        <auswertung>
+            <beurteilung>
+                <ergebnisbereich>&#x3c;3 Punkte</ergebnisbereich>
+                <beschreibung>Geringes Risiko für obestruktives Schlafapnoe-Syndrom</beschreibung>
+                <regel>KLEINERALS 3</regel>
+            </beurteilung>
+            <beurteilung>
+                <ergebnisbereich>&#x2265;3 Punkte</ergebnisbereich>
+                <beschreibung>Hohes Risiko für obestruktives Schlafapnoe-Syndrom</beschreibung>
+                <regel>GROESSERGLEICHALS 3</regel>
+            </beurteilung>
+        </auswertung> 
+    </score>
 </root>

@@ -13660,4 +13660,55 @@
             </beurteilung> 
         </auswertung>
     </score>
+    <score name="RCRI (Revised Carciad Risk Index)" gruppe ="Kardiologie">
+        <information>Abschätzung des Risikos kardialer Komplikationen im Rahmen nicht kardialer Operationen</information>
+        <quelle autor="Goldman et al.">The Revised Cardiac Risk Index (RCRI; also called the Lee index) is an update to the older, 9-item risk score</quelle>
+        <part id="0" typ="Frame" zeile="0" spalte="0">
+            <widget id="100" typ="CheckBox" titel="Hochrisiko-Operation (intraperitoneal, intrathorakal, suprainguinal vaskulär)">
+                <wert>1</wert>
+            </widget>
+            <widget id="101" typ="CheckBox" titel="Koronare Herzerkrankung (anamnestisch Herzinfarkt, aktuell Angina pectoris oder positiver Belastungstest)">
+                <wert>1</wert>
+            </widget>
+            <widget id="102" typ="CheckBox" titel="Herzinsuffizienz (auskultatorisch/radiologisch Lungenödem, Belastungsdyspnoe, kardial verursachte Beinödeme)">
+                <wert>1</wert>
+            </widget>
+            <widget id="103" typ="CheckBox" titel="Anamnestisch Schlaganfall oder transitorisch ischämische Attackde (TIA)">
+                <wert>1</wert>
+            </widget>
+            <widget id="104" typ="CheckBox" titel="Präoperativ Insulintherapie">
+                <wert>1</wert>
+            </widget>
+            <widget id="105" typ="CheckBox" titel="Präoperativ Kreatinin &#x3e; 2 mg/dl bzw. 176,8 µmol/l">
+                <wert>1</wert>
+            </widget>
+        </part>
+        <berechnung>
+            <formel>$id{100} + $id{101} + $id{102} + $id{103} + $id{104} + $id{105}</formel>
+            <ergebniseinheit>Punkte</ergebniseinheit>
+            <variablen />
+        </berechnung>
+        <auswertung>
+            <beurteilung>
+                <ergebnisbereich>0 Punkte</ergebnisbereich>
+                <beschreibung>Risiko für relevantes kardiales Ereignis ca. 4%</beschreibung>
+                <regel>ISTGLEICH 0</regel>
+            </beurteilung> 
+            <beurteilung>
+                <ergebnisbereich>1 Punkt</ergebnisbereich>
+                <beschreibung>Risiko für relevantes kardiales Ereignis ca. 6%</beschreibung>
+                <regel>ISTGLEICH 1</regel>
+            </beurteilung> 
+            <beurteilung>
+                <ergebnisbereich>2 Punkte</ergebnisbereich>
+                <beschreibung>Risiko für relevantes kardiales Ereignis ca. 10%</beschreibung>
+                <regel>ISTGLEICH 2</regel>
+            </beurteilung> 
+            <beurteilung>
+                <ergebnisbereich>&#x2265;3 Punkte</ergebnisbereich>
+                <beschreibung>Risiko für relevantes kardiales Ereignis mindestens ca. 15%</beschreibung>
+                <regel>GROESSERGLEICHALS 3</regel>
+            </beurteilung> 
+        </auswertung>
+    </score>
 </root>
