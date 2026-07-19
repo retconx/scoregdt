@@ -1,5 +1,5 @@
 import os, configparser, datetime
-import class_trends, dialogEinstellungenFavoriten
+import class_trends, dialogEinstellungenFavoriten, farbe
 from xml.etree import ElementTree
 from PySide6.QtGui import QFont, QPalette
 from PySide6.QtCore import Qt
@@ -17,7 +17,8 @@ from PySide6.QtWidgets import (
     QPushButton,
     QCheckBox,
     QHBoxLayout, 
-    QMessageBox
+    QMessageBox,
+    QLineEdit
 )
 
 basedir = os.path.dirname(__file__)
@@ -87,8 +88,14 @@ class ScoreAuswahl(QDialog):
         self.buttonTrendAusdruck.setCheckable(True)
         self.buttonTrendAusdruck.setEnabled(os.path.exists(os.path.join(self.trendverzeichnis, self.patId, "trends.xml")))
         if not os.path.exists(os.path.join(self.trendverzeichnis, self.patId, "trends.xml")):
-            self.buttonTrendAusdruck.setToolTip("Bisher wurde kein Score für die Trendanzeige gespeichert.")
+            self.buttonTrendAusdruck.setToolTip("Bisher wurde kein Score für die Trendanzeige gespeichert oder das Trendverzeichnis ist nicht erreichbar.")
         self.buttonTrendAusdruck.clicked.connect(self.buttonTrendAusdruckClicked)
+        labelScoresuche = QLabel("Score suchen:")
+        self.lineEditScoreSuche = QLineEdit()
+        self.lineEditScoreSuche.setFixedWidth(300)
+        self.lineEditScoreSuche.setPlaceholderText("Suchtext")
+        self.lineEditScoreSuche.textEdited.connect(self.lineEditScoreSucheEdited)
+        self.labelAnzahlGefundeneScores = QLabel("(gefunden: 0)")
         self.groupBoxGeriGDT = QGroupBox("Geriatrisches Basisassessment")
         self.groupBoxGeriGDT.setFont(self.fontBold)
         self.groupBoxGeriGDT.setVisible(False)
@@ -99,17 +106,21 @@ class ScoreAuswahl(QDialog):
         groupBoxGeriGDTLayoutH.addWidget(self.checkBoxGeriGDT)
         self.groupBoxGeriGDT.setLayout(groupBoxGeriGDTLayoutH)
         trendLayout.addWidget(self.buttonTrendAusdruck, 0, 0, alignment=Qt.AlignmentFlag.AlignCenter)
+        trendLayout.addWidget(labelScoresuche, 0, 1, alignment=Qt.AlignmentFlag.AlignRight)
+        trendLayout.addWidget(self.lineEditScoreSuche, 0, 2, alignment=Qt.AlignmentFlag.AlignLeft)
+        trendLayout.addWidget(self.labelAnzahlGefundeneScores, 0, 3, alignment=Qt.AlignmentFlag.AlignLeft)
         trendLayout.addWidget(self.groupBoxGeriGDT, 1, 0, alignment=Qt.AlignmentFlag.AlignLeft)
     
         frame = QFrame()
         frameLayoutV = QVBoxLayout()
-        scrollArea = QScrollArea()
-        scrollArea.setWidgetResizable(True)
+        self.scrollArea = QScrollArea()
+        self.scrollArea.setWidgetResizable(True)
 
         dialogLayoutV = QVBoxLayout()
         self.buttonGroup = QButtonGroup()
         self.buttonGroup.setParent(self)
         self.radioButtonsScore = []
+        self.labelScoreinfo = []
         radioButtonNr = 0
         for scoreGruppe in scoreGruppen:
             groupBoxScoreGruppe = QGroupBox(scoreGruppe)
@@ -133,6 +144,7 @@ class ScoreAuswahl(QDialog):
                 groupBoxScoreGruppeLayoutG.addWidget(tempRadioButtonScore, i, 0)
                 tempLabelInfo = QLabel(score[1])
                 tempLabelInfo.setFont(self.fontNormal)
+                self.labelScoreinfo.append(tempLabelInfo)
                 groupBoxScoreGruppeLayoutG.addWidget(tempLabelInfo, i, 1, alignment=Qt.AlignmentFlag.AlignLeft)
                 i += 1
                 radioButtonNr += 1
@@ -140,10 +152,10 @@ class ScoreAuswahl(QDialog):
             dialogLayoutV.addWidget(groupBoxScoreGruppe)
 
         frame.setLayout(dialogLayoutV)
-        scrollArea.setWidget(frame)
+        self.scrollArea.setWidget(frame)
         
         frameLayoutV.addLayout(trendLayout)
-        frameLayoutV.addWidget(scrollArea)
+        frameLayoutV.addWidget(self.scrollArea)
         favoritenVerwaltenButton = QPushButton("Score-Favoriten verwalten")
         favoritenVerwaltenButton.setFont(self.fontNormal)
         favoritenVerwaltenButton.clicked.connect(self.favoritenVerwaltenButtonClicked)
@@ -159,6 +171,7 @@ class ScoreAuswahl(QDialog):
             self.radioButtonsScore[0].setChecked(True)
             self.aktuellGewaehlterScore = self.radioButtonsScore[0].text()
             self.aktuellGewaehlteScoreNummer = 0
+        self.lineEditScoreSuche.setFocus()
 
     def buttonTrendAusdruckClicked(self, checked):
         self.buttonGroup.setExclusive(not checked)
@@ -177,7 +190,7 @@ class ScoreAuswahl(QDialog):
                 for rb in self.radioButtonsScore:
                     rb.setEnabled(rb.text() in testNamen)
                     if not rb.text() in testNamen:
-                        rb.setPalette(palette)
+                        rb.setPalette(palette) # ausgegraut
                 self.checkBoxGeriGDT.setEnabled(class_trends.GdtTool.GERIGDT.value in testTools)
             except class_trends.XmlPfadExistiertNichtError as e:
                 mb = QMessageBox(QMessageBox.Icon.Warning, "Hinweis von ScoreGDT", "Problem beim Laden der Trenddaten: " + str(e), QMessageBox.StandardButton.Ok)
@@ -187,10 +200,34 @@ class ScoreAuswahl(QDialog):
                 rb.setEnabled(True)
             self.radioButtonsScore[self.aktuellGewaehlteScoreNummer].setChecked(True)
 
-    def radioButtonClicked(self, checked, radioButtoNr):
+    def lineEditScoreSucheEdited(self, suchtext):
+        # Windowtextfarbe auslesen
+        palette = QPalette()
+        colorWindowtext = palette.windowText().color()
+        palette.setColor(QPalette.Active, QPalette.Window, colorWindowtext) # type: ignore
+        anzahlGefundeneScores = 0
+        i = 0
+        ersterGefundenerScore = -1
+        for rb in self.radioButtonsScore:
+            rb.setPalette(palette)
+            self.labelScoreinfo[i].setPalette(palette)
+            if self.lineEditScoreSuche.text() != "" and rb.isEnabled() and (suchtext.lower() in rb.text().lower() or suchtext.lower() in self.labelScoreinfo[i].text().lower()):
+                rb.setPalette(farbe.getTextPalette(farbe.farben.GRUEN, self.palette()))
+                self.labelScoreinfo[i].setPalette(farbe.getTextPalette(farbe.farben.GRUEN, self.palette()))
+                if ersterGefundenerScore == -1:
+                    ersterGefundenerScore = i
+                anzahlGefundeneScores += 1
+            i += 1
+        self.labelAnzahlGefundeneScores.setText("(gefunden: " + str(anzahlGefundeneScores) + ")")
+        if anzahlGefundeneScores > 0:
+            self.scrollArea.verticalScrollBar().setSliderPosition(self.labelScoreinfo[ersterGefundenerScore].parent().pos().y())
+        else:
+            self.scrollArea.verticalScrollBar().setSliderPosition(0)
+
+    def radioButtonClicked(self, checked, radioButtonNr):
         if not self.buttonTrendAusdruck.isChecked():
-            self.aktuellGewaehlteScoreNummer = radioButtoNr
-            self.aktuellGewaehlterScore = self.radioButtonsScore[radioButtoNr].text()
+            self.aktuellGewaehlteScoreNummer = radioButtonNr
+            self.aktuellGewaehlterScore = self.radioButtonsScore[radioButtonNr].text()
             self.buttonBox.button(QDialogButtonBox.StandardButton.Ok).setEnabled(True)
         else:
             if not self.checkBoxGeriGDT.isChecked():
