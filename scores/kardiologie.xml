@@ -13707,4 +13707,151 @@
             </beurteilung> 
         </auswertung>
     </score>
+    <score name="DLCN-Score" gruppe ="Kardiologie">
+        <information>Abschätzung der Wahrscheinlichkeit des Vorliegens einer heterozygoten familiären Hypercholesterinämie</information>
+        <quelle autor="Nordestgaard et al.">Familial hypercholesterolaemia is underdiagnosed and undertreated in the general population: guidance for clinicians to prevent coronary heart disease: consensus statement of the European Atherosclerosis Society</quelle>
+        <part id="0" typ="GroupBox" titel="Familienanamnese" zeile="0" spalte="0">
+            <widget id="100" typ="CheckBox" titel="Verwandte(r) 1. Grades mit frühzeitiger KHK (männlich &#x3c; 55, weiblich &#x3c; 60 Jahre)">
+                <wert>1</wert>
+            </widget>
+            <widget id="101" typ="CheckBox" titel="Verwandte(r) 1. Grades mit LDL-Cholesterin &#x3e;95. Perzentile bezüglich Alter, Geschlecht und Herkunft">
+                <wert>1</wert>
+            </widget>
+            <widget id="102" typ="CheckBox" titel="Verwandte(r) 1. Grades mit Sehnenexanthom oder Arcus lipoides corneae">
+                <wert>2</wert>
+            </widget>
+            <widget id="103" typ="CheckBox" titel="Kind(er) &#x3c;18 Jahre mit LDL-Cholesterin &#x3e;95. Perzentile bezüglich Alter, Geschlecht und Herkunft">
+                <wert>2</wert>
+            </widget>
+        </part>
+        <part id="1" typ="GroupBox" titel="Klinische Anamnese" zeile="0" spalte="1">
+            <widget id="104" typ="CheckBox" titel="Frühzeitige KHK (männlich &#x3c; 55, weiblich &#x3c; 60 Jahre)">
+                <wert>1</wert>
+            </widget>
+            <widget id="105" typ="CheckBox" titel="Frühzeitige zerebrovaskuläre oder peripher vaskuläre Erkrankung (männlich &#x3c; 55, weiblich &#x3c; 60 Jahre)">
+                <wert>1</wert>
+            </widget>
+        </part>
+        <part id="2" typ="GroupBox" titel="Klinische Untersuchung" zeile="1" spalte="0">
+            <widget id="106" typ="CheckBox" titel="Sehnenexanthome">
+                <wert>1</wert>
+            </widget>
+            <widget id="107" typ="CheckBox" titel="Arcus lipoides corneae &#x3c;45 Jahre">
+                <wert>1</wert>
+            </widget>
+        </part>
+        <part id="3" typ="GroupBox" titel="Cholesterin" zeile="1" spalte="1">
+            <widget id="108" typ="LineEdit" titel="LDL-Cholesterin">
+                <regex>^\d+([.,]\d)?$</regex>  
+                <einheit>mg/dl</einheit>
+                <konvert gruppe="cholesterin" berechnungseinheit="False" button="True">
+                    <einheit>mmol/l</einheit>
+                    <strukturformel>C27-H46-O</strukturformel>
+                </konvert>
+            </widget>
+        </part>
+        <part id="4" typ="GroupBox" titel="Genetische Analyse" zeile="2" spalte="0">
+            <widget id="109" typ="CheckBox" titel="Ursächliche Mutation in den LDLR-, APOB- oder PCSK9-Genen">
+                <wert>8</wert>
+            </widget>
+        </part>
+        <berechnung>
+            <formel>$var{fam} + $var{klinAna} + $var{klinUnt} + $var{chol} + $id{109}</formel>
+            <ergebniseinheit>Punkte</ergebniseinheit>
+            <variablen>
+                <variable name="famTemp">$id{100} + $id{101} +$id{102} +$id{103}</variable>
+                <variable name="fam" defaultwert="0">
+                    <bedingung>
+                        <regel>$var{famTemp} ISTGLEICH 1</regel>
+                        <wert>1</wert>
+                    </bedingung>
+                    <bedingung>
+                        <regel>$var{famTemp} ISTGLEICH 2</regel>
+                        <regel>$id{102} ISTGLEICH 0</regel>
+                        <regel>$id{103} ISTGLEICH 0</regel>
+                        <wert>1</wert>
+                    </bedingung>
+                    <bedingung>
+                        <regel>$var{famTemp} ISTGLEICH 2</regel>
+                        <regel>$id{102} ISTGLEICH 2</regel>
+                        <wert>2</wert>
+                    </bedingung>
+                    <bedingung>
+                        <regel>$var{famTemp} ISTGLEICH 2</regel>
+                        <regel>$id{103} ISTGLEICH 2</regel>
+                        <wert>2</wert>
+                    </bedingung>
+                    <bedingung>
+                        <regel>$var{famTemp} GROESSERALS 2</regel>
+                        <wert>2</wert>
+                    </bedingung>
+                </variable>
+                <variable name="klinAna" defaultwert="0">
+                    <bedingung>
+                        <regel>$id{104} ISTGLEICH 1</regel>
+                        <wert>2</wert>
+                    </bedingung>
+                    <bedingung>
+                        <regel>$id{105} ISTGLEICH 1</regel>
+                        <wert>1</wert>
+                    </bedingung>
+                </variable>
+                <variable name="klinUnt" defaultwert="0">
+                    <bedingung>
+                        <regel>$id{106} ISTGLEICH 1</regel>
+                        <wert>6</wert>
+                    </bedingung>
+                    <bedingung>
+                        <regel>$id{107} ISTGLEICH 1</regel>
+                        <wert>4</wert>
+                    </bedingung>
+                </variable>
+                <variable name="chol" defaultwert="0">
+                    <bedingung>
+                        <regel>$id{108} GROESSERALS 325</regel>
+                        <wert>8</wert>
+                    </bedingung>
+                    <bedingung>
+                        <regel>$id{108} GROESSERALS 250</regel>
+                        <regel>$id{108} KLEINERGLEICHALS 325</regel>
+                        <wert>5</wert>
+                    </bedingung>
+                    <bedingung>
+                        <regel>$id{108} GROESSERALS 190</regel>
+                        <regel>$id{108} KLEINERGLEICHALS 250</regel>
+                        <wert>3</wert>
+                    </bedingung>
+                    <bedingung>
+                        <regel>$id{108} GROESSERALS 154</regel>
+                        <regel>$id{108} KLEINERGLEICHALS 190</regel>
+                        <wert>1</wert>
+                    </bedingung>
+                </variable>
+            </variablen>
+        </berechnung>
+        <auswertung>
+            <beurteilung>
+                <ergebnisbereich>&#x3c;3 Punkte</ergebnisbereich>
+                <beschreibung>Familiäre Hypercholesterinämie unwahrscheinlich</beschreibung>
+                <regel>KLEINERALS 3</regel>
+            </beurteilung> 
+            <beurteilung>
+                <ergebnisbereich>3 - 5 Punkte</ergebnisbereich>
+                <beschreibung>Familiäre Hypercholesterinämie möglich</beschreibung>
+                <regel>GROESSERGLEICHALS 3</regel>
+                <regel>KLEINERGLEICHALS 5</regel>
+            </beurteilung> 
+            <beurteilung>
+                <ergebnisbereich>6 - 8 Punkte</ergebnisbereich>
+                <beschreibung>Fmiliäre Hypercholesterinämie wahrscheinlich</beschreibung>
+                <regel>GROESSERGLEICHALS 6</regel>
+                <regel>KLEINERGLEICHALS 8</regel>
+            </beurteilung> 
+            <beurteilung>
+                <ergebnisbereich>&#x3e;8 Punkte</ergebnisbereich>
+                <beschreibung>Familiäre Hypercholesterinämie definitiv</beschreibung>
+                <regel>GROESSERALS 8</regel>
+            </beurteilung> 
+        </auswertung>
+    </score>
 </root>

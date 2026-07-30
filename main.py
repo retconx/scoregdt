@@ -1395,7 +1395,11 @@ class MainWindow(QMainWindow):
                         variablen[variablenname] = str(self.berechnung(textMitVarWertErsezt, -1))
                     # Mit Bedinung(en)
                     else: 
+                        defaultwert = ""
+                        erfuellteRegelGefunden = False
                         for bedingungElement in variableElement.findall("bedingung"):
+                            if variableElement.get("defaultwert") != None: # ab 1.44.0
+                                defaultwert = str(variableElement.get("defaultwert"))
                             regelErfuellt = True
                             for regelElement in bedingungElement.findall("regel"):
                                 regel = str(regelElement.text)
@@ -1403,12 +1407,23 @@ class MainWindow(QMainWindow):
                                 regelMitVarWertErsetzt = self.ersetzeVariablen(variablen, regelMitIdWertErsetzt)
                                 if not self.regelIstErfuellt(regelMitVarWertErsetzt):
                                     regelErfuellt = False
+                                    break
                             if regelErfuellt:
+                                erfuellteRegelGefunden = True
                                 logger.logger.info("Regel " + regel + " erfüllt")
                                 wert = str(bedingungElement.find("wert").text) # type: ignore
                                 wertMitIdWertErsetzt = self.ersetzeIdVariablen(wert)
                                 wertMitVarWertErsetzt = self.ersetzeVariablen(variablen, wertMitIdWertErsetzt)
                                 variablen[variablenname] = wertMitVarWertErsetzt
+                                break # Abbruchm sobald erste Regel erfüllt
+                        if not erfuellteRegelGefunden:
+                            logger.logger.info("Keine Regel für variable " + variablenname + " gefunden")
+                            if defaultwert != "":
+                                variablen[variablenname] = defaultwert
+                                print(variablenname, defaultwert)
+                            else:
+                                logger.logger.warning("Keine Regel für variable " + variablenname + " gefunden und kein Defaultwert")
+                            
                 patternVar = r"\$var{[^{}]+}"
                 variablenMitNichtErfuelltenRegeln = []
                 ergebnis = 0
