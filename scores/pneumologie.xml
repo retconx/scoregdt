@@ -479,8 +479,13 @@
                 <einheit>Stück</einheit>
             </widget>
         </part>
+        <part id="3" typ="GroupBox" titel="Qualifikationsbestätigung" zeile="4" spalte="0">
+            <widget id="103" typ="CheckBox" titel="Der/die Beratende/Überweisende nimmt an der vertragsärztlichen Versorgung teil und hat eine zertifizierte Fortbildung gemäß &#xa;§ 6 Abs. 3 Nummer 3 LuKrFrühErkV bzw. § 43 Abs. 2 Satz 2 Nr. 2 G-BA-Beschluss vom 18.6.2025 absolviert." checked="True">
+                <wert>1</wert>
+            </widget>
+        </part>
         <berechnung>
-            <formel>$var{alter} + $id{100} + $var{mind25} + $var{py15}</formel>
+            <formel>$var{alter} + $id{100} + $var{mind25} + $var{py15} + $id{103}</formel>
             <ergebniseinheit>Punkte</ergebniseinheit>
             <variablen>
                 <variable name="alter">
@@ -523,14 +528,14 @@
         </berechnung>
         <auswertung>
             <beurteilung>
-                <ergebnisbereich>0 - 3 Punkte</ergebnisbereich>
+                <ergebnisbereich>0 - 4 Punkte</ergebnisbereich>
                 <beschreibung>Einschlusskriterien nicht erfüllt</beschreibung>
-                <regel>KLEINERGLEICHALS 3</regel>
+                <regel>KLEINERGLEICHALS 4</regel>
             </beurteilung>
             <beurteilung>
-                <ergebnisbereich>4 Punkte</ergebnisbereich>
+                <ergebnisbereich>5 Punkte</ergebnisbereich>
                 <beschreibung>Einschlusskriterien erfüllt</beschreibung>
-                <regel>ISTGLEICH 4</regel>
+                <regel>ISTGLEICH 5</regel>
             </beurteilung>
         </auswertung> 
     </score>

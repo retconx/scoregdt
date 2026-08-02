@@ -399,6 +399,13 @@ class MainWindow(QMainWindow):
         self.fontBoldGross.setPixelSize(16)
         self.fontGross = QFont()
         self.fontGross.setPixelSize(16)
+        self.fontKlein = QFont()
+        self.fontKlein.setBold(False)
+        self.fontKlein.setPixelSize(12)
+        self.fontKleinItalic = QFont()
+        self.fontKleinItalic.setBold(False)
+        self.fontKleinItalic.setItalic(True)
+        self.fontKleinItalic.setPixelSize(12)
                 
         # GDT-Datei laden
         gd = gdt.GdtDatei()
@@ -437,12 +444,14 @@ class MainWindow(QMainWindow):
             self.widget = QWidget()
 
             # Updateprüfung auf Github
+            self.updatepruefungErfolgreich = True
             if self.autoupdate:
                 try:
                     self.updatePruefung(meldungNurWennUpdateVerfuegbar=True)
                 except Exception as e:
-                    mb = QMessageBox(QMessageBox.Icon.Warning, "Hinweis von ScoreGDT", "Updateprüfung nicht möglich.\nBitte überprüfen Sie Ihre Internetverbindung." + str(e), QMessageBox.StandardButton.Ok)
-                    mb.exec()
+                    # mb = QMessageBox(QMessageBox.Icon.Warning, "Hinweis von ScoreGDT", "Updateprüfung nicht möglich. Fehler: " + str(e), QMessageBox.StandardButton.Ok)
+                    # mb.exec()
+                    self.updatepruefungErfolgreich = False
                     logger.logger.warning("Updateprüfung nicht möglich: " + str(e))
 
             # Mitteilung, dass neue Scores
@@ -567,14 +576,15 @@ class MainWindow(QMainWindow):
                         partId = str(partElement.get("id"))
                         partTyp = class_part.PartTyp(str(partElement.get("typ")))
                         partTitel = str(partElement.get("titel"))
-                        partErklaerung =str(partElement.get("erklaerung"))
+                        partErklaerung = str(partElement.get("erklaerung"))
+                        partFussnote = str(partElement.get("fussnote")) # ab 1.44.1
                         partZeile = int(str(partElement.get("zeile")))
                         partSpalte = int(str(partElement.get("spalte")))
                         geschlechtpruefung = partElement.get("geschlechtpruefung") != None and str(partElement.get("geschlechtpruefung")) == "True"
                         hintergrundbild = ""
                         if partElement.get("hintergrundbild") != None:
                             hintergrundbild = str(partElement.get("hintergrundbild"))
-                        self.parts.append(class_part.Part(partId, partTyp, partTitel, partErklaerung, partZeile, partSpalte, geschlechtpruefung, hintergrundbild, self.scoreRoot))
+                        self.parts.append(class_part.Part(partId, partTyp, partTitel, partErklaerung, partFussnote, partZeile, partSpalte, geschlechtpruefung, hintergrundbild, self.scoreRoot))
                         for widgetElement in partElement.findall("widget"):
                             widgetId = str(widgetElement.get("id"))
                             widgetTyp = str(widgetElement.get("typ"))
@@ -672,15 +682,17 @@ class MainWindow(QMainWindow):
             scrollWidget = QWidget()
             mainLayoutG = QGridLayout()
             groupBoxBegriffsdefinitionenLayoutG = QGridLayout()
+            self.labelAutoUpdatepruefungNichtErfolgreich = QLabel("Hinweis: Die automatische Update-Prüfung war nicht erfolgreich.")
+            self.labelAutoUpdatepruefungNichtErfolgreich.setPalette(farbe.getTextPalette(farbe.farben.ROT, self.palette()))
+            self.labelPseudolizenz = QLabel("+++ Pseudolizenz für Test-/ Präsentationszwecke +++")
+            self.labelPseudolizenz.setStyleSheet("font-style:italic")
+            self.labelPseudolizenz.setPalette(farbe.getTextPalette(farbe.farben.ROT, self.palette()))
             # Patientendaten
             patient = "Patient"
             if self.geschlecht == "2":
                 patient = "Patientin"
             groupboxPatientendaten = QGroupBox(patient)
             groupboxPatientendatenLayoutG = QGridLayout()
-            self.labelPseudolizenz = QLabel("+++ Pseudolizenz für Test-/ Präsentationszwecke +++")
-            self.labelPseudolizenz.setStyleSheet("font-style:italic")
-            self.labelPseudolizenz.setPalette(farbe.getTextPalette(farbe.farben.ROT, self.palette()))
             labelName = QLabel("Name: " + self.name)
             labelPatId = QLabel("ID: " + self.patId)
             self.geburtsdatumAlsDate = datetime.date(int(self.geburtsdatum[6:]), int(self.geburtsdatum[3:5]), int(self.geburtsdatum[:2]))
@@ -901,7 +913,12 @@ class MainWindow(QMainWindow):
                             elif ("weiblich" in widget.getTitel().lower() or "weiblich" in widget.getErklaerung().lower()) and self.geschlecht == "2":
                                 widget.getQt().setChecked(True)
                                 logger.logger.info("Checkbox " + widget.getId() + " als weiblich aktiviert")
+                        
                         partGridZeile += 1
+                if part.getFussnote() != "None": # ab 1.44.1
+                    labelFussnote = QLabel(part.getFussnote())
+                    labelFussnote.setFont(self.fontKleinItalic)
+                    partLayout.addWidget(labelFussnote, partGridZeile, 0, 1, 3, alignment=Qt.AlignmentFlag.AlignTop)
                 if part.getTyp() == class_part.PartTyp.FRAME:
                     frame = QFrame()
                     if part.getHintergrundbild() != "":
@@ -991,7 +1008,9 @@ class MainWindow(QMainWindow):
             datumBenutzerLayoutG.addWidget(self.comboBoxBenutzer, 1, 1)
             layoutPdfErstellenDatenSendenH.addWidget(self.checkBoxPdfErzeugen)
             layoutPdfErstellenDatenSendenH.addWidget(self.pushButtonSenden)
-                        
+
+            if not self.updatepruefungErfolgreich:
+                mainLayoutV.addWidget(self.labelAutoUpdatepruefungNichtErfolgreich, alignment=Qt.AlignmentFlag.AlignCenter)
             ## Nur mit Lizenz
             if self.addOnsFreigeschaltet and gdttoolsL.GdtToolsLizenzschluessel.getSoftwareId(self.lizenzschluessel) == gdttoolsL.SoftwareId.SCOREGDTPSEUDO:
                 mainLayoutV.addWidget(self.labelPseudolizenz, alignment=Qt.AlignmentFlag.AlignCenter)
@@ -1420,7 +1439,6 @@ class MainWindow(QMainWindow):
                             logger.logger.info("Keine Regel für variable " + variablenname + " gefunden")
                             if defaultwert != "":
                                 variablen[variablenname] = defaultwert
-                                print(variablenname, defaultwert)
                             else:
                                 logger.logger.warning("Keine Regel für variable " + variablenname + " gefunden und kein Defaultwert")
                             
@@ -1765,22 +1783,17 @@ class MainWindow(QMainWindow):
                         gd.addTest(test)
                         if self.pdferzeugen and pdf != None and len(self.pdfZeilen) == 0: # type: ignore
                             y1 = pdf.get_y()
-                            pdf.multi_cell(140, 8, test.getTest()["8411_testBezeichnung"], fill=(i % 2 == 0))
+                            pdf.multi_cell(140, 0.35 * 10 + 1, test.getTest()["8411_testBezeichnung"], fill=(i % 2 == 0), padding=(2, 0)) # type: ignore
                             y2 = pdf.get_y()
                             if y2 < y1: # Neue Seite
                                 y1 = 20
                             pdf.set_xy(150, y1)
                             testergebnis = test.getTest()["8420_testErgebnis"]
-                            leerzeilen = ""
-                            anzahlLeerzeilen = int((y2 - y1) / 8)
-                            for j in range(anzahlLeerzeilen - 1):
-                                leerzeilen += "\n "
-                            pdf.multi_cell(50, 8, testergebnis + " " + test.getTest()["8421_testEinheit"], align="R", new_x="LMARGIN", new_y="NEXT", fill=(i % 2 == 0))
+                            pdf.multi_cell(50, 0.35 * 10 + 1, testergebnis + " " + test.getTest()["8421_testEinheit"], align="R", new_x="LMARGIN", new_y="NEXT", fill=(i % 2 == 0), padding=(2, 0)) # type: ignore
                             y3 = pdf.get_y()
                             if y3 < y2:
                                 pdf.set_x(150)
                                 pdf.cell(50, y2 - y3, "", fill=(i % 2 == 0), new_x="LMARGIN", new_y="NEXT")
-                                #pdf.set_y(y3 + 10 * anzahlLeerzeilen)
                             elif y3 > y2:
                                 pdf.set_y(y2)
                                 pdf.cell(140, y3 - y2, "", fill=(i % 2 == 0), new_x="LMARGIN", new_y="NEXT")
@@ -1789,8 +1802,8 @@ class MainWindow(QMainWindow):
             if pdf != None and len(self.pdfZeilen) > 0:
                 i = 0
                 for pdfZeile in self.pdfZeilen:
-                    pdf.cell(0, 10, str(pdfZeile[0]), fill=(i % 2 == 0))
-                    pdf.cell(0, 10, str(pdfZeile[1]) + " " + str(pdfZeile[2]), align="R", new_x="LMARGIN", new_y="NEXT", fill=(i % 2 == 0))
+                    pdf.cell(0, 0.35 * 10 + 4, str(pdfZeile[0]), fill=(i % 2 == 0))
+                    pdf.cell(0, 0.35 * 10 + 4, str(pdfZeile[1]) + " " + str(pdfZeile[2]), align="R", new_x="LMARGIN", new_y="NEXT", fill=(i % 2 == 0))
                     i += 1
             leerzeichenVorEinheit = " "
             if self.labelScoreErgebnisEinheit.text() == "%":
@@ -1804,18 +1817,18 @@ class MainWindow(QMainWindow):
                 pdf.cell(0, 8, self.lineEditScoreErgebnis.text() + leerzeichenVorEinheit + self.labelScoreErgebnisEinheit.text(), border="T", align="R", new_x="LMARGIN", new_y="NEXT")
                 if self.erfuellteAuswertungsregel != -1:
                     pdf.cell(0, 8, new_x="LMARGIN", new_y="NEXT")
-                    pdf.cell(0, 8, "Auswertung/Interpretation:", new_x="LMARGIN", new_y="NEXT")
+                    pdf.cell(0, 6, "Auswertung/Interpretation:", new_x="LMARGIN", new_y="NEXT")
                     pdf.set_font(style="")  
-                    pdf.cell(0, 0, auswertung, new_x="LMARGIN", new_y="NEXT")
-                if self.kommentarAufPdf:
+                    pdf.cell(0, None, auswertung, new_x="LMARGIN", new_y="NEXT")
+                if self.kommentarAufPdf and self.lineEditKommentar.text() != "":
                     pdf.set_font(style="B")
                     pdf.cell(0, 8, new_x="LMARGIN", new_y="NEXT")
-                    pdf.cell(0, 8, "Kommentar:", new_x="LMARGIN", new_y="NEXT")
+                    pdf.cell(0, 6, "Kommentar:", new_x="LMARGIN", new_y="NEXT")
                     pdf.set_font(style="")  
-                    pdf.cell(0, 0, self.lineEditKommentar.text(), new_x="LMARGIN", new_y="NEXT")
+                    pdf.cell(0, None, self.lineEditKommentar.text(), new_x="LMARGIN", new_y="NEXT")
                 pdf.set_y(-30)
                 pdf.set_font("dejavu", "I", 10)
-                pdf.cell(0, 8, "Generiert von ScoreGDT V" + self.version + " (\u00a9 GDT-Tools " + str(datetime.date.today().year) + ")", align="R")
+                pdf.cell(0, None, "Generiert von ScoreGDT V" + self.version + " (\u00a9 GDT-Tools " + str(datetime.date.today().year) + ")", align="R")
                 logger.logger.info("PDF-Seite aufgebaut")
                 try:
                     pdf.output(os.path.join(basedir, "pdf/score_temp.pdf"))

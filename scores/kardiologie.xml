@@ -13710,18 +13710,20 @@
     <score name="DLCN-Score" gruppe ="Kardiologie">
         <information>Abschätzung der Wahrscheinlichkeit des Vorliegens einer heterozygoten familiären Hypercholesterinämie</information>
         <quelle autor="Nordestgaard et al.">Familial hypercholesterolaemia is underdiagnosed and undertreated in the general population: guidance for clinicians to prevent coronary heart disease: consensus statement of the European Atherosclerosis Society</quelle>
-        <part id="0" typ="GroupBox" titel="Familienanamnese" zeile="0" spalte="0">
+        <part id="0" typ="GroupBox" titel="Familienanamnese" zeile="0" spalte="0" fussnote="* In er Regel entspricht die 95. Perzentile ca. 97,4% der oberen Grenze des Laborreferenzbereichs.">
             <widget id="100" typ="CheckBox" titel="Verwandte(r) 1. Grades mit frühzeitiger KHK (männlich &#x3c; 55, weiblich &#x3c; 60 Jahre)">
                 <wert>1</wert>
             </widget>
             <widget id="101" typ="CheckBox" titel="Verwandte(r) 1. Grades mit LDL-Cholesterin &#x3e;95. Perzentile bezüglich Alter, Geschlecht und Herkunft">
                 <wert>1</wert>
+                <erklaerung>siehe *</erklaerung>
             </widget>
             <widget id="102" typ="CheckBox" titel="Verwandte(r) 1. Grades mit Sehnenexanthom oder Arcus lipoides corneae">
                 <wert>2</wert>
             </widget>
             <widget id="103" typ="CheckBox" titel="Kind(er) &#x3c;18 Jahre mit LDL-Cholesterin &#x3e;95. Perzentile bezüglich Alter, Geschlecht und Herkunft">
                 <wert>2</wert>
+                <erklaerung>siehe *</erklaerung>
             </widget>
         </part>
         <part id="1" typ="GroupBox" titel="Klinische Anamnese" zeile="0" spalte="1">
@@ -13741,7 +13743,7 @@
             </widget>
         </part>
         <part id="3" typ="GroupBox" titel="Cholesterin" zeile="1" spalte="1">
-            <widget id="108" typ="LineEdit" titel="LDL-Cholesterin">
+            <widget id="108" typ="LineEdit" titel="LDL-Cholesterin (unbehandelt)">
                 <regex>^\d+([.,]\d)?$</regex>  
                 <einheit>mg/dl</einheit>
                 <konvert gruppe="cholesterin" berechnungseinheit="False" button="True">
