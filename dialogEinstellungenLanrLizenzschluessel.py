@@ -47,10 +47,12 @@ class EinstellungenProgrammerweiterungen(QDialog):
         groupboxLizenzschluessel.setStyleSheet("font-weight:bold")
         self.lineEditLizenzschluessel = QLineEdit(self.lizenzschluessel)
         self.lineEditLizenzschluessel.setStyleSheet("font-weight:normal")
-        gueltigBis = gdttoolsL.GdtToolsLizenzschluessel.gueltigBis(self.lizenzschluessel).strftime("%d.%m.%Y")
-        gueltigBisAngabe = "bis " + gueltigBis
-        if gueltigBis == "01.01.1900":
-            gueltigBisAngabe = "unbefristet"
+        gueltigBisAngabe = ""
+        if re.match(reLizenzschluessel, self.lizenzschluessel) != None:
+            gueltigBis = gdttoolsL.GdtToolsLizenzschluessel.gueltigBis(self.lizenzschluessel).strftime("%d.%m.%Y")
+            gueltigBisAngabe = "bis " + gueltigBis
+            if gueltigBis == "01.01.1900":
+                gueltigBisAngabe = "unbefristet"
         labelGueltigBis = QLabel("Gültigkeit: " + gueltigBisAngabe)
         labelGueltigBis.setStyleSheet("font-weight:normal")
         groupboxLayoutLizenzschluessel.addWidget(self.lineEditLizenzschluessel)

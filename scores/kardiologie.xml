@@ -13710,7 +13710,7 @@
     <score name="DLCN-Score" gruppe ="Kardiologie">
         <information>Abschätzung der Wahrscheinlichkeit des Vorliegens einer heterozygoten familiären Hypercholesterinämie</information>
         <quelle autor="Nordestgaard et al.">Familial hypercholesterolaemia is underdiagnosed and undertreated in the general population: guidance for clinicians to prevent coronary heart disease: consensus statement of the European Atherosclerosis Society</quelle>
-        <part id="0" typ="GroupBox" titel="Familienanamnese" zeile="0" spalte="0" fussnote="* In er Regel entspricht die 95. Perzentile ca. 97,4% der oberen Grenze des Laborreferenzbereichs.">
+        <part id="0" typ="GroupBox" titel="Familienanamnese" zeile="0" spalte="0" fussnote="* In der Regel entspricht die 95. Perzentile ca. 97,4% der oberen Grenze des Laborreferenzbereichs.">
             <widget id="100" typ="CheckBox" titel="Verwandte(r) 1. Grades mit frühzeitiger KHK (männlich &#x3c; 55, weiblich &#x3c; 60 Jahre)">
                 <wert>1</wert>
             </widget>

@@ -449,8 +449,8 @@ class MainWindow(QMainWindow):
                 try:
                     self.updatePruefung(meldungNurWennUpdateVerfuegbar=True)
                 except Exception as e:
-                    # mb = QMessageBox(QMessageBox.Icon.Warning, "Hinweis von ScoreGDT", "Updateprüfung nicht möglich. Fehler: " + str(e), QMessageBox.StandardButton.Ok)
-                    # mb.exec()
+                    mb = QMessageBox(QMessageBox.Icon.Warning, "Hinweis von ScoreGDT", "Updateprüfung nicht möglich. Fehler: " + str(e), QMessageBox.StandardButton.Ok)
+                    mb.exec()
                     self.updatepruefungErfolgreich = False
                     logger.logger.warning("Updateprüfung nicht möglich: " + str(e))
 
