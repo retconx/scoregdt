@@ -308,4 +308,121 @@
             </beurteilung>
         </auswertung>
     </score>
+    <score name="Mini Nutritional Assessment (MNA)" gruppe="Geriatrie">
+        <information>Abschätzung des Risikos für eine Mangelernährung</information>
+        <quelle autor="Rubenstein et al.">Screening for Undernutrition in Geriatric Practice:Developing the Short-Form Mini Nutritional Assessement (MNA-SF)</quelle>
+        <part id="0" typ="GroupBox" titel="Nahrungsaufnahme" erklaerung="Hat der/die PatientIn während der letzten drei Monate wegen Appetitverlust, Verdauungsproblemen,&#xa;Schwierigkeiten beim Kauen oder Schlucken weniger gegessen?" zeile="0" spalte="0">
+            <widget id="100" typ="RadioButton" titel="Starke Abnahme der Nahrungsaufnahme">
+                <wert>0</wert>
+            </widget>
+            <widget id="101" typ="RadioButton" titel="Leichte Abnahme der Nahrungsaufnahme">
+                <wert>1</wert>
+            </widget>
+            <widget id="102" typ="RadioButton" titel="Keine Abnahme der Nahrungsaufnahme" checked="True">
+                <wert>2</wert>
+            </widget>
+        </part>
+        <part id="1" typ="GroupBox" titel="Gewichtsverlust" erklaerung="Gewichtsverlust in den letzten drei Monaten" zeile="0" spalte="1">
+            <widget id="103" typ="RadioButton" titel="Gewichtsverlust &#x3e; 3 kg">
+                <wert>0</wert>
+            </widget>
+            <widget id="104" typ="RadioButton" titel="Nicht bekannt">
+                <wert>1</wert>
+            </widget>
+            <widget id="105" typ="RadioButton" titel="Gewichtsverlust zwischen 1 und 3 kg">
+                <wert>2</wert>
+            </widget>
+            <widget id="106" typ="RadioButton" titel="Kein Gewichtsverlust" checked="True">
+                <wert>3</wert>
+            </widget>
+        </part>
+        <part id="2" typ="GroupBox" titel="Mobilität" zeile="0" spalte="2">
+            <widget id="107" typ="RadioButton" titel="Bettlägerig oder in einem Stuhl mobilisiert">
+                <wert>0</wert>
+            </widget>
+            <widget id="108" typ="RadioButton" titel="In der Lage, sich in der Wohnung zu bewegen">
+                <wert>1</wert>
+            </widget>
+            <widget id="109" typ="RadioButton" titel="Verlässt die Wohnung" checked="True">
+                <wert>2</wert>
+            </widget>
+        </part>
+        <part id="3" typ="GroupBox" titel="Akute Krankheit/psychischer Stress" erklaerung="Akute Krankheit oder psychischer Stress während der letzten drei Monate" zeile="1" spalte="0">
+            <widget id="110" typ="RadioButton" titel="Ja">
+                <wert>0</wert>
+            </widget>
+            <widget id="111" typ="RadioButton" titel="Nein" checked="True">
+                <wert>2</wert>
+            </widget>
+        </part>
+        <part id="4" typ="GroupBox" titel="Neuropsychologische Probleme" zeile="1" spalte="1">
+            <widget id="112" typ="RadioButton" titel="Schwere Demenz oder Depression">
+                <wert>0</wert>
+            </widget>
+            <widget id="113" typ="RadioButton" titel="Leichte Demenz">
+                <wert>1</wert>
+            </widget>
+            <widget id="114" typ="RadioButton" titel="Keine psychologischen Probleme" checked="True">
+                <wert>2</wert>
+            </widget>
+        </part>
+        <part id="5" typ="Frame" zeile="1" spalte="2">
+            <widget id="115" typ="LineEdit" titel="Körpergewicht" gewichtpruefung="True">
+                <regex>^\d+([.,]\d)?$</regex>  
+                <einheit>kg</einheit>
+            </widget>
+            <widget id="116" typ="LineEdit" titel="Körpergröße" groessepruefung="True">
+                <regex>^\d+([.,]\d)?$</regex>  
+                <einheit>cm</einheit>
+            </widget>
+        </part>
+        <berechnung>
+            <formel>$id{100} + $id{103} + $id{107} + $id{110} + $id{112} + $var{bmiPunkte}</formel>
+            <ergebniseinheit>Punkte</ergebniseinheit>
+            <variablen>
+                <variable name="bmi">$id{115} / $id{116} / $id{116} * 10000</variable>
+                <variable name="bmiPunkte">
+                    <bedingung>
+                        <regel>$var{bmi} KLEINERALS 19</regel>
+                        <wert>0</wert>
+                    </bedingung>
+                    <bedingung>
+                        <regel>$var{bmi} GROESSERGLEICHALS 19</regel>
+                        <regel>$var{bmi} KLEINERALS 21</regel>
+                        <wert>1</wert>
+                    </bedingung>
+                    <bedingung>
+                        <regel>$var{bmi} GROESSERGLEICHALS 21</regel>
+                        <regel>$var{bmi} KLEINERALS 23</regel>
+                        <wert>2</wert>
+                    </bedingung>
+                    <bedingung>
+                        <regel>$var{bmi} GROESSERGLEICHALS 23</regel>
+                        <wert>3</wert>
+                    </bedingung>
+                </variable>
+            </variablen>
+        </berechnung>   
+        <auswertung>  
+            <beurteilung>
+                <ergebnisbereich>12 - 14 Punkte</ergebnisbereich>
+                <beschreibung>Normaler Ernährungszustand</beschreibung>
+                <regel>GROESSERGLEICHALS 12</regel>
+            </beurteilung>
+            <beurteilung>
+                <ergebnisbereich>8 - 11 Punkte</ergebnisbereich>
+                <beschreibung>Risiko für Mangelernährung</beschreibung>
+                <regel>GROESSERGLEICHALS 8</regel>
+                <regel>KLEINERGLEICHALS 11</regel>
+            </beurteilung>
+            <beurteilung>
+                <ergebnisbereich>0 - 7 Punkte</ergebnisbereich>
+                <beschreibung>Mangelernährung</beschreibung>
+                <regel>KLEINERGLEICHALS 7</regel>
+            </beurteilung>
+        </auswertung>     
+         <pdf zusaetzlich="True">
+            <zeile titel="Body-Mass-Index (BMI)" einheit="kg/m&#xb2;" dezimalstellen="1">bmi</zeile>
+        </pdf>      
+    </score>
 </root>

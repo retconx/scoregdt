@@ -1392,6 +1392,7 @@ class MainWindow(QMainWindow):
                             break
         if formularOk :
             self.pdfZeilen = [] # für PDF-Alternative
+            self.pdfZeilenZusaetzlich = [] # für die zusätzliche Angabe von Variableninhalten auf dem PDF-Ausdruck
             #try:
             # $var{...}-Werte auslesen
             berechnungElement = self.scoreRoot.find("berechnung") # type: ignore
@@ -1489,13 +1490,20 @@ class MainWindow(QMainWindow):
                 if pdfElement != None: # type: ignore
                     for zeileElement in pdfElement.findall("zeile"):
                         titel = str(zeileElement.get("titel"))
+                        dezimalstellen = str(zeileElement.get("dezimalstellen"))
                         if titel == "None":
                             titel = self.getPart(str(zeileElement.get("partid"))).getTitel() # type: ignore
                         wert = variablen[str(zeileElement.text)]
                         einheit = str(zeileElement.get("einheit"))
+                        if dezimalstellen != "None" and re.match(r"\d+([,.]\d+)?$", wert):
+                            ergebnisformatierung = "{:." + dezimalstellen + "f}"
+                            wert = ergebnisformatierung.format(float(wert)).replace(".", ",")
                         if wert == "1" and einheit == "Punkte":
                             einheit = "Punkt"
                         self.pdfZeilen.append((titel, wert, einheit))
+                    if pdfElement.get("zusaetzlich") == "True":
+                        self.pdfZeilenZusaetzlich = self.pdfZeilen.copy()
+                        self.pdfZeilen.clear()
             elif str(formelElement.text) == "dvo2023": # type: ignore
                 logger.logger.info("dvo2023 gewählt")
                 risikofaktorBezeichnungen = ["Wirbelfrakturen", "Andere Frakturen", "Allgemeine Risikofaktoren", "Rheumatologie und Glukokortikoide", "Sturzrisiko assoziierte Risikofaktoren/Geriatrie", "Endokrinologie", "Weitere Erkraknungen/Medikationen", "TBS"]
@@ -1697,6 +1705,7 @@ class MainWindow(QMainWindow):
             "\u00b2" : "2",
             "\u2264" : "<=",
             "\u2265" : ">=",
+            "\u00ae" : "(R)",
             "\n": " ",
             "\r\n": " "
         }
@@ -1721,9 +1730,9 @@ class MainWindow(QMainWindow):
             gd.addZeile("6200", untersuchungsdatum)
             gd.addZeile("6201", uhrzeit)
             gd.addZeile("8402", "ALLG00")
-            gdtname = str(self.scoreRoot.get("name")) # type: ignore
+            gdtname = self.fuerGdtBereinigen((self.scoreRoot.get("name"))) # type: ignore
             if self.scoreRoot.get("gdtname") != None: # type: ignore
-                gdtname = str(self.scoreRoot.get("gdtname")) # type: ignore
+                gdtname = (self.scoreRoot.get("gdtname")) # type: ignore
             # PDF erzeugen
             pdf = None
             if self.pdferzeugen:
@@ -1749,6 +1758,7 @@ class MainWindow(QMainWindow):
                 pdf.set_fill_color(240, 240, 240)
                 
             # Tests
+            testzeilen = 0
             if str(self.scoreRoot.get("keineTestuebermittlung")) != "True": # type: ignore
                 i = 0
                 for widget in self.widgets:
@@ -1798,10 +1808,18 @@ class MainWindow(QMainWindow):
                                 pdf.set_y(y2)
                                 pdf.cell(140, y3 - y2, "", fill=(i % 2 == 0), new_x="LMARGIN", new_y="NEXT")
                             i += 1
+                testzeilen = i
             # PDF-Alternative
             if pdf != None and len(self.pdfZeilen) > 0:
                 i = 0
                 for pdfZeile in self.pdfZeilen:
+                    pdf.cell(0, 0.35 * 10 + 4, str(pdfZeile[0]), fill=(i % 2 == 0))
+                    pdf.cell(0, 0.35 * 10 + 4, str(pdfZeile[1]) + " " + str(pdfZeile[2]), align="R", new_x="LMARGIN", new_y="NEXT", fill=(i % 2 == 0))
+                    i += 1
+            # Zusätzliche PDF-Zeilen
+            if pdf != None and len(self.pdfZeilenZusaetzlich) > 0:
+                i = testzeilen
+                for pdfZeile in self.pdfZeilenZusaetzlich:
                     pdf.cell(0, 0.35 * 10 + 4, str(pdfZeile[0]), fill=(i % 2 == 0))
                     pdf.cell(0, 0.35 * 10 + 4, str(pdfZeile[1]) + " " + str(pdfZeile[2]), align="R", new_x="LMARGIN", new_y="NEXT", fill=(i % 2 == 0))
                     i += 1

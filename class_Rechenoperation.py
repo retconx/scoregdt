@@ -177,13 +177,6 @@ class Rechenoperation:
                         for i in range(operationszaehler):
                             ersetzungStartPos += len(self.operanden[i]) + len(self.operationen[i])
                         ersetzungLaenge = len(self.operanden[operationszaehler]) + len(self.operationen[operationszaehler]) + len(self.operanden[operationszaehler + 1])
-                        # if dezimalstellenIntern == -1:
-                        #     tempErgebnisString = str(tempErgebnis)
-                        #     if tempErgebnis == 0 and tempErgebnisString.startswith("-"):
-                        #         tempErgebnisString = tempErgebnisString[1:]
-                        #     formel = formel[:ersetzungStartPos] + tempErgebnisString + formel[ersetzungStartPos + ersetzungLaenge:]
-                        # else:
-                        # tempErgebnisString = ergebnisformatierung.format(tempErgebnis)
                         ergebnisformatierung = "{:." + str(dezimalstellenIntern) + "f}"
                         tempErgebnisString = ergebnisformatierung.format(tempErgebnis)
                         # tempErgebnisString = str(tempErgebnis)
