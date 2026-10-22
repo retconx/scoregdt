@@ -13656,7 +13656,7 @@
             </beurteilung> 
         </auswertung>
     </score>
-    <score name="RCRI (Revised Carciad Risk Index)" gruppe ="Kardiologie">
+    <score name="RCRI (Revised Cardiac Risk Index)" gruppe ="Kardiologie">
         <information>Abschätzung des Risikos kardialer Komplikationen im Rahmen nicht kardialer Operationen</information>
         <quelle autor="Goldman et al.">The Revised Cardiac Risk Index (RCRI; also called the Lee index) is an update to the older, 9-item risk score</quelle>
         <part id="0" typ="Frame" zeile="0" spalte="0">
